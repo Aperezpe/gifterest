@@ -1,64 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:device_simulator/device_simulator.dart';
 
-void main() {
+import 'ui/screens/home/HomePage.dart';
+import 'ui/screens/register/Register.dart';
+import 'ui/screens/login/Login.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  bool _simulateDevices;
+
+  MyApp({simulateDevices = false}) : _simulateDevices = simulateDevices;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      debugShowCheckedModeBanner: false,
+      title: 'Bonobo',
+      home: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Bonobo",
+        theme: ThemeData(primarySwatch: Colors.pink),
+        home: DeviceSimulator(
+          enable: _simulateDevices,
+          child: Login(),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        routes: <String, WidgetBuilder>{
+          "/Register": (context) => Register(),
+          "/Login": (context) => Login(),
+        },
       ),
     );
   }
