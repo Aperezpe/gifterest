@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "999698806095-nkgbjp3eah570mcpanpt8hu6p8hase2k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bonobo",
+            "certificate_hash": "ec3870c9988602801afa47d19a8b00ed7088e43a"
+          }
+        },
+        {
           "client_id": "999698806095-4afv0ua66lhgd0jpnsmsaaguakdt976h.apps.googleusercontent.com",
           "client_type": 3
         }
