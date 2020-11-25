@@ -1,20 +1,17 @@
-import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:flutter/material.dart';
 
 class FriendPage extends StatelessWidget {
-  FriendPage({@required this.database, @required this.friend});
-  final FirestoreDatabase database;
+  FriendPage({@required this.friend});
   final Friend friend;
 
   static Future<void> show(
     BuildContext context, {
-    FirestoreDatabase database,
     Friend friend,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FriendPage(database: database, friend: friend),
+        builder: (context) => FriendPage(friend: friend),
       ),
     );
   }
@@ -24,6 +21,15 @@ class FriendPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(friend.name),
+      ),
+      body: Container(
+        child: ListView.builder(
+            itemCount: friend.interests.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('${friend.interests[index]}'),
+              );
+            }),
       ),
     );
   }
