@@ -16,7 +16,7 @@ class BottomClickable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      color: Colors.pink,
+      color: color,
       elevation: 0,
       child: InkWell(
         splashColor: Colors.pinkAccent,
@@ -34,11 +34,6 @@ class BottomClickable extends StatelessWidget {
           ),
         ),
       ),
-
-      // child: InkWell(
-      //   child: Text(text),
-      //   onTap: onTap,
-      // ),
     );
   }
 }

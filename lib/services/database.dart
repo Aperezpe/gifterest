@@ -17,6 +17,11 @@ class FirestoreDatabase implements Database {
   final String uid;
   final _service = FirestoreService.instance;
 
+  Stream<List<Interest>> interestStream() => _service.collectionStream(
+        path: APIPath.interests(),
+        builder: (data, nameId) => Interest.fromMap(data, nameId),
+      );
+
   Future<void> setFriend(Friend friend) async => await _service.setData(
         path: APIPath.friend(uid, friend.id),
         data: friend.toMap(),
@@ -28,10 +33,5 @@ class FirestoreDatabase implements Database {
   Stream<List<Friend>> friendsStream() => _service.collectionStream(
         path: APIPath.friends(uid),
         builder: (data, documentId) => Friend.fromMap(data, documentId),
-      );
-
-  Stream<List<Interest>> interestStream() => _service.collectionStream(
-        path: APIPath.interests(),
-        builder: (data, nameId) => Interest.fromMap(data, nameId),
       );
 }

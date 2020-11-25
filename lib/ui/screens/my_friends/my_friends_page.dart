@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
@@ -43,12 +44,9 @@ class MyFriendsPage extends StatelessWidget {
       stream: database.friendsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final friends = snapshot.data;
-          final children = friends
-              .map((friend) => _buildFriendCard(context, friend))
-              .toList();
-          return ListView(
-            children: children,
+          return ListItemsBuilder<Friend>(
+            snapshot: snapshot,
+            itemBuilder: (context, friend) => _buildFriendCard(context, friend),
           );
         }
         if (snapshot.hasError) {
@@ -68,7 +66,6 @@ class MyFriendsPage extends StatelessWidget {
           friend: friend,
           onTap: () => FriendPage.show(
             context,
-            database: database,
             friend: friend,
           ),
         ),
