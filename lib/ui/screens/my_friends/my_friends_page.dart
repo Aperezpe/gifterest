@@ -5,25 +5,24 @@ import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:provider/provider.dart';
 
 import 'models/friend.dart';
+import 'models/special_event.dart';
 
 class MyFriendsPage extends StatelessWidget {
-  MyFriendsPage({@required this.database});
+  MyFriendsPage({@required this.database, @required this.allSpecialEvents});
   final FirestoreDatabase database;
+  final List<SpecialEvent> allSpecialEvents;
 
-  static Widget show(BuildContext context) {
-    return Consumer<Database>(
-      builder: (context, database, _) {
-        return MyFriendsPage(
-          database: database,
-        );
-      },
-    );
+  void _deleteFriend(Friend friend) {
+    database.deleteFriend(friend);
+
+    for (SpecialEvent event in allSpecialEvents) {
+      if (event.friendId == friend.id) {
+        database.deleteSpecialEvent(event);
+      }
+    }
   }
-
-  void _deleteFriend(Friend friend) => database.deleteFriend(friend);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,10 @@ class MyFriendsPage extends StatelessWidget {
         title: Text("My Friends"),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => SetFriendForm.show(context),
+        onPressed: () => SetFriendForm.show(
+          context,
+          allSpecialEvents: allSpecialEvents,
+        ),
         child: Icon(Icons.add),
       ),
       body: _buildContent(context),
@@ -75,7 +77,11 @@ class MyFriendsPage extends StatelessWidget {
           caption: 'Edit',
           color: Colors.blue,
           icon: Icons.edit,
-          onTap: () => SetFriendForm.show(context, friend: friend),
+          onTap: () => SetFriendForm.show(
+            context,
+            friend: friend,
+            allSpecialEvents: allSpecialEvents,
+          ),
         ),
         IconSlideAction(
           caption: 'Delete',

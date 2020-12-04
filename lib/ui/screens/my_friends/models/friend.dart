@@ -7,7 +7,6 @@ class Friend {
     @required this.name,
     @required this.age,
     @required this.interests,
-    @required this.specialDates,
   }) : assert(uid != null);
 
   String id;
@@ -15,7 +14,6 @@ class Friend {
   String name;
   int age;
   List<dynamic> interests;
-  List<dynamic> specialDates;
 
   factory Friend.fromMap(Map<String, dynamic> data, String documentId) {
     if (data == null) {
@@ -25,7 +23,6 @@ class Friend {
     final int age = data['age'];
     final String uid = data['uid'];
     final List<dynamic> interests = data['interests'];
-    final List<dynamic> specialDates = data['special_dates'];
 
     return Friend(
       id: documentId,
@@ -33,7 +30,6 @@ class Friend {
       name: name,
       age: age,
       interests: interests,
-      specialDates: specialDates,
     );
   }
 
@@ -43,7 +39,6 @@ class Friend {
       'age': age,
       'uid': uid,
       'interests': interests,
-      'special_dates': specialDates,
     };
   }
 }

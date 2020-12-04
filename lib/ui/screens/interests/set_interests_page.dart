@@ -4,11 +4,12 @@ import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'models/interest.dart';
+import '../../models/interest.dart';
 
 class SetInterestsPage extends StatelessWidget {
   SetInterestsPage({
@@ -22,6 +23,7 @@ class SetInterestsPage extends StatelessWidget {
     BuildContext context, {
     @required Friend friend,
     @required FirestoreDatabase database,
+    @required List<SpecialEvent> friendSpecialEvents,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -29,6 +31,7 @@ class SetInterestsPage extends StatelessWidget {
           create: (context) => SetInterestsPageModel(
             database: database,
             friend: friend,
+            friendSpecialEvents: friendSpecialEvents,
           ),
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
@@ -43,7 +46,6 @@ class SetInterestsPage extends StatelessWidget {
   Future<void> submit(BuildContext context) async {
     try {
       await model.submit();
-      // TODO: Popuntil named route /MyFriends
       Navigator.popUntil(context, (route) => route.isFirst);
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(

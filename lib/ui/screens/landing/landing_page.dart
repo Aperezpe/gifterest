@@ -1,5 +1,6 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,11 @@ class LandingPage extends StatelessWidget {
           } else {
             return Provider<Database>(
               create: (_) => FirestoreDatabase(uid: user.uid),
-              child: MyFriendsPage.show(context),
+              child: Consumer<Database>(
+                builder: (context, database, _) {
+                  return _buildMyFriendsPage(database);
+                },
+              ),
             );
           }
         } else {
@@ -27,6 +32,26 @@ class LandingPage extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
+      },
+    );
+  }
+
+  StreamBuilder<List<SpecialEvent>> _buildMyFriendsPage(Database database) {
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return MyFriendsPage(
+            database: database,
+            allSpecialEvents: snapshot.data,
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Something went wrong!"),
+          );
+        }
+        return CircularProgressIndicator();
       },
     );
   }
