@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/screens/interests/models/interest.dart';
+import 'package:bonobo/ui/models/interest.dart';
 import 'package:flutter/material.dart';
 
 class ClickableInterest extends StatelessWidget {

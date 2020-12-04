@@ -2,8 +2,10 @@ import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_clickable.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
-import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
+import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
+import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,7 @@ class SetFriendForm extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     Friend friend,
+    @required List<SpecialEvent> allSpecialEvents,
   }) async {
     final database = Provider.of<Database>(context);
     final auth = Provider.of<AuthBase>(context);
@@ -25,14 +28,17 @@ class SetFriendForm extends StatefulWidget {
     await Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (context) => Provider<SetFriendModel>(
+        builder: (context) => ChangeNotifierProvider<SetFriendModel>(
           create: (context) => SetFriendModel(
             uid: user.uid,
             database: database,
             friend: friend,
+            allSpecialEvents: allSpecialEvents,
           ),
           child: Consumer<SetFriendModel>(
-            builder: (context, model, __) => SetFriendForm(model: model),
+            builder: (context, model, __) => SetFriendForm(
+              model: model,
+            ),
           ),
         ),
       ),
@@ -66,13 +72,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
   }
 
   void _onSetInterests() {
-    if (_validateAndSaveForm()) {
-      SetInterestsPage.show(
-        context,
-        database: _model.database,
-        friend: _model.getFriend(),
-      );
-    }
+    if (_validateAndSaveForm()) _model.goToInterestsPage(context);
   }
 
   void _onSave() async {
@@ -100,6 +100,8 @@ class _SetFriendFormState extends State<SetFriendForm> {
     super.initState();
     _name = _friend?.name;
     _age = _friend?.age;
+
+    _model.initializeFriendSpecialEvents();
   }
 
   @override
@@ -107,6 +109,43 @@ class _SetFriendFormState extends State<SetFriendForm> {
     _nameFocusNode.dispose();
     _ageFocusNode.dispose();
     super.dispose();
+  }
+
+  Widget _buildContent(List<Event> events) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Card(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _buildFormFields(),
+                ),
+              ),
+            ),
+          ),
+          FlatButton(
+            child: Text(
+              "+ Add Event",
+              style: TextStyle(fontSize: 16.0),
+            ),
+            onPressed: () => _model.addSpecialEvent(events),
+          ),
+          ..._model.friendSpecialEvents.map(
+            (specialEvent) => AddEventCard(
+              events: events,
+              model: _model,
+              specialEvent: specialEvent,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -127,7 +166,17 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 ),
               ],
       ),
-      body: _buildContent(),
+      body: StreamBuilder<List<Event>>(
+        stream: _model.database.eventsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return _buildContent(snapshot.data);
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Something went wrong"));
+          }
+          return CircularProgressIndicator();
+        },
+      ),
       backgroundColor: Colors.grey[200],
       bottomNavigationBar: BottomClickable(
         text: _isNewFriend
@@ -136,24 +185,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
         onTap: _onSetInterests,
         color: Colors.pink,
         textColor: Colors.white,
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.0),
-      child: Card(
-        child: Container(
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _buildFormFields(),
-            ),
-          ),
-        ),
       ),
     );
   }

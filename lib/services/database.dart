@@ -1,16 +1,25 @@
 import 'package:bonobo/services/api_path.dart';
 import 'package:bonobo/services/firestore_service.dart';
-import 'package:bonobo/ui/screens/interests/models/interest.dart';
+import 'package:bonobo/ui/models/event.dart';
+import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
-import 'package:flutter/material.dart';
+import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class Database {
   Future<void> setFriend(Friend friend);
   Future<void> deleteFriend(Friend friend);
   Stream<List<Friend>> friendsStream();
+  Stream<List<Interest>> interestStream();
+
+  Stream<List<SpecialEvent>> specialEventsStream();
+  Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend);
+  Future<void> deleteSpecialEvent(SpecialEvent specialEvent);
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
+String documentUUID() => Uuid().v1();
 
 class FirestoreDatabase implements Database {
   FirestoreDatabase({@required this.uid}) : assert(uid != null);
@@ -20,6 +29,11 @@ class FirestoreDatabase implements Database {
   Stream<List<Interest>> interestStream() => _service.collectionStream(
         path: APIPath.interests(),
         builder: (data, nameId) => Interest.fromMap(data, nameId),
+      );
+
+  Stream<List<Event>> eventsStream() => _service.collectionStream(
+        path: APIPath.events(),
+        builder: (data, nameId) => Event.fromMap(data, nameId),
       );
 
   Future<void> setFriend(Friend friend) async => await _service.setData(
@@ -34,4 +48,21 @@ class FirestoreDatabase implements Database {
         path: APIPath.friends(uid),
         builder: (data, documentId) => Friend.fromMap(data, documentId),
       );
+
+  Stream<List<SpecialEvent>> specialEventsStream() => _service.collectionStream(
+        path: APIPath.specialEvents(uid),
+        builder: (data, documentId) => SpecialEvent.fromMap(data, documentId),
+      );
+
+  Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend) async {
+    if (friend == null) throw ("Friend can not be null");
+    await _service.setData(
+      path: APIPath.specialEvent(uid, specialEvent.id),
+      data: specialEvent.toMap(friend.id),
+    );
+  }
+
+  Future<void> deleteSpecialEvent(SpecialEvent specialEvent) async =>
+      await _service.deleteData(
+          path: APIPath.specialEvent(uid, specialEvent.id));
 }

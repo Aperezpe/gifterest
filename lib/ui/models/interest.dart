@@ -25,7 +25,4 @@ class Interest {
       imageUrl: imageUrl,
     );
   }
-
-  // No toMap function since personal_interests will be saved as arrays inside
-  // each Friend object. (: Mas facil!!!
 }

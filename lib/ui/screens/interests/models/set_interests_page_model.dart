@@ -1,18 +1,19 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
 
-import 'interest.dart';
+import '../../../models/interest.dart';
 
 class SetInterestsPageModel extends ChangeNotifier {
   SetInterestsPageModel({
     @required this.database,
-    this.isLoading = false,
-    this.friend,
-  });
+    @required this.friend,
+    @required this.friendSpecialEvents,
+  }) : assert(friend != null);
   final FirestoreDatabase database;
+  List<SpecialEvent> friendSpecialEvents;
   Friend friend;
-  bool isLoading;
 
   final int interestsAllowed = 5;
   List<String> _selectedInterests = [];
@@ -41,6 +42,10 @@ class SetInterestsPageModel extends ChangeNotifier {
   Future<void> submit() async {
     friend.interests = _selectedInterests;
     await database.setFriend(friend);
+
+    for (SpecialEvent event in friendSpecialEvents) {
+      await database.setSpecialEvent(event, friend);
+    }
   }
 
   bool isSelected(String interestName) =>
