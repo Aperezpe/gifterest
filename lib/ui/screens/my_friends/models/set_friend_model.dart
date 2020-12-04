@@ -8,19 +8,18 @@ import 'package:flutter/foundation.dart';
 import 'friend.dart';
 
 class SetFriendModel extends ChangeNotifier {
-  SetFriendModel(
-      {@required this.uid,
-      @required this.database,
-      this.name = "",
-      this.age = 0,
-      this.friend,
-      this.allSpecialEvents});
+  SetFriendModel({
+    @required this.uid,
+    @required this.database,
+    @required this.allSpecialEvents,
+    this.friend,
+  });
   final String uid;
   final FirestoreDatabase database;
-  String name;
-  int age;
-  Friend friend;
   final List<SpecialEvent> allSpecialEvents;
+  final Friend friend;
+  String name = "";
+  int age = 0;
   List<SpecialEvent> friendSpecialEvents = [];
 
   bool get isNewFriend => friend == null;
@@ -83,7 +82,6 @@ class SetFriendModel extends ChangeNotifier {
         name: name,
         age: age,
         interests: isNewFriend ? [] : friend.interests,
-        specialEvent: isNewFriend ? [] : friend.specialEvent,
       );
 
   void goToInterestsPage(BuildContext context) {
