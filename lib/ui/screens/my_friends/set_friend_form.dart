@@ -166,16 +166,19 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 ),
               ],
       ),
-      body: StreamBuilder<List<Event>>(
-        stream: _model.database.eventsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildContent(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Something went wrong"));
-          }
-          return CircularProgressIndicator();
-        },
+      body: GestureDetector(
+        onPanDown: (details) => FocusScope.of(context).unfocus(),
+        child: StreamBuilder<List<Event>>(
+          stream: _model.database.eventsStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return _buildContent(snapshot.data);
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Something went wrong"));
+            }
+            return CircularProgressIndicator();
+          },
+        ),
       ),
       backgroundColor: Colors.grey[200],
       bottomNavigationBar: BottomClickable(
