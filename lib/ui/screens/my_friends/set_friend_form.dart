@@ -1,6 +1,7 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_clickable.dart';
+import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
@@ -115,17 +116,16 @@ class _SetFriendFormState extends State<SetFriendForm> {
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.0),
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _buildFormFields(),
-                ),
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: _buildFormFields(),
               ),
             ),
           ),
@@ -166,27 +166,31 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 ),
               ],
       ),
-      body: GestureDetector(
-        onPanDown: (details) => FocusScope.of(context).unfocus(),
-        child: StreamBuilder<List<Event>>(
-          stream: _model.database.eventsStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return _buildContent(snapshot.data);
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Something went wrong"));
-            }
-            return CircularProgressIndicator();
-          },
+      body: Container(
+        color: Colors.white,
+        child: GestureDetector(
+          onPanDown: (details) => FocusScope.of(context).unfocus(),
+          child: StreamBuilder<List<Event>>(
+            stream: _model.database.eventsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return _buildContent(snapshot.data);
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Something went wrong"));
+              }
+              return CircularProgressIndicator();
+            },
+          ),
         ),
       ),
       backgroundColor: Colors.grey[200],
-      bottomNavigationBar: BottomClickable(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CustomButton(
+        onPressed: _onSetInterests,
+        color: Colors.pink,
         text: _isNewFriend
             ? "Add Interests"
             : 'Edit ${_friend.name}\'s Interests',
-        onTap: _onSetInterests,
-        color: Colors.pink,
         textColor: Colors.white,
       ),
     );

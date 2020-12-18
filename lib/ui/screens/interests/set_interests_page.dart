@@ -1,5 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_clickable.dart';
+import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
@@ -62,10 +63,11 @@ class SetInterestsPage extends StatelessWidget {
         title: Text("Interests"),
       ),
       body: _buildContent(),
-      bottomNavigationBar: BottomClickable(
-        text: model.submitButtonText,
-        onTap: isReadyToSubmit ? () => submit(context) : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CustomButton(
+        onPressed: isReadyToSubmit ? () => submit(context) : null,
         color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
+        text: model.submitButtonText,
         textColor: isReadyToSubmit ? Colors.black : Colors.white,
       ),
     );
