@@ -1,3 +1,4 @@
+import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
@@ -10,7 +11,12 @@ import 'models/friend.dart';
 import 'models/special_event.dart';
 
 class MyFriendsPage extends StatelessWidget {
-  MyFriendsPage({@required this.database, @required this.allSpecialEvents});
+  MyFriendsPage({
+    @required this.database,
+    @required this.allSpecialEvents,
+    @required this.auth,
+  });
+  final Auth auth;
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
 
@@ -29,6 +35,15 @@ class MyFriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("My Friends"),
+        actions: [
+          FlatButton(
+            onPressed: auth.signOut,
+            child: Text(
+              "Sign Out",
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => SetFriendForm.show(
@@ -52,7 +67,7 @@ class MyFriendsPage extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return Center(child: Text("Some error occured"));
+          return Center(child: Text("An error occurred"));
         }
         return Center(child: CircularProgressIndicator());
       },

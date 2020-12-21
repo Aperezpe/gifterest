@@ -16,7 +16,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "Bonobo",
-        theme: ThemeData(primarySwatch: Colors.pink),
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+          scaffoldBackgroundColor: Colors.white,
+        ),
         home: SafeArea(
           child: LandingPage(),
         ),

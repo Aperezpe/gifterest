@@ -22,7 +22,7 @@ class LandingPage extends StatelessWidget {
               create: (_) => FirestoreDatabase(uid: user.uid),
               child: Consumer<Database>(
                 builder: (context, database, _) {
-                  return _buildMyFriendsPage(database);
+                  return _buildMyFriendsPage(database, auth);
                 },
               ),
             );
@@ -36,12 +36,14 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  StreamBuilder<List<SpecialEvent>> _buildMyFriendsPage(Database database) {
+  StreamBuilder<List<SpecialEvent>> _buildMyFriendsPage(
+      Database database, Auth auth) {
     return StreamBuilder<List<SpecialEvent>>(
       stream: database.specialEventsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return MyFriendsPage(
+            auth: auth,
             database: database,
             allSpecialEvents: snapshot.data,
           );
