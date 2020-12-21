@@ -36,7 +36,13 @@ class MyFriendsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("My Friends"),
         actions: [
-          FloatingActionButton(onPressed: auth.signOut, child: Text("Sign Out"))
+          FlatButton(
+            onPressed: auth.signOut,
+            child: Text(
+              "Sign Out",
+              style: TextStyle(color: Colors.white),
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -61,7 +67,7 @@ class MyFriendsPage extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return Center(child: Text("Some error occured"));
+          return Center(child: Text("An error occurred"));
         }
         return Center(child: CircularProgressIndicator());
       },

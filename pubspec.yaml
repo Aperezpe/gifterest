@@ -28,6 +28,7 @@ dependencies:
   flutter_slidable:
   intl: ^0.16.0
   uuid: ^2.2.2
+  google_fonts: ^1.1.1
   flutter:
     sdk: flutter
 

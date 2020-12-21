@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
     @required this.onPressed,
     this.height: 50,
     this.width: 350,
+    this.padding,
   });
 
   final String text;
@@ -19,31 +20,27 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final double height;
   final double width;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      child: SizedBox.expand(
-        child: RaisedButton(
-          color: color,
-          disabledColor: disableColor,
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: textColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          onPressed: onPressed,
+    return RaisedButton(
+      color: color,
+      disabledColor: disableColor,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 20.0,
+          color: textColor,
+          fontWeight: FontWeight.w500,
         ),
       ),
+      padding: padding != null ? padding : EdgeInsets.all(15.0),
+      elevation: 5.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(50),
+      ),
+      onPressed: onPressed,
     );
   }
 }

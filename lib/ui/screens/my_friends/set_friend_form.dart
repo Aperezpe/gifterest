@@ -1,12 +1,9 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/bottom_clickable.dart';
-import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
-import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -72,14 +69,16 @@ class _SetFriendFormState extends State<SetFriendForm> {
     return false;
   }
 
-  void _onSetInterests() {
-    if (_validateAndSaveForm()) _model.goToInterestsPage(context);
+  void _onSetEvent() {
+    if (_validateAndSaveForm()) {
+      _model.goToSpecialEvents(context);
+    }
   }
 
   void _onSave() async {
     if (_validateAndSaveForm()) {
       try {
-        await _model.submit();
+        await _model.onSave();
         Navigator.pop(context);
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
@@ -101,8 +100,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
     super.initState();
     _name = _friend?.name;
     _age = _friend?.age;
-
-    _model.initializeFriendSpecialEvents();
   }
 
   @override
@@ -112,7 +109,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
     super.dispose();
   }
 
-  Widget _buildContent(List<Event> events) {
+  Widget _buildContent() {
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -129,20 +126,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
               ),
             ),
           ),
-          FlatButton(
-            child: Text(
-              "+ Add Event",
-              style: TextStyle(fontSize: 16.0),
-            ),
-            onPressed: () => _model.addSpecialEvent(events),
-          ),
-          ..._model.friendSpecialEvents.map(
-            (specialEvent) => AddEventCard(
-              events: events,
-              model: _model,
-              specialEvent: specialEvent,
-            ),
-          ),
         ],
       ),
     );
@@ -151,11 +134,12 @@ class _SetFriendFormState extends State<SetFriendForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 2.0,
         title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
         actions: _isNewFriend
-            ? null
+            ? []
             : [
                 FlatButton(
                   child: Text(
@@ -166,31 +150,14 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 ),
               ],
       ),
-      body: Container(
-        color: Colors.white,
-        child: GestureDetector(
-          onPanDown: (details) => FocusScope.of(context).unfocus(),
-          child: StreamBuilder<List<Event>>(
-            stream: _model.database.eventsStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return _buildContent(snapshot.data);
-              } else if (snapshot.hasError) {
-                return Center(child: Text("Something went wrong"));
-              }
-              return CircularProgressIndicator();
-            },
-          ),
-        ),
-      ),
-      backgroundColor: Colors.grey[200],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: CustomButton(
-        onPressed: _onSetInterests,
-        color: Colors.pink,
+      body: _buildContent(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: BottomButton(
+        onPressed: _onSetEvent,
+        color: Colors.blue,
         text: _isNewFriend
-            ? "Add Interests"
-            : 'Edit ${_friend.name}\'s Interests',
+            ? "Add Events 👉"
+            : 'Edit ${_friend.name}\'s Events 👉',
         textColor: Colors.white,
       ),
     );
@@ -207,6 +174,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         ),
         validator: (value) => value.isNotEmpty ? null : "Name can't be empty",
         onSaved: (value) => _model.updateName(value),
+        onChanged: (value) => _model.updateName(value),
         onEditingComplete: _nameEditingComplete,
       ),
       TextFormField(
@@ -220,6 +188,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         ),
         validator: (value) => value.isNotEmpty ? null : "Age can't be empty",
         onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
+        onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
       ),
     ];
   }
