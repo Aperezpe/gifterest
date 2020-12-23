@@ -89,6 +89,8 @@ class SetSpecialEventModel extends ChangeNotifier {
       database: database,
       friend: friend,
       friendSpecialEvents: friendSpecialEvents,
+      isNewFriend: isNewFriend,
+      onDeleteSpecialEvents: onDeleteSpecialEvents,
     );
   }
 

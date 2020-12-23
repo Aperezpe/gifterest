@@ -10,13 +10,17 @@ class SetInterestsPageModel extends ChangeNotifier {
     @required this.database,
     @required this.friend,
     @required this.friendSpecialEvents,
+    @required this.isNewFriend,
+    @required this.onDeleteSpecialEvents,
   }) : assert(friend != null) {
     _initializeInterests();
   }
 
   final FirestoreDatabase database;
-  List<SpecialEvent> friendSpecialEvents;
   Friend friend;
+  List<SpecialEvent> friendSpecialEvents;
+  final bool isNewFriend;
+  List<SpecialEvent> onDeleteSpecialEvents;
 
   final int interestsAllowed = 5;
   List<String> _selectedInterests = [];
@@ -52,6 +56,9 @@ class SetInterestsPageModel extends ChangeNotifier {
     await database.setFriend(friend);
     for (SpecialEvent event in friendSpecialEvents) {
       await database.setSpecialEvent(event, friend);
+    }
+    for (SpecialEvent event in onDeleteSpecialEvents) {
+      await database.deleteSpecialEvent(event);
     }
   }
 
