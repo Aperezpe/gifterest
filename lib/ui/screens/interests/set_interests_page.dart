@@ -92,15 +92,16 @@ class SetInterestsPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return StreamBuilder<List<dynamic>>(
-      stream: model.interestStream,
+    return StreamBuilder<List<Interest>>(
+      stream: model.queryInterestsStream,
+      // stream: model.interestStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GridItemBuilder<dynamic>(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 80),
             crossAxisCount: 2,
             snapshot: snapshot,
-            filterFunction: model.filterInterests,
+            // filterFunction: model.filterInterests,
             childAspectRatio: 1.5,
             itemBuilder: (context, interest) =>
                 _buildInterestCard(context, interest),

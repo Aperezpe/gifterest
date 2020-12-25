@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'empty_content.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
-typedef FilterList(List<dynamic> items);
+// typedef FilterList(List<dynamic> items, dynamic filters);
+
+// enum ListType {
+//   products,
+//   interests,
+// }
 
 class GridItemBuilder<T> extends StatelessWidget {
   const GridItemBuilder({
@@ -11,30 +16,32 @@ class GridItemBuilder<T> extends StatelessWidget {
     @required this.itemBuilder,
     this.padding,
     this.crossAxisCount: 2,
-    this.filterFunction,
+    // this.filterFunction,
     this.shrinkWrap: false,
     this.primary: true,
     this.childAspectRatio: 1.0,
     this.filters,
+    // this.listType,
   });
 
   final AsyncSnapshot<List<T>> snapshot;
   final ItemWidgetBuilder<T> itemBuilder;
-  final FilterList filterFunction;
+  // final FilterList filterFunction;
   final EdgeInsets padding;
   final int crossAxisCount;
   final bool shrinkWrap;
   final bool primary;
   final double childAspectRatio;
   final dynamic filters;
+  // final ListType listType;
 
   @override
   Widget build(BuildContext context) {
     if (snapshot.hasData) {
       List<T> items = snapshot.data;
-      if (filterFunction != null) {
-        items = filterFunction(items);
-      }
+      // if (filterFunction != null) {
+      //   items = filterFunction(items, filters);
+      // }
       if (items.isNotEmpty) {
         return _buildGrid(items);
       } else {

@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,26 +13,21 @@ class SetFriendModel extends ChangeNotifier {
   final FirestoreDatabase database;
   final List<SpecialEvent> friendSpecialEvents;
   final Friend friend;
+  final List<Gender> genders;
+
   String name = "";
   int age = 0;
   bool isNewFriend;
+  int genderDropdownValue = 0;
+
   SetFriendModel({
     @required this.uid,
     @required this.database,
     @required this.friendSpecialEvents,
+    @required this.genders,
     this.friend,
   }) {
     isNewFriend = friend == null ? true : false;
-  }
-
-  void goToSpecialEvents(BuildContext context) {
-    SetSpecialEvent.show(
-      context,
-      database: database,
-      friend: _newFriend,
-      friendSpecialEvents: friendSpecialEvents,
-      isNewFriend: isNewFriend,
-    );
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered
@@ -47,6 +43,7 @@ class SetFriendModel extends ChangeNotifier {
         uid: uid,
         name: name,
         age: age,
+        gender: genders[genderDropdownValue].type,
         interests: isNewFriend ? [] : friend.interests,
       );
 
@@ -58,6 +55,19 @@ class SetFriendModel extends ChangeNotifier {
     }
   }
 
+  void initializeGenderDropdownValue(
+      List<Gender> genders, String friendGender) {
+    if (isNewFriend) return;
+    for (int i = 0; i < genders.length; i++) {
+      if (genders[i].type == friend.gender) {
+        genderDropdownValue = i;
+        break;
+      }
+    }
+  }
+
+  void onGenderDropdownChange(int value) => genderDropdownValue = value;
+
   void updateName(String name) => updateWith(name: name);
   void updateAge(int age) => updateWith(age: age);
 
@@ -67,5 +77,15 @@ class SetFriendModel extends ChangeNotifier {
   }) {
     this.name = name ?? this.name;
     this.age = age ?? this.age;
+  }
+
+  void goToSpecialEvents(BuildContext context) {
+    SetSpecialEvent.show(
+      context,
+      database: database,
+      friend: _newFriend,
+      friendSpecialEvents: friendSpecialEvents,
+      isNewFriend: isNewFriend,
+    );
   }
 }

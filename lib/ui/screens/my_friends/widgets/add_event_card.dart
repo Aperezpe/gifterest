@@ -2,9 +2,12 @@ import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/date_picker.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/input_dropdown.dart';
 import '../../../style/fontStyle.dart';
 
 import 'package:flutter/material.dart';
+
+import 'dropdown_list.dart';
 
 class AddEventCard extends StatefulWidget {
   AddEventCard({
@@ -23,7 +26,7 @@ class AddEventCard extends StatefulWidget {
 }
 
 class _AddEventCardState extends State<AddEventCard> {
-  int _eventDropdownValue = 0;
+  // int _eventDropdownValue = 0;
   DateTime _specialDate;
   bool _isConcurrent = false;
 
@@ -38,13 +41,9 @@ class _AddEventCardState extends State<AddEventCard> {
     _specialDate =
         _specialEvent.date ?? DateTime(start.year, start.month, start.day);
 
-    //Initialize dropdown event with the given special event, if any.
-    for (int i = 0; i < widget.events.length; i++) {
-      if (widget.events[i].name == _specialEvent.name) {
-        _eventDropdownValue = i;
-        break;
-      }
-    }
+    // Initialize dropdown event with the given special event, if any.
+    _model.initializeEventsDropdownValues(widget.events, _specialEvent);
+
     _isConcurrent = _specialEvent?.isConcurrent;
   }
 
@@ -59,7 +58,18 @@ class _AddEventCardState extends State<AddEventCard> {
           padding: EdgeInsets.only(left: 15.0, right: 18.0),
           child: Column(
             children: [
-              _buildEventDropdown(),
+              DropdownList(
+                dropdownValue: _model.eventDropdownValue,
+                items: [
+                  for (int i = 0; i < widget.events.length; i++)
+                    DropdownMenuItem(
+                      child: Text(widget.events[i].name),
+                      value: i,
+                    )
+                ],
+                onChanged: (value) => _model.onEventsDropdownChange(
+                    value, widget.events, _specialEvent),
+              ),
               DatePicker(
                 labelText: 'Special Date',
                 selectedDate: _specialDate,
@@ -107,6 +117,7 @@ class _AddEventCardState extends State<AddEventCard> {
 
   Container _buildHeader() {
     return Container(
+      margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       color: Colors.grey[300],
       child: Row(
@@ -130,27 +141,6 @@ class _AddEventCardState extends State<AddEventCard> {
           ),
         ],
       ),
-    );
-  }
-
-  DropdownButton<int> _buildEventDropdown() {
-    return DropdownButton(
-      isExpanded: true,
-      value: _eventDropdownValue,
-      items: [
-        for (int i = 0; i < widget.events.length; i++)
-          DropdownMenuItem(
-            child: Text(widget.events[i].name),
-            value: i,
-          )
-      ],
-      onChanged: (value) {
-        final eventName = widget.events[value].name;
-        setState(() {
-          _eventDropdownValue = value;
-        });
-        _model.updateSpecialEventName(_specialEvent.id, eventName);
-      },
     );
   }
 }

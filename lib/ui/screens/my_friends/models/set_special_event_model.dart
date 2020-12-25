@@ -21,12 +21,32 @@ class SetSpecialEventModel extends ChangeNotifier {
 
   final Friend friend;
   final FirestoreDatabase database;
-  // final List<SpecialEvent> allSpecialEvents;
   final bool isNewFriend;
   List<SpecialEvent> friendSpecialEvents;
   List<SpecialEvent> onDeleteSpecialEvents;
+  int eventDropdownValue = 0;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
+
+  void initializeEventsDropdownValues(
+      List<Event> events, SpecialEvent specialEvent) {
+    for (int i = 0; i < events.length; i++) {
+      if (events[i].name == specialEvent.name) {
+        eventDropdownValue = i;
+        break;
+      }
+    }
+  }
+
+  void onEventsDropdownChange(
+    int value,
+    List<Event> events,
+    SpecialEvent specialEvent,
+  ) {
+    final eventName = events[value].name;
+    eventDropdownValue = value;
+    updateSpecialEventName(specialEvent.id, eventName);
+  }
 
   void addSpecialEvent(List<Event> events) {
     friendSpecialEvents.add(SpecialEvent(

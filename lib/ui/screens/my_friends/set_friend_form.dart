@@ -2,8 +2,10 @@ import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/dropdown_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,19 +28,29 @@ class SetFriendForm extends StatefulWidget {
     await Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (context) => ChangeNotifierProvider<SetFriendModel>(
-          create: (context) => SetFriendModel(
-            uid: user.uid,
-            database: database,
-            friend: friend,
-            friendSpecialEvents: friendSpecialEvents,
-          ),
-          child: Consumer<SetFriendModel>(
-            builder: (context, model, __) => SetFriendForm(
-              model: model,
-            ),
-          ),
-        ),
+        builder: (context) => StreamBuilder<List<Gender>>(
+            stream: database.genderStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ChangeNotifierProvider<SetFriendModel>(
+                  create: (context) => SetFriendModel(
+                    uid: user.uid,
+                    database: database,
+                    friend: friend,
+                    friendSpecialEvents: friendSpecialEvents,
+                    genders: snapshot.data,
+                  ),
+                  child: Consumer<SetFriendModel>(
+                    builder: (context, model, __) => SetFriendForm(
+                      model: model,
+                    ),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: Text("An error has ocurred"));
+              }
+              return CircularProgressIndicator();
+            }),
       ),
     );
   }
@@ -97,6 +109,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
   /// Initialize values on form if editing friend
   @override
   void initState() {
+    _model.initializeGenderDropdownValue(_model.genders, _model.friend?.gender);
     super.initState();
     _name = _friend?.name;
     _age = _friend?.age;
@@ -189,6 +202,18 @@ class _SetFriendFormState extends State<SetFriendForm> {
         validator: (value) => value.isNotEmpty ? null : "Age can't be empty",
         onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
         onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
+      ),
+      SizedBox(height: 15.0),
+      DropdownList(
+        dropdownValue: _model.genderDropdownValue,
+        items: [
+          for (int i = 0; i < _model.genders.length; i++)
+            DropdownMenuItem(
+              child: Text(_model.genders[i].type),
+              value: i,
+            )
+        ],
+        onChanged: _model.onGenderDropdownChange,
       ),
     ];
   }

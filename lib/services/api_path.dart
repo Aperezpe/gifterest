@@ -7,6 +7,8 @@ class APIPath {
 
   static String events() => 'events';
 
+  static String genders() => 'genders';
+
   static String friend(
     String uid,
     String friendId,

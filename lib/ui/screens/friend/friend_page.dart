@@ -92,14 +92,14 @@ class FriendPage extends StatelessWidget {
               shrinkWrap: true,
               primary: false,
               snapshot: snapshot,
-              filterFunction: filterProducts,
-              // filterFunction: _filterProducts(snapshot.data, {
+              // filterFunction: filterProducts,
+              // filters: {
               //   'interest': interest,
               //   'age': friend.age,
               //   'budget': [model.startValue, model.endValue],
               //   'gender': friend.gender,
               //   'event': model.specialEventsNames[model.selectedTab],
-              // }),
+              // },
               itemBuilder: (context, product) =>
                   _buildProductCard(context, product),
             );
@@ -113,9 +113,16 @@ class FriendPage extends StatelessWidget {
     ];
   }
 
-  List<dynamic> filterProducts(List<dynamic> products) {
-    return [];
-  }
+  // List<dynamic> filterProducts(List<dynamic> products, dynamic filters) {
+  //   for (Product p in products) {
+  //     bool isInAgeRange =
+  //         filters['age'] >= p.ageRange[0] && filters['age'] <= p.ageRange[1];
+  //     bool isGender = filters['gender'];
+  //     if (filters['interest'] == p.category) {}
+  //   }
+
+  //   return [];
+  // }
 
   _buildProductCard(BuildContext context, Product product) {
     return ClickableProduct(

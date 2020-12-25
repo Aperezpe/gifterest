@@ -31,6 +31,8 @@ class SetInterestsPageModel extends ChangeNotifier {
   }
 
   Stream<List<Interest>> get interestStream => database.interestStream();
+  Stream<List<Interest>> get queryInterestsStream =>
+      database.queryInterestsStream(friend);
 
   bool get isReadyToSubmit =>
       _selectedInterests.length == interestsAllowed ? true : false;
@@ -70,7 +72,8 @@ class SetInterestsPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<dynamic> filterInterests(List<dynamic> interests) {
+  //TODO: bring filters from GridBuilder
+  List<dynamic> filterInterests(List<dynamic> interests, dynamic filters) {
     List<dynamic> filteredInterests = [];
 
     for (var interest in interests) {
