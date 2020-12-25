@@ -1,5 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/grid_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
@@ -18,6 +19,7 @@ class SetInterestsPage extends StatelessWidget {
   final SetInterestsPageModel model;
 
   bool get isReadyToSubmit => model.isReadyToSubmit;
+  Friend get friend => model.friend;
 
   static Future<void> show(
     BuildContext context, {
@@ -90,36 +92,51 @@ class SetInterestsPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return StreamBuilder<List<Interest>>(
+    return StreamBuilder<List<dynamic>>(
       stream: model.interestStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final interests = snapshot.data;
-          final children = interests
-              .map(
-                (interest) => ClickableInterest(
-                  interest: interest,
-                  onTap: () => model.tapInterest(interest.nameId),
-                  color: model.isSelected(interest.nameId)
-                      ? Colors.pink
-                      : Colors.white,
-                ),
-              )
-              .toList();
-
-          return GridView.count(
-            crossAxisCount: 2,
-            children: children,
+          return GridItemBuilder<dynamic>(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 80),
-            mainAxisSpacing: 15,
-            crossAxisSpacing: 15,
+            crossAxisCount: 2,
+            snapshot: snapshot,
+            filterFunction: _filterInterests,
+            childAspectRatio: 1.5,
+            itemBuilder: (context, interest) =>
+                _buildInterestCard(context, interest),
           );
         }
         if (snapshot.hasError) {
-          return Center(child: Text("Some error occured"));
+          return Center(child: Text("An error occurred"));
         }
         return Center(child: CircularProgressIndicator());
       },
     );
+  }
+
+  _buildInterestCard(BuildContext context, Interest interest) {
+    return ClickableInterest(
+      interest: interest,
+      onTap: () => model.tapInterest(interest.name),
+      color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
+    );
+  }
+
+  _filterInterests(List<dynamic> interests) {
+    List<dynamic> filteredInterests = [];
+
+    for (var interest in interests) {
+      int fromAge = interest.ageRange[0];
+      int toAge = interest.ageRange[1];
+      bool isBetweenRange = fromAge <= friend.age && toAge >= friend.age;
+      bool isRightGender =
+          interest.gender == "any" || interest.gender == friend.gender;
+
+      if (isBetweenRange && isRightGender) {
+        filteredInterests.add(interest);
+      }
+    }
+
+    return filteredInterests;
   }
 }

@@ -21,7 +21,7 @@ class SetSpecialEvent extends StatefulWidget {
     @required Friend friend,
     @required FirestoreDatabase database,
     @required bool isNewFriend,
-    @required List<SpecialEvent> allSpecialEvents,
+    @required List<SpecialEvent> friendSpecialEvents,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -29,7 +29,7 @@ class SetSpecialEvent extends StatefulWidget {
           create: (context) => SetSpecialEventModel(
             database: database,
             friend: friend,
-            allSpecialEvents: allSpecialEvents,
+            friendSpecialEvents: friendSpecialEvents,
             isNewFriend: isNewFriend,
           ),
           child: Consumer<SetSpecialEventModel>(
@@ -67,7 +67,7 @@ class _SetSpecialEventState extends State<SetSpecialEvent> {
   void initState() {
     super.initState();
 
-    _model.initializeFriendSpecialEvents();
+    // _model.initializeFriendSpecialEvents();
   }
 
   // Return [Add] or [Save, Add] if is New Friend or Edit Friend respectively

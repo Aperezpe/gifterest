@@ -12,24 +12,21 @@ class SetSpecialEventModel extends ChangeNotifier {
   SetSpecialEventModel({
     @required this.friend,
     @required this.database,
-    @required this.allSpecialEvents,
+    @required this.friendSpecialEvents,
     @required this.isNewFriend,
-  });
+  }) {
+    if (friendSpecialEvents == null) friendSpecialEvents = [];
+    onDeleteSpecialEvents = [];
+  }
 
   final Friend friend;
   final FirestoreDatabase database;
-  final List<SpecialEvent> allSpecialEvents;
+  // final List<SpecialEvent> allSpecialEvents;
   final bool isNewFriend;
-  List<SpecialEvent> friendSpecialEvents = [];
-  List<SpecialEvent> onDeleteSpecialEvents = [];
+  List<SpecialEvent> friendSpecialEvents;
+  List<SpecialEvent> onDeleteSpecialEvents;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
-
-  void initializeFriendSpecialEvents() {
-    friendSpecialEvents = allSpecialEvents
-        .where((event) => event.friendId == friend?.id)
-        .toList();
-  }
 
   void addSpecialEvent(List<Event> events) {
     friendSpecialEvents.add(SpecialEvent(

@@ -13,20 +13,34 @@ class ClickableInterest extends StatelessWidget {
   final Color color;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: color,
-      elevation: 8.0,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Image.asset('assets/naruto.png'), // interest.imageUrl
-            Text(
-              interest.nameId,
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
+    return Container(
+      child: Card(
+        color: color,
+        elevation: 8.0,
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(interest.imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                child: Text(
+                  interest.name,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

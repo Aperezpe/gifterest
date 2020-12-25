@@ -30,11 +30,6 @@ class SetInterestsPageModel extends ChangeNotifier {
         friend.interests.map((interest) => interest.toString()).toList();
   }
 
-  void selectedInterests(List<String> interests) {
-    _selectedInterests = interests;
-    notifyListeners();
-  }
-
   Stream<List<Interest>> get interestStream => database.interestStream();
 
   bool get isReadyToSubmit =>

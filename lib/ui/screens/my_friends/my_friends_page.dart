@@ -30,6 +30,14 @@ class MyFriendsPage extends StatelessWidget {
     }
   }
 
+  List<SpecialEvent> getFriendSpecialEvents(Friend friend) {
+    List<SpecialEvent> friendSpecialEvents = allSpecialEvents
+        .where((event) => event.friendId == friend?.id)
+        .toList();
+    if (friendSpecialEvents.isEmpty) return [];
+    return friendSpecialEvents;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +54,7 @@ class MyFriendsPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => SetFriendForm.show(
-          context,
-          allSpecialEvents: allSpecialEvents,
-        ),
+        onPressed: () => SetFriendForm.show(context),
         child: Icon(Icons.add),
       ),
       body: _buildContent(context),
@@ -81,10 +86,14 @@ class MyFriendsPage extends StatelessWidget {
       child: Container(
         child: FriendListTile(
           friend: friend,
-          onTap: () => FriendPage.show(
-            context,
-            friend: friend,
-          ),
+          onTap: () => {
+            FriendPage.show(
+              context,
+              database: database,
+              friend: friend,
+              friendSpecialEvents: getFriendSpecialEvents(friend),
+            ),
+          },
         ),
       ),
       secondaryActions: <Widget>[
@@ -95,7 +104,7 @@ class MyFriendsPage extends StatelessWidget {
           onTap: () => SetFriendForm.show(
             context,
             friend: friend,
-            allSpecialEvents: allSpecialEvents,
+            friendSpecialEvents: getFriendSpecialEvents(friend),
           ),
         ),
         IconSlideAction(
