@@ -15,6 +15,7 @@ class GridItemBuilder<T> extends StatelessWidget {
     this.shrinkWrap: false,
     this.primary: true,
     this.childAspectRatio: 1.0,
+    this.filters,
   });
 
   final AsyncSnapshot<List<T>> snapshot;
@@ -25,6 +26,7 @@ class GridItemBuilder<T> extends StatelessWidget {
   final bool shrinkWrap;
   final bool primary;
   final double childAspectRatio;
+  final dynamic filters;
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,6 @@ import 'models/friend_page_model.dart';
 class FriendPage extends StatelessWidget {
   FriendPage({@required this.model});
   final FriendPageModel model;
-  final ScrollController _scrollController = ScrollController();
 
   static Future<void> show(
     BuildContext context, {
@@ -83,18 +82,27 @@ class FriendPage extends StatelessWidget {
         padding: EdgeInsets.only(left: 18),
         child: Text(interest, style: h3),
       ),
-      StreamBuilder<List<Product>>(
+      StreamBuilder<List<dynamic>>(
         stream: model.productsStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return GridItemBuilder<Product>(
-                padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                primary: false,
-                snapshot: snapshot,
-                itemBuilder: (context, product) =>
-                    _buildPrductCard(context, product));
+            return GridItemBuilder<dynamic>(
+              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              primary: false,
+              snapshot: snapshot,
+              filterFunction: filterProducts,
+              // filterFunction: _filterProducts(snapshot.data, {
+              //   'interest': interest,
+              //   'age': friend.age,
+              //   'budget': [model.startValue, model.endValue],
+              //   'gender': friend.gender,
+              //   'event': model.specialEventsNames[model.selectedTab],
+              // }),
+              itemBuilder: (context, product) =>
+                  _buildProductCard(context, product),
+            );
           }
           if (snapshot.hasError) {
             return Center(child: Text("An error occurred"));
@@ -105,7 +113,11 @@ class FriendPage extends StatelessWidget {
     ];
   }
 
-  _buildPrductCard(BuildContext context, Product product) {
+  List<dynamic> filterProducts(List<dynamic> products) {
+    return [];
+  }
+
+  _buildProductCard(BuildContext context, Product product) {
     return ClickableProduct(
       onTap: () {},
       product: product,

@@ -117,7 +117,7 @@ class SetInterestsPage extends StatelessWidget {
   _buildInterestCard(BuildContext context, Interest interest) {
     return ClickableInterest(
       interest: interest,
-      onTap: () => model.tapInterest(interest.name),
+      onTap: () => model.tapInterest(interest),
       color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
     );
   }
