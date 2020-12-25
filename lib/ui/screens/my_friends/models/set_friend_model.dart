@@ -10,7 +10,7 @@ import 'friend.dart';
 class SetFriendModel extends ChangeNotifier {
   final String uid;
   final FirestoreDatabase database;
-  final List<SpecialEvent> allSpecialEvents;
+  final List<SpecialEvent> friendSpecialEvents;
   final Friend friend;
   String name = "";
   int age = 0;
@@ -18,10 +18,20 @@ class SetFriendModel extends ChangeNotifier {
   SetFriendModel({
     @required this.uid,
     @required this.database,
-    @required this.allSpecialEvents,
+    @required this.friendSpecialEvents,
     this.friend,
   }) {
     isNewFriend = friend == null ? true : false;
+  }
+
+  void goToSpecialEvents(BuildContext context) {
+    SetSpecialEvent.show(
+      context,
+      database: database,
+      friend: _newFriend,
+      friendSpecialEvents: friendSpecialEvents,
+      isNewFriend: isNewFriend,
+    );
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered
@@ -46,16 +56,6 @@ class SetFriendModel extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
-  }
-
-  void goToSpecialEvents(BuildContext context) {
-    SetSpecialEvent.show(
-      context,
-      database: database,
-      friend: _newFriend,
-      allSpecialEvents: allSpecialEvents,
-      isNewFriend: isNewFriend,
-    );
   }
 
   void updateName(String name) => updateWith(name: name);

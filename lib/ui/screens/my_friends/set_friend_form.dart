@@ -18,7 +18,7 @@ class SetFriendForm extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     Friend friend,
-    @required List<SpecialEvent> allSpecialEvents,
+    List<SpecialEvent> friendSpecialEvents,
   }) async {
     final database = Provider.of<Database>(context);
     final auth = Provider.of<AuthBase>(context);
@@ -31,7 +31,7 @@ class SetFriendForm extends StatefulWidget {
             uid: user.uid,
             database: database,
             friend: friend,
-            allSpecialEvents: allSpecialEvents,
+            friendSpecialEvents: friendSpecialEvents,
           ),
           child: Consumer<SetFriendModel>(
             builder: (context, model, __) => SetFriendForm(

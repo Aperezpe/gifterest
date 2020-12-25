@@ -29,6 +29,7 @@ dependencies:
   intl: ^0.16.0
   uuid: ^2.2.2
   google_fonts: ^1.1.1
+  draggable_scrollbar: ^0.0.4
   flutter:
     sdk: flutter
 

@@ -2,6 +2,7 @@ import 'package:bonobo/services/api_path.dart';
 import 'package:bonobo/services/firestore_service.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/models/interest.dart';
+import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
@@ -28,7 +29,12 @@ class FirestoreDatabase implements Database {
 
   Stream<List<Interest>> interestStream() => _service.collectionStream(
         path: APIPath.interests(),
-        builder: (data, nameId) => Interest.fromMap(data, nameId),
+        builder: (data, documentId) => Interest.fromMap(data, documentId),
+      );
+
+  Stream<List<Product>> productsStream() => _service.collectionStream(
+        path: APIPath.products(),
+        builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 
   Stream<List<Event>> eventsStream() => _service.collectionStream(
