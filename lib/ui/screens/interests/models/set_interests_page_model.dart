@@ -68,4 +68,22 @@ class SetInterestsPageModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  List<dynamic> filterInterests(List<dynamic> interests) {
+    List<dynamic> filteredInterests = [];
+
+    for (var interest in interests) {
+      int fromAge = interest.ageRange[0];
+      int toAge = interest.ageRange[1];
+      bool isBetweenRange = fromAge <= friend.age && toAge >= friend.age;
+      bool isRightGender =
+          interest.gender == "any" || interest.gender == friend.gender;
+
+      if (isBetweenRange && isRightGender) {
+        filteredInterests.add(interest);
+      }
+    }
+
+    return filteredInterests;
+  }
 }
