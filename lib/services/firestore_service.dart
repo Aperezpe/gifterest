@@ -1,6 +1,7 @@
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../extensions/string_capitalize.dart';
 
 class FirestoreService {
   FirestoreService._();
@@ -32,7 +33,14 @@ class FirestoreService {
     }
 
     //TODO: Make sure that friend.gender is NEVER null
-    query = query.where('age_range', whereIn: [friend.gender, "any"]);
+    query = query.where(
+      'gender',
+      whereIn: [
+        friend.gender.unCapitalize(),
+        friend.gender.capitalize(),
+        "any",
+      ],
+    );
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.documents
         .map((snapshot) => builder(snapshot.data, snapshot.documentID))
