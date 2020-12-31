@@ -67,8 +67,7 @@ class FriendPage extends StatelessWidget {
               ),
               BudgetSlider(model: model),
               Tabs(model: model),
-              for (var interest in model.friend.interests)
-                ..._buildRecommendations(interest),
+              _buildRecommendations(),
             ],
           ),
         ),
@@ -76,58 +75,58 @@ class FriendPage extends StatelessWidget {
     );
   }
 
-  _buildRecommendations(interest) {
-    return [
-      Padding(
-        padding: EdgeInsets.only(left: 18),
-        child: Text(interest, style: h3),
-      ),
-      StreamBuilder<List<dynamic>>(
-        stream: model.productsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridItemBuilder<dynamic>(
-              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              primary: false,
-              snapshot: snapshot,
-              // filterFunction: filterProducts,
-              // filters: {
-              //   'interest': interest,
-              //   'age': friend.age,
-              //   'budget': [model.startValue, model.endValue],
-              //   'gender': friend.gender,
-              //   'event': model.specialEventsNames[model.selectedTab],
-              // },
-              itemBuilder: (context, product) =>
-                  _buildProductCard(context, product),
-            );
+  _buildRecommendations() {
+    return StreamBuilder<List<Product>>(
+      stream: model.queryProductsStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget> content = [];
+          for (var interestName in friend.interests) {
+            List<Product> products =
+                model.queryProducts(snapshot.data, interestName);
+
+            if (products.isEmpty)
+              content.addAll([
+                Container(
+                  padding: EdgeInsets.only(left: 18),
+                  child: Text(interestName, style: h3),
+                ),
+                Container(
+                  padding: EdgeInsets.all(15),
+                  child: Text("Oops! nothing found"),
+                ),
+              ]);
+            else
+              content.addAll([
+                Padding(
+                  padding: EdgeInsets.only(left: 18),
+                  child: Text(interestName, style: h3),
+                ),
+                GridView.builder(
+                  padding: EdgeInsets.all(15.0),
+                  itemCount: products.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1,
+                  ),
+                  itemBuilder: (context, index) {
+                    return ClickableProduct(
+                      onTap: () {},
+                      product: products[index],
+                    );
+                  },
+                ),
+              ]);
           }
-          if (snapshot.hasError) {
-            return Center(child: Text("An error occurred"));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    ];
-  }
-
-  // List<dynamic> filterProducts(List<dynamic> products, dynamic filters) {
-  //   for (Product p in products) {
-  //     bool isInAgeRange =
-  //         filters['age'] >= p.ageRange[0] && filters['age'] <= p.ageRange[1];
-  //     bool isGender = filters['gender'];
-  //     if (filters['interest'] == p.category) {}
-  //   }
-
-  //   return [];
-  // }
-
-  _buildProductCard(BuildContext context, Product product) {
-    return ClickableProduct(
-      onTap: () {},
-      product: product,
+          return Column(children: content);
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("An error occurred"));
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

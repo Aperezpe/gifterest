@@ -4,7 +4,7 @@ class Product {
   String id;
   String name;
   double price;
-  String ageRange;
+  List<dynamic> ageRange;
   String brand;
   String event;
   String imageUrl;
@@ -32,7 +32,7 @@ class Product {
 
     String name = data['name'];
     double price = data['price'];
-    String ageRange = data['age_range'];
+    List<dynamic> ageRange = data['age_range'];
     String brand = data['brand'];
     String event = data['event'];
     String category = data['category'];

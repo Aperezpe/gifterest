@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -11,6 +12,8 @@ class FriendPageModel extends ChangeNotifier {
     @required this.friend,
     @required this.friendSpecialEvents,
   }) : assert(friend != null, friendSpecialEvents != null) {
+    // TODO: toList() is unnecesary since I dont need to return value
+    specialEventsNames.add("All");
     friendSpecialEvents.map((e) => specialEventsNames.add(e.name)).toList();
     selectedTab = 0;
   }
@@ -26,10 +29,26 @@ class FriendPageModel extends ChangeNotifier {
   int get startValue => currentRangeValues.start.round();
   int get endValue => currentRangeValues.end.round();
 
-  List<String> specialEventsNames = ["All"];
+  List<String> specialEventsNames = [];
   int selectedTab;
 
-  Stream<List<Product>> get productsStream => database.productsStream();
+  Stream<List<Product>> get queryProductsStream => database.queryProductsStream(
+        friend: friend,
+        // specialEventName: specialEventsNames[selectedTab],
+        // specialEventsNames: specialEventsNames,
+      );
+
+  /// Query list of products by category, budget, and selected tab
+  List<Product> queryProducts(List<Product> products, String interestName) {
+    return products
+        .where((product) => product.category == interestName)
+        .where((product) =>
+            (product.price >= startValue) && (product.price <= endValue))
+        .where((product) =>
+            (product.event == specialEventsNames[selectedTab]) ||
+            (product.event == "any"))
+        .toList();
+  }
 
   void updateBudget(RangeValues values) {
     currentRangeValues = values;

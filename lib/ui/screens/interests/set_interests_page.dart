@@ -99,10 +99,10 @@ class SetInterestsPage extends StatelessWidget {
         if (snapshot.hasData) {
           return GridItemBuilder<dynamic>(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 80),
-            crossAxisCount: 2,
+            crossAxisCount: 3,
             snapshot: snapshot,
             // filterFunction: model.filterInterests,
-            childAspectRatio: 1.5,
+            childAspectRatio: 1,
             itemBuilder: (context, interest) =>
                 _buildInterestCard(context, interest),
           );
