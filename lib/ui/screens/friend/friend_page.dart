@@ -84,7 +84,6 @@ class FriendPage extends StatelessWidget {
           for (var interestName in friend.interests) {
             List<Product> products =
                 model.queryProducts(snapshot.data, interestName);
-
             if (products.isEmpty)
               content.addAll([
                 Container(

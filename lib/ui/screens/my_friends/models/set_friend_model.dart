@@ -43,6 +43,8 @@ class SetFriendModel extends ChangeNotifier {
         uid: uid,
         name: name,
         age: age,
+        imageUrl:
+            'https://static.vecteezy.com/system/resources/previews/000/556/895/original/vector-cute-cartoon-baby-monkey.jpg',
         gender: genders[genderDropdownValue].type,
         interests: isNewFriend ? [] : friend.interests,
       );
