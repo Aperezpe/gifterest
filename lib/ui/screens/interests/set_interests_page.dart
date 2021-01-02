@@ -1,6 +1,5 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
-import 'package:bonobo/ui/common_widgets/grid_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
@@ -97,14 +96,17 @@ class SetInterestsPage extends StatelessWidget {
       // stream: model.interestStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return GridItemBuilder<dynamic>(
-            padding: EdgeInsets.fromLTRB(15, 15, 15, 80),
-            crossAxisCount: 3,
-            snapshot: snapshot,
-            // filterFunction: model.filterInterests,
-            childAspectRatio: 1,
-            itemBuilder: (context, interest) =>
-                _buildInterestCard(context, interest),
+          snapshot.data.sort((a, b) => a.name.compareTo(b.name));
+          return GridView.builder(
+            padding: EdgeInsets.fromLTRB(8, 8, 8, 80),
+            itemCount: snapshot.data.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1,
+            ),
+            itemBuilder: (context, index) {
+              return _buildInterestCard(context, snapshot.data[index]);
+            },
           );
         }
         if (snapshot.hasError) {

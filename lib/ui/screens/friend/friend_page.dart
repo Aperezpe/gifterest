@@ -1,6 +1,5 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/circle_image_button.dart';
-import 'package:bonobo/ui/common_widgets/grid_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
@@ -81,6 +80,7 @@ class FriendPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Widget> content = [];
+          friend.interests.sort();
           for (var interestName in friend.interests) {
             List<Product> products =
                 model.queryProducts(snapshot.data, interestName);
