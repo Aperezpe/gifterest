@@ -1,7 +1,7 @@
 class APIPath {
   static String interests() => 'interests';
 
-  static String products() => 'Products';
+  static String products() => 'products';
 
   static String product(String productId) => 'products/$productId';
 

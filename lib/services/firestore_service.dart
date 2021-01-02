@@ -52,11 +52,12 @@ class FirestoreService {
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
     @required Friend friend,
+    @required int startPrice,
+    @required int endPrice,
   }) {
     CollectionReference ref = Firestore.instance.collection(path);
     Query query;
 
-    // Query products by friend age
     if (friend.age < 3) {
       query = ref.where('age_range', arrayContains: 0);
     } else if (friend.age >= 3 && friend.age < 12) {
@@ -64,8 +65,10 @@ class FirestoreService {
     } else {
       query = ref.where('age_range', arrayContains: 100);
     }
-    // Not necessary to query by budget since user will be changing it
-    query = query.where("category", whereIn: friend.interests);
+
+    query = query
+        .where('price', isGreaterThanOrEqualTo: startPrice)
+        .where('price', isLessThanOrEqualTo: endPrice);
 
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.documents

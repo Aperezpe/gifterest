@@ -17,6 +17,8 @@ abstract class Database {
   Stream<List<Product>> productsStream();
   Stream<List<Product>> queryProductsStream({
     @required Friend friend,
+    @required int startPrice,
+    @required int endPrice,
   });
   Stream<List<Event>> eventsStream();
   Stream<List<Interest>> queryInterestsStream(Friend friend);
@@ -49,10 +51,14 @@ class FirestoreDatabase implements Database {
 
   Stream<List<Product>> queryProductsStream({
     @required Friend friend,
+    @required int startPrice,
+    @required int endPrice,
   }) =>
       _service.queryProductsStream(
         path: APIPath.products(),
         friend: friend,
+        startPrice: startPrice,
+        endPrice: endPrice,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 

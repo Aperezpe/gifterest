@@ -34,19 +34,22 @@ class FriendPageModel extends ChangeNotifier {
 
   Stream<List<Product>> get queryProductsStream => database.queryProductsStream(
         friend: friend,
-        // specialEventName: specialEventsNames[selectedTab],
-        // specialEventsNames: specialEventsNames,
+        startPrice: startValue,
+        endPrice: endValue,
       );
 
   /// Query list of products by category, budget, and selected tab
   List<Product> queryProducts(List<Product> products, String interestName) {
     return products
-        .where((product) => product.category == interestName)
         .where((product) =>
-            (product.price >= startValue) && (product.price <= endValue))
+            (product.category1 == interestName) ||
+            (product.category2 == interestName) ||
+            (product.category3 == interestName) ||
+            (product.category4 == interestName) ||
+            (product.category5 == interestName))
         .where((product) =>
             (product.event == specialEventsNames[selectedTab]) ||
-            (product.event == "any"))
+            (product.event == "Any"))
         .toList();
   }
 

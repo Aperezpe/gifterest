@@ -34,15 +34,15 @@ class ClickableProduct extends StatelessWidget {
                   children: [
                     Text(
                       product.name,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                     Text(
-                      product.brand,
-                      style: TextStyle(fontSize: 16),
+                      product.distributor,
+                      style: TextStyle(fontSize: 14),
                     ),
                     Text(
                       "\$${product.price}",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ],
                 ),
