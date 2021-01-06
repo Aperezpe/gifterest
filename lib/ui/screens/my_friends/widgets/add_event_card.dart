@@ -1,8 +1,6 @@
-import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/date_picker.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/input_dropdown.dart';
 import '../../../style/fontStyle.dart';
 
 import 'package:flutter/material.dart';
@@ -10,44 +8,37 @@ import 'package:flutter/material.dart';
 import 'dropdown_list.dart';
 
 class AddEventCard extends StatefulWidget {
-  AddEventCard({
-    @required this.index,
-    @required this.events,
-    @required this.model,
-    @required this.specialEvent,
-  });
   final int index;
-  final List<Event> events;
+  final List<String> events;
   final SetSpecialEventModel model;
   final SpecialEvent specialEvent;
+
+  const AddEventCard({
+    Key key,
+    this.index,
+    this.events,
+    this.model,
+    this.specialEvent,
+  }) : super(key: key);
 
   @override
   _AddEventCardState createState() => _AddEventCardState();
 }
 
 class _AddEventCardState extends State<AddEventCard> {
-  // int _eventDropdownValue = 0;
+  int _eventDropdownValue;
   DateTime _specialDate;
-  bool _isConcurrent = false;
+  bool _isConcurrent;
 
-  SetSpecialEventModel get _model => widget.model;
-  SpecialEvent get _specialEvent => widget.specialEvent;
   int get eventNumber => widget.index + 1;
 
   @override
   void initState() {
+    _eventDropdownValue = widget.events.indexOf(widget.specialEvent.name);
+    _specialDate = widget.specialEvent.date ?? DateTime.now();
+    _isConcurrent = widget.specialEvent.isConcurrent ?? false;
     super.initState();
-    final start = DateTime.now();
-    _specialDate =
-        _specialEvent.date ?? DateTime(start.year, start.month, start.day);
-
-    // Initialize dropdown event with the given special event, if any.
-    _model.initializeEventsDropdownValues(widget.events, _specialEvent);
-
-    _isConcurrent = _specialEvent?.isConcurrent;
   }
-
-  void _deleteCard() => _model.deleteSpecialEvent(_specialEvent);
 
   @override
   Widget build(BuildContext context) {
@@ -59,23 +50,32 @@ class _AddEventCardState extends State<AddEventCard> {
           child: Column(
             children: [
               DropdownList(
-                dropdownValue: _model.eventDropdownValue,
+                dropdownValue: _eventDropdownValue,
+                labelText: "Event",
                 items: [
                   for (int i = 0; i < widget.events.length; i++)
                     DropdownMenuItem(
-                      child: Text(widget.events[i].name),
+                      child: Text(widget.events[i]),
                       value: i,
                     )
                 ],
-                onChanged: (value) => _model.onEventsDropdownChange(
-                    value, widget.events, _specialEvent),
+                onChanged: (value) => {
+                  setState(() => {_eventDropdownValue = value}),
+                  widget.model.updateSpecialEvent(
+                    widget.index,
+                    name: widget.events[value],
+                  )
+                },
               ),
               DatePicker(
-                labelText: 'Special Date',
+                labelText: 'Date',
                 selectedDate: _specialDate,
-                selectDate: (date) {
-                  setState(() => _specialDate = date);
-                  _model.updateSpecialEventDate(_specialEvent.id, date);
+                selectDate: (date) => {
+                  setState(() => _specialDate = date),
+                  widget.model.updateSpecialEvent(
+                    widget.index,
+                    date: _specialDate,
+                  ),
                 },
               ),
               Row(
@@ -94,12 +94,12 @@ class _AddEventCardState extends State<AddEventCard> {
                       height: 42.0,
                       child: Switch(
                         value: _isConcurrent ?? false,
-                        onChanged: (value) {
-                          setState(() => _isConcurrent = value);
-                          _model.updateSpecialEventConcurrent(
-                            _specialEvent.id,
-                            value,
-                          );
+                        onChanged: (value) => {
+                          setState(() => _isConcurrent = value),
+                          widget.model.updateSpecialEvent(
+                            widget.index,
+                            isConcurrent: _isConcurrent,
+                          ),
                         },
                         activeColor: Colors.greenAccent,
                         activeTrackColor: Colors.lightGreenAccent[400],
@@ -136,7 +136,10 @@ class _AddEventCardState extends State<AddEventCard> {
                 Icons.delete,
                 color: Colors.red,
               ),
-              onPressed: _deleteCard,
+              onPressed: () => {
+                widget.model
+                    .deleteSpecialEvent(widget.index, widget.specialEvent),
+              },
             ),
           ),
         ],

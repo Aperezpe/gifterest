@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'models/friend.dart';
 import 'models/set_special_event_model.dart';
 
-class SetSpecialEvent extends StatefulWidget {
+class SetSpecialEvent extends StatelessWidget {
   SetSpecialEvent({@required this.model});
   final SetSpecialEventModel model;
 
@@ -42,16 +42,11 @@ class SetSpecialEvent extends StatefulWidget {
     );
   }
 
-  @override
-  _SetSpecialEventState createState() => _SetSpecialEventState();
-}
-
-class _SetSpecialEventState extends State<SetSpecialEvent> {
-  SetSpecialEventModel get _model => widget.model;
+  SetSpecialEventModel get _model => model;
   Friend get _friend => _model.friend;
   bool get _isNewFriend => _model.isNewFriend;
 
-  void _onSave() async {
+  void _onSave(BuildContext context) async {
     try {
       await _model.onSave();
       Navigator.popUntil(context, (route) => route.isFirst);
@@ -63,22 +58,16 @@ class _SetSpecialEventState extends State<SetSpecialEvent> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    // _model.initializeFriendSpecialEvents();
-  }
-
-  // Return [Add] or [Save, Add] if is New Friend or Edit Friend respectively
-  List<Widget> _buildActions(List<Event> events) {
+  // Return [Add] or [Save, Add] actions if is New Friend or
+  // Edit Friend respectively
+  List<Widget> _buildActions(List<String> events, BuildContext context) {
     final actions = [
       FlatButton(
         child: Text(
           'Save',
           style: TextStyle(fontSize: 18, color: Colors.white),
         ),
-        onPressed: _onSave,
+        onPressed: () => _onSave(context),
       ),
       FlatButton(
         child: Text(
@@ -92,57 +81,55 @@ class _SetSpecialEventState extends State<SetSpecialEvent> {
     return _isNewFriend ? [actions[1]] : actions;
   }
 
-  Widget _buildContent(List<Event> events) {
-    return SingleChildScrollView(
+  Widget _buildContent(List<String> events) {
+    final specialEvents = _model.friendSpecialEvents;
+    return ListView(
       padding: EdgeInsets.only(bottom: 80),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _model.friendSpecialEvents
-            .map(
-              (specialEvent) => AddEventCard(
-                index: _model.friendSpecialEvents.indexOf(specialEvent),
-                events: events,
-                model: _model,
-                specialEvent: specialEvent,
-              ),
-            )
-            .toList(),
-      ),
+      children: [
+        for (var specialEvent in specialEvents)
+          AddEventCard(
+            key: ValueKey(specialEvent.id),
+            index: _model.friendSpecialEvents.indexOf(specialEvent),
+            events: events,
+            model: _model,
+            specialEvent: specialEvent,
+          ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Event>>(
-        stream: _model.database.eventsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final events = snapshot.data;
-            return Scaffold(
-              appBar: AppBar(
-                elevation: 2.0,
-                title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
-                actions: _buildActions(events),
-              ),
-              body: _buildContent(events),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              floatingActionButton: BottomButton(
-                onPressed: _model.isEmpty
-                    ? null
-                    : () => _model.goToInterestsPage(context),
-                color: Colors.pink,
-                text: _isNewFriend
-                    ? "Add Interests 😍"
-                    : 'Edit ${_friend.name}\'s Interests 😍',
-                textColor: Colors.white,
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Something went wrong"));
-          }
-          return CircularProgressIndicator();
-        });
+      stream: _model.database.eventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final events = snapshot.data.map((e) => e.name).toList();
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 2.0,
+              title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
+              actions: _buildActions(events, context),
+            ),
+            body: _buildContent(events),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: BottomButton(
+              onPressed: _model.isEmpty
+                  ? null
+                  : () => _model.goToInterestsPage(context),
+              color: Colors.pink,
+              text: _isNewFriend
+                  ? "Add Interests 😍"
+                  : 'Edit ${_friend.name}\'s Interests 😍',
+              textColor: Colors.white,
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Something went wrong"));
+        }
+        return CircularProgressIndicator();
+      },
+    );
   }
 }

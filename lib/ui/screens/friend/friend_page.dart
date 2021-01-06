@@ -119,7 +119,9 @@ class FriendPage extends StatelessWidget {
                 ),
               ]);
           }
-          return Column(children: content);
+          return Center(
+            child: Column(children: content),
+          );
         }
         if (snapshot.hasError) {
           return Center(child: Text("An error occurred"));

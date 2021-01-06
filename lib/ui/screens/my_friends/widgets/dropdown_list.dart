@@ -4,11 +4,13 @@ class DropdownList extends StatefulWidget {
   DropdownList({
     @required this.onChanged,
     @required this.items,
-    final this.dropdownValue = 0,
+    this.labelText,
+    this.dropdownValue = 0,
   });
   final ValueChanged<int> onChanged;
   final dynamic items;
   final int dropdownValue;
+  final String labelText;
 
   @override
   _DropdownListState createState() => _DropdownListState();
@@ -29,7 +31,7 @@ class _DropdownListState extends State<DropdownList> {
             contentPadding: EdgeInsets.zero,
             fillColor: Colors.white,
             filled: true,
-            labelText: 'Occupation',
+            labelText: widget.labelText,
           ),
         ),
       ],
