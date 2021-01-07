@@ -5,6 +5,7 @@ import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'friend.dart';
 
@@ -19,6 +20,7 @@ class SetFriendModel extends ChangeNotifier {
   int age = 0;
   bool isNewFriend;
   int genderDropdownValue = 0;
+  List<int> ageRange;
 
   SetFriendModel({
     @required this.uid,
@@ -28,6 +30,8 @@ class SetFriendModel extends ChangeNotifier {
     this.friend,
   }) {
     isNewFriend = friend == null ? true : false;
+    initializeGenderDropdownValue();
+    initializeAgeRange();
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered
@@ -46,26 +50,56 @@ class SetFriendModel extends ChangeNotifier {
         imageUrl:
             'https://static.vecteezy.com/system/resources/previews/000/556/895/original/vector-cute-cartoon-baby-monkey.jpg',
         gender: genders[genderDropdownValue].type,
-        interests: isNewFriend ? [] : friend.interests,
+        interests: (isNewFriend || ageRangeChanged() || genderChanged())
+            ? []
+            : friend.interests,
       );
 
   Future<void> onSave() async {
     try {
+      if (ageRangeChanged() || genderChanged())
+        throw PlatformException(
+          code: "01",
+          message: "User has to re-select interests",
+        );
       await database.setFriend(_newFriend);
     } catch (e) {
       rethrow;
     }
   }
 
-  void initializeGenderDropdownValue(
-      List<Gender> genders, String friendGender) {
+  void initializeGenderDropdownValue() {
     if (isNewFriend) return;
-    for (int i = 0; i < genders.length; i++) {
-      if (genders[i].type == friend.gender) {
-        genderDropdownValue = i;
-        break;
-      }
+    final genderTypes = genders.map((gender) => gender.type).toList();
+    genderDropdownValue = genderTypes.indexOf(friend.gender);
+  }
+
+  void initializeAgeRange() {
+    if (isNewFriend) return;
+    if (friend.age >= 0 && friend.age <= 2) {
+      ageRange = [0, 2];
+    } else if (friend.age >= 3 && friend.age <= 11) {
+      ageRange = [3, 11];
+    } else {
+      ageRange = [12, 100];
     }
+  }
+
+  bool genderChanged() {
+    if (isNewFriend) return false;
+    if (genders[genderDropdownValue].type != friend.gender) {
+      return true;
+    }
+    return false;
+  }
+
+  bool ageRangeChanged() {
+    if (isNewFriend) return false;
+    if (friend.age != age) {
+      if (age >= ageRange[0] && age <= ageRange[1]) return false;
+      return true;
+    }
+    return false;
   }
 
   void onGenderDropdownChange(int value) => genderDropdownValue = value;

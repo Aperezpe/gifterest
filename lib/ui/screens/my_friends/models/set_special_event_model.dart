@@ -4,6 +4,7 @@ import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'friend.dart';
 
@@ -60,6 +61,9 @@ class SetSpecialEventModel extends ChangeNotifier {
 
   Future<void> onSave() async {
     try {
+      if (friend.interests.isEmpty)
+        throw PlatformException(
+            code: "01", message: "User has to re-select interest");
       await database.setFriend(friend);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, friend);

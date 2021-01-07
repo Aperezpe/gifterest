@@ -109,7 +109,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
   /// Initialize values on form if editing friend
   @override
   void initState() {
-    _model.initializeGenderDropdownValue(_model.genders, _model.friend?.gender);
     super.initState();
     _name = _friend?.name;
     _age = _friend?.age;
