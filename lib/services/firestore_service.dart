@@ -1,3 +1,4 @@
+import 'package:bonobo/ui/screens/friend/models/friend_page_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,7 +38,7 @@ class FirestoreService {
 
     //TODO: Make sure that friend.gender is NEVER null
     query = query.where('gender', whereIn: [
-      "any",
+      "",
       friend.gender.capitalize(),
       friend.gender.unCapitalize()
     ]);
@@ -48,28 +49,32 @@ class FirestoreService {
         .toList());
   }
 
+  // Query product stream by event OR categories
   Stream<List<T>> queryProductsStream<T>({
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
     @required Friend friend,
     @required int startPrice,
     @required int endPrice,
+    EventType eventType,
   }) {
     CollectionReference ref = Firestore.instance.collection(path);
     Query query;
 
-    if (friend.age < 3) {
-      query = ref.where('age_range', arrayContains: 0);
-    } else if (friend.age >= 3 && friend.age < 12) {
-      query = ref.where('age_range', arrayContains: 3);
-    } else {
-      query = ref.where('age_range', arrayContains: 100);
+    switch (eventType) {
+      // TODO: possibly create a girl baby shower and boy baby shower
+      // because this will show both since friend.gender is not relevant
+      case EventType.babyShower:
+        query = ref.where('event', isEqualTo: "Babyshower");
+        break;
+      case EventType.anniversary:
+        query = ref
+            .where('event', isEqualTo: "Anniversary")
+            .where('gender', whereIn: [friend.gender, ""]);
+        break;
+      default:
+        query = ref.where('categories', arrayContainsAny: friend.interests);
     }
-
-    query = query
-        .where('price', isGreaterThanOrEqualTo: startPrice)
-        .where('price', isLessThanOrEqualTo: endPrice);
-
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.documents
         .map((snapshot) => builder(snapshot.data, snapshot.documentID))

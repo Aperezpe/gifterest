@@ -79,52 +79,27 @@ class FriendPage extends StatelessWidget {
       stream: model.queryProductsStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<Widget> content = [];
-          friend.interests.sort();
-          for (var interestName in friend.interests) {
-            List<Product> products =
-                model.queryProducts(snapshot.data, interestName);
-            if (products.isEmpty)
-              content.addAll([
-                Container(
-                  padding: EdgeInsets.only(left: 18),
-                  child: Text(interestName, style: h3),
-                ),
-                Container(
-                  padding: EdgeInsets.all(15),
-                  child: Text("Oops! nothing found"),
-                ),
-              ]);
-            else
-              content.addAll([
-                Padding(
-                  padding: EdgeInsets.only(left: 18),
-                  child: Text(interestName, style: h3),
-                ),
-                GridView.builder(
-                  padding: EdgeInsets.all(15.0),
-                  itemCount: products.length,
-                  shrinkWrap: true,
-                  primary: false,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                  ),
-                  itemBuilder: (context, index) {
-                    return ClickableProduct(
-                      onTap: () {},
-                      product: products[index],
-                    );
-                  },
-                ),
-              ]);
-          }
-          return Center(
-            child: Column(children: content),
+          List<Product> products = model.queryProducts(
+              snapshot.data, model.specialEventsNames[model.selectedTab]);
+          return GridView.builder(
+            padding: EdgeInsets.all(15.0),
+            itemCount: products.length,
+            shrinkWrap: true,
+            primary: false,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1,
+            ),
+            itemBuilder: (context, index) {
+              return ClickableProduct(
+                onTap: () {},
+                product: products[index],
+              );
+            },
           );
         }
         if (snapshot.hasError) {
-          return Center(child: Text("An error occurred"));
+          return Center(child: Text(snapshot.error.toString()));
         }
         return Center(child: CircularProgressIndicator());
       },

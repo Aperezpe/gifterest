@@ -21,6 +21,7 @@ class FriendPageModel extends ChangeNotifier {
   final FirestoreDatabase database;
   final Friend friend;
   final List<SpecialEvent> friendSpecialEvents;
+  EventType eventType = EventType.any;
 
   String profileImageUrl =
       'https://static.vecteezy.com/system/resources/previews/000/556/895/original/vector-cute-cartoon-baby-monkey.jpg';
@@ -36,21 +37,26 @@ class FriendPageModel extends ChangeNotifier {
         friend: friend,
         startPrice: startValue,
         endPrice: endValue,
+        eventType: eventType,
       );
 
-  /// Query list of products by category, budget, and selected tab
-  List<Product> queryProducts(List<Product> products, String interestName) {
-    return products
-        .where((product) =>
-            (product.category1 == interestName) ||
-            (product.category2 == interestName) ||
-            (product.category3 == interestName) ||
-            (product.category4 == interestName) ||
-            (product.category5 == interestName))
-        .where((product) =>
-            (product.event == specialEventsNames[selectedTab]) ||
-            (product.event == "Any"))
-        .toList();
+  bool inAgeRange(Product product) =>
+      friend.age >= product.ageRange[0] && friend.age <= product.ageRange[1];
+  bool correctGender(Product product) =>
+      (product.gender == friend.gender) || (product.gender == "");
+  bool inBudget(Product product) =>
+      product.price >= startValue && product.price <= endValue;
+
+  /// Query list of products by ageRange, gender, and budget OR just budget
+  List<Product> queryProducts(List<Product> products, String eventName) {
+    if (eventType == EventType.any)
+      return products
+          .where(inAgeRange)
+          .where(correctGender)
+          .where(inBudget)
+          .toList();
+
+    return products.where(inBudget).toList();
   }
 
   void updateBudget(RangeValues values) {
@@ -60,6 +66,24 @@ class FriendPageModel extends ChangeNotifier {
 
   void updateSelectedTab(int value) {
     selectedTab = value;
+
+    switch (specialEventsNames[value]) {
+      case "Babyshower":
+        eventType = EventType.babyShower;
+        break;
+      case "Anniversary":
+        eventType = EventType.anniversary;
+        break;
+      case "All":
+        eventType = EventType.any;
+        break;
+    }
     notifyListeners();
   }
+}
+
+enum EventType {
+  babyShower,
+  anniversary,
+  any,
 }

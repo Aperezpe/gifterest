@@ -4,6 +4,7 @@ import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/friend/models/friend_page_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
@@ -53,12 +54,14 @@ class FirestoreDatabase implements Database {
     @required Friend friend,
     @required int startPrice,
     @required int endPrice,
+    EventType eventType,
   }) =>
       _service.queryProductsStream(
         path: APIPath.products(),
         friend: friend,
         startPrice: startPrice,
         endPrice: endPrice,
+        eventType: eventType,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 
