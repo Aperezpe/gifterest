@@ -74,6 +74,7 @@ class FirestoreService {
         break;
       default:
         query = ref.where('categories', arrayContainsAny: friend.interests);
+        break;
     }
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.documents

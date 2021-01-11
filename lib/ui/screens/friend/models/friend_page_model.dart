@@ -44,8 +44,10 @@ class FriendPageModel extends ChangeNotifier {
       friend.age >= product.ageRange[0] && friend.age <= product.ageRange[1];
   bool correctGender(Product product) =>
       (product.gender == friend.gender) || (product.gender == "");
-  bool inBudget(Product product) =>
-      product.price >= startValue && product.price <= endValue;
+  bool inBudget(Product product) {
+    if (endValue >= 100) return true;
+    return product.price >= startValue && product.price <= endValue;
+  }
 
   /// Query list of products by ageRange, gender, and budget OR just budget
   List<Product> queryProducts(List<Product> products, String eventName) {
@@ -74,7 +76,7 @@ class FriendPageModel extends ChangeNotifier {
       case "Anniversary":
         eventType = EventType.anniversary;
         break;
-      case "All":
+      default:
         eventType = EventType.any;
         break;
     }
