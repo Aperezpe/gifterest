@@ -1,5 +1,6 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
@@ -22,15 +23,14 @@ class LandingPage extends StatelessWidget {
               create: (_) => FirestoreDatabase(uid: user.uid),
               child: Consumer<Database>(
                 builder: (context, database, _) {
+                  print("User: ${user.uid} is signing in");
                   return _buildMyFriendsPage(database, auth);
                 },
               ),
             );
           }
         } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return LoadingScreen();
         }
       },
     );
@@ -53,7 +53,7 @@ class LandingPage extends StatelessWidget {
             child: Text("Something went wrong!"),
           );
         }
-        return CircularProgressIndicator();
+        return LoadingScreen();
       },
     );
   }

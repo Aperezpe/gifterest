@@ -1,6 +1,7 @@
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
+import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -70,6 +71,8 @@ class _SignInPageState extends State<SignInPage> {
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(e);
+      } else {
+        _showSignInError(e);
       }
     }
   }
@@ -99,7 +102,7 @@ class _SignInPageState extends State<SignInPage> {
             _buildHeader(),
             SizedBox(height: 15),
             _buildEmailForm(),
-            SizedBox(height: 30),
+            SizedBox(height: 15),
             _buildSignInServices(),
           ],
         ),
@@ -115,14 +118,20 @@ class _SignInPageState extends State<SignInPage> {
       );
     }
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
-          color: Colors.black,
-          height: 200,
+          padding: EdgeInsets.only(top: 35),
+          height: 150,
+          child: Image.asset("assets/bonobo_logo.png"),
         ),
         Container(
-          color: Colors.black54,
+          alignment: Alignment.center,
           height: 80,
+          child: Text(
+            "BONOBO",
+            style: TextStyle(fontSize: 32),
+          ),
         ),
       ],
     );
@@ -216,7 +225,10 @@ class _SignInPageState extends State<SignInPage> {
         FlatButton(
           child: Text(
             model.secondaryText,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(
+                fontSize: 16,
+                color: Colors.blue.shade700,
+                fontWeight: FontWeight.w600),
           ),
           onPressed: model.isLoading ? null : _toogleFormType,
         ),
@@ -229,7 +241,7 @@ class _SignInPageState extends State<SignInPage> {
       children: <Widget>[
         Center(
           child: Text(
-            "Sign in with:",
+            model.socialMediaText,
             style: TextStyle(fontSize: 16.0),
           ),
         ),
@@ -242,15 +254,18 @@ class _SignInPageState extends State<SignInPage> {
               color: Colors.white,
               textColor: Colors.blue,
               onPressed: model.isLoading ? null : _signInWithGoogle,
+              imagePath: 'assets/google_logo.jpg',
             ),
             CircleImageButton(
               text: "A",
               color: Colors.grey[400],
               textColor: Colors.white,
               onPressed: null,
+              imagePath: 'assets/apple_logo.jpg',
             ),
           ],
         ),
+        SizedBox(height: 25),
       ],
     );
   }

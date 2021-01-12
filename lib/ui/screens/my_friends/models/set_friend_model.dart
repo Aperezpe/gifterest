@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
@@ -48,26 +49,36 @@ class SetFriendModel extends ChangeNotifier {
     return friend.imageUrl;
   }
 
-  Future pickImage() async {
-    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      File cropped = await ImageCropper.cropImage(
-        sourcePath: image.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 100,
-        maxWidth: 700,
-        maxHeight: 700,
-        compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(
-          toolbarColor: Colors.deepOrange,
-          toolbarTitle: 'Crop It',
-          statusBarColor: Colors.deepOrange.shade900,
-          backgroundColor: Colors.white,
-        ),
-      );
+  Future pickImage(BuildContext context) async {
+    try {
+      File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        File cropped = await ImageCropper.cropImage(
+          sourcePath: image.path,
+          aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+          compressQuality: 100,
+          maxWidth: 700,
+          maxHeight: 700,
+          compressFormat: ImageCompressFormat.jpg,
+          androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepOrange,
+            toolbarTitle: 'Crop It',
+            statusBarColor: Colors.deepOrange.shade900,
+            backgroundColor: Colors.white,
+          ),
+        );
 
-      selectedImage = cropped ?? selectedImage;
-      notifyListeners();
+        selectedImage = cropped ?? selectedImage;
+
+        notifyListeners();
+      }
+    } catch (e) {
+      PlatformAlertDialog(
+        content: e.toString(),
+        title: "Hello",
+        defaultAtionText: "Ok",
+      ).show(context);
+      // print(e.toString());
     }
   }
 

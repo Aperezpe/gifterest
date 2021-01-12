@@ -55,8 +55,14 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
 
   String get secondaryText {
     return formType == EmailSignInFormType.signIn
-        ? 'Need an account? Register'
-        : 'Have an account? Sing in';
+        ? 'Need an account? Sign Up'
+        : 'Have an account? Sing In';
+  }
+
+  String get socialMediaText {
+    return formType == EmailSignInFormType.signIn
+        ? 'Sign In with:'
+        : 'Sing Up with:';
   }
 
   bool get canSubmit =>

@@ -144,7 +144,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    _buildProfileImage(),
+                    _buildProfileImage(context),
                     ..._buildFormFields()
                   ],
                 ),
@@ -156,7 +156,13 @@ class _SetFriendFormState extends State<SetFriendForm> {
     }
   }
 
-  Center _buildProfileImage() {
+  ImageProvider<Object> _buildImageWidget(String path) {
+    if (_model.selectedImage != null) return AssetImage(path);
+
+    return NetworkImage(path);
+  }
+
+  Center _buildProfileImage(BuildContext context) {
     return Center(
       child: InkWell(
         child: FutureBuilder<String>(
@@ -169,9 +175,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                         backgroundColor: Colors.pink,
                         child: CircleAvatar(
                           radius: 50,
-                          backgroundImage: _model.selectedImage != null
-                              ? AssetImage(snapshot.data)
-                              : NetworkImage(snapshot.data),
+                          backgroundImage: _buildImageWidget(snapshot.data),
                         ),
                       )
                     : Container(height: 110);
@@ -180,7 +184,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
               }
               return Container();
             }),
-        onTap: _model.pickImage,
+        onTap: () => _model.pickImage(context),
       ),
     );
   }
