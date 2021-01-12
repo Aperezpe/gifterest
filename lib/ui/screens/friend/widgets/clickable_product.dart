@@ -14,6 +14,7 @@ class ClickableProduct extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 10,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: InkWell(
         onTap: onTap,
         child: Column(

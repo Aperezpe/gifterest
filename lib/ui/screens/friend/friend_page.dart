@@ -86,7 +86,7 @@ class FriendPage extends StatelessWidget {
           List<Product> products = model.queryProducts(
               snapshot.data, model.specialEventsNames[model.selectedTab]);
           return GridView.builder(
-            padding: EdgeInsets.all(15.0),
+            padding: EdgeInsets.all(8.0),
             itemCount: products.length,
             shrinkWrap: true,
             primary: false,

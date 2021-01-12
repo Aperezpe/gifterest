@@ -73,7 +73,7 @@ class MyFriendsPage extends StatelessWidget {
             onPressed: auth.signOut,
             child: Text(
               "Sign Out",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           )
         ],
