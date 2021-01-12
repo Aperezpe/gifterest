@@ -1,6 +1,5 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/circle_image_button.dart';
-import 'package:bonobo/ui/common_widgets/grid_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
@@ -18,7 +17,6 @@ import 'models/friend_page_model.dart';
 class FriendPage extends StatelessWidget {
   FriendPage({@required this.model});
   final FriendPageModel model;
-  final ScrollController _scrollController = ScrollController();
 
   static Future<void> show(
     BuildContext context, {
@@ -57,19 +55,22 @@ class FriendPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(top: 15, bottom: 15),
-                child: Center(
+              Center(
+                child: Container(
+                  padding: EdgeInsets.only(top: 15, bottom: 15),
                   child: CircleAvatar(
-                    radius: 48,
-                    backgroundImage: NetworkImage(model.profileImageUrl),
+                    radius: 55,
+                    backgroundColor: Colors.pink,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(friend.imageUrl),
+                    ),
                   ),
                 ),
               ),
               BudgetSlider(model: model),
               Tabs(model: model),
-              for (var interest in model.friend.interests)
-                ..._buildRecommendations(interest),
+              _buildRecommendations(),
             ],
           ),
         ),
@@ -77,38 +78,35 @@ class FriendPage extends StatelessWidget {
     );
   }
 
-  _buildRecommendations(interest) {
-    return [
-      Padding(
-        padding: EdgeInsets.only(left: 18),
-        child: Text(interest, style: h3),
-      ),
-      StreamBuilder<List<Product>>(
-        stream: model.productsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridItemBuilder<Product>(
-                padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                primary: false,
-                snapshot: snapshot,
-                itemBuilder: (context, product) =>
-                    _buildPrductCard(context, product));
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text("An error occurred"));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    ];
-  }
-
-  _buildPrductCard(BuildContext context, Product product) {
-    return ClickableProduct(
-      onTap: () {},
-      product: product,
+  _buildRecommendations() {
+    return StreamBuilder<List<Product>>(
+      stream: model.queryProductsStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Product> products = model.queryProducts(
+              snapshot.data, model.specialEventsNames[model.selectedTab]);
+          return GridView.builder(
+            padding: EdgeInsets.all(15.0),
+            itemCount: products.length,
+            shrinkWrap: true,
+            primary: false,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1,
+            ),
+            itemBuilder: (context, index) {
+              return ClickableProduct(
+                onTap: () {},
+                product: products[index],
+              );
+            },
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text(snapshot.error.toString()));
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

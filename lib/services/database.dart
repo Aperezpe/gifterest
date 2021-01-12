@@ -1,8 +1,10 @@
 import 'package:bonobo/services/api_path.dart';
 import 'package:bonobo/services/firestore_service.dart';
 import 'package:bonobo/ui/models/event.dart';
+import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/friend/models/friend_page_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +15,15 @@ abstract class Database {
   Future<void> deleteFriend(Friend friend);
   Stream<List<Friend>> friendsStream();
   Stream<List<Interest>> interestStream();
+  Stream<List<Product>> productsStream();
+  Stream<List<Product>> queryProductsStream({
+    @required Friend friend,
+    @required int startPrice,
+    @required int endPrice,
+  });
+  Stream<List<Event>> eventsStream();
+  Stream<List<Interest>> queryInterestsStream(Friend friend);
+  Stream<List<Gender>> genderStream();
 
   Stream<List<SpecialEvent>> specialEventsStream();
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend);
@@ -32,9 +43,36 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
 
+  Stream<List<Interest>> queryInterestsStream(Friend friend) =>
+      _service.queryInterestsStream(
+        path: APIPath.interests(),
+        friend: friend,
+        builder: (data, documentId) => Interest.fromMap(data, documentId),
+      );
+
+  Stream<List<Product>> queryProductsStream({
+    @required Friend friend,
+    @required int startPrice,
+    @required int endPrice,
+    EventType eventType,
+  }) =>
+      _service.queryProductsStream(
+        path: APIPath.products(),
+        friend: friend,
+        startPrice: startPrice,
+        endPrice: endPrice,
+        eventType: eventType,
+        builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
   Stream<List<Product>> productsStream() => _service.collectionStream(
         path: APIPath.products(),
         builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
+  Stream<List<Gender>> genderStream() => _service.collectionStream(
+        path: APIPath.genders(),
+        builder: (data, documentId) => Gender.fromMap(data, documentId),
       );
 
   Stream<List<Event>> eventsStream() => _service.collectionStream(

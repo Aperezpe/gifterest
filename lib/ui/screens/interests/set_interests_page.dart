@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
-import 'package:bonobo/ui/common_widgets/grid_item_builder.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +31,7 @@ class SetInterestsPage extends StatelessWidget {
     @required List<SpecialEvent> friendSpecialEvents,
     @required bool isNewFriend,
     @required List<SpecialEvent> onDeleteSpecialEvents,
+    File selectedImage,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -38,6 +42,7 @@ class SetInterestsPage extends StatelessWidget {
             isNewFriend: isNewFriend,
             friendSpecialEvents: friendSpecialEvents,
             onDeleteSpecialEvents: onDeleteSpecialEvents,
+            selectedImage: selectedImage,
           ),
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
@@ -63,6 +68,8 @@ class SetInterestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Displays loading screen
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Interests"),
@@ -92,51 +99,43 @@ class SetInterestsPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return StreamBuilder<List<dynamic>>(
-      stream: model.interestStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return GridItemBuilder<dynamic>(
-            padding: EdgeInsets.fromLTRB(15, 15, 15, 80),
-            crossAxisCount: 2,
-            snapshot: snapshot,
-            filterFunction: _filterInterests,
-            childAspectRatio: 1.5,
-            itemBuilder: (context, interest) =>
-                _buildInterestCard(context, interest),
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("An error occurred"));
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+    if (model.firebaseStorage?.uploadTask != null) {
+      return StreamBuilder<StorageTaskEvent>(
+        stream: model.firebaseStorage.uploadTask.events,
+        builder: (context, snapshot) => LoadingScreen(),
+      );
+    } else {
+      return StreamBuilder<List<Interest>>(
+        stream: model.queryInterestsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            snapshot.data.sort((a, b) => a.name.compareTo(b.name));
+            return GridView.builder(
+              padding: EdgeInsets.fromLTRB(8, 8, 8, 80),
+              itemCount: snapshot.data.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1,
+              ),
+              itemBuilder: (context, index) {
+                return _buildInterestCard(context, snapshot.data[index]);
+              },
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text("An error occurred"));
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    }
   }
 
   _buildInterestCard(BuildContext context, Interest interest) {
     return ClickableInterest(
       interest: interest,
-      onTap: () => model.tapInterest(interest.name),
+      onTap: () => model.tapInterest(interest),
       color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
     );
-  }
-
-  _filterInterests(List<dynamic> interests) {
-    List<dynamic> filteredInterests = [];
-
-    for (var interest in interests) {
-      int fromAge = interest.ageRange[0];
-      int toAge = interest.ageRange[1];
-      bool isBetweenRange = fromAge <= friend.age && toAge >= friend.age;
-      bool isRightGender =
-          interest.gender == "any" || interest.gender == friend.gender;
-
-      if (isBetweenRange && isRightGender) {
-        filteredInterests.add(interest);
-      }
-    }
-
-    return filteredInterests;
   }
 }

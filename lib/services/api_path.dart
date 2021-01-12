@@ -1,11 +1,13 @@
 class APIPath {
   static String interests() => 'interests';
 
-  static String products() => 'Products';
+  static String products() => 'products';
 
   static String product(String productId) => 'products/$productId';
 
   static String events() => 'events';
+
+  static String genders() => 'genders';
 
   static String friend(
     String uid,

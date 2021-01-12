@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../../../services/storage.dart';
 
 import 'friend.dart';
 
@@ -14,60 +17,75 @@ class SetSpecialEventModel extends ChangeNotifier {
     @required this.database,
     @required this.friendSpecialEvents,
     @required this.isNewFriend,
+    this.selectedImage,
   }) {
     if (friendSpecialEvents == null) friendSpecialEvents = [];
     onDeleteSpecialEvents = [];
+    firebaseStorageService =
+        FirebaseStorageService(uid: database.uid, friend: friend);
   }
 
   final Friend friend;
   final FirestoreDatabase database;
-  // final List<SpecialEvent> allSpecialEvents;
   final bool isNewFriend;
+  final File selectedImage;
   List<SpecialEvent> friendSpecialEvents;
   List<SpecialEvent> onDeleteSpecialEvents;
+  FirebaseStorageService firebaseStorageService;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
 
-  void addSpecialEvent(List<Event> events) {
+  void addSpecialEvent(List<String> events) {
     friendSpecialEvents.add(SpecialEvent(
       id: documentUUID(),
-      name: events[0].name,
+      name: events[0],
       date: DateTime.now(),
+      friendId: friend.id,
     ));
-
     notifyListeners();
   }
 
   void updateSpecialEvent(
-    String eventId, {
+    int index, {
     String name,
     DateTime date,
     bool isConcurrent,
   }) {
-    friendSpecialEvents = friendSpecialEvents
-        .map(
-          (event) => event.id == eventId
-              ? SpecialEvent(
-                  id: event.id,
-                  name: name ?? event.name,
-                  date: date ?? event.date,
-                  isConcurrent: isConcurrent ?? event.isConcurrent,
-                )
-              : event,
-        )
-        .toList();
+    friendSpecialEvents[index] = SpecialEvent(
+        id: friendSpecialEvents[index].id,
+        name: name ?? friendSpecialEvents[index].name,
+        date: date ?? friendSpecialEvents[index].date,
+        isConcurrent: isConcurrent ?? friendSpecialEvents[index].isConcurrent);
 
     notifyListeners();
   }
 
-  void deleteSpecialEvent(SpecialEvent specialEvent) {
-    friendSpecialEvents.removeWhere((event) => event.id == specialEvent.id);
+  void deleteSpecialEvent(int index, SpecialEvent specialEvent) {
+    friendSpecialEvents.removeAt(index);
     onDeleteSpecialEvents.add(specialEvent);
+
     notifyListeners();
   }
 
   Future<void> onSave() async {
     try {
+      if (friend.interests.isEmpty)
+        throw PlatformException(
+          code: "01",
+          message: "User has to re-select interest",
+        );
+
+      if (selectedImage != null) {
+        firebaseStorageService.putFriendProfileImage(image: selectedImage);
+        notifyListeners();
+        await firebaseStorageService.uploadTask.onComplete;
+        friend.imageUrl =
+            await firebaseStorageService.getFriendProfileImageURL();
+      } else {
+        friend.imageUrl = friend.imageUrl ??
+            await firebaseStorageService.getDefaultProfileUrl();
+      }
+
       await database.setFriend(friend);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, friend);
@@ -88,15 +106,7 @@ class SetSpecialEventModel extends ChangeNotifier {
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
       onDeleteSpecialEvents: onDeleteSpecialEvents,
+      selectedImage: selectedImage,
     );
   }
-
-  void updateSpecialEventName(String eventId, String name) =>
-      updateSpecialEvent(eventId, name: name);
-
-  void updateSpecialEventDate(String eventId, DateTime date) =>
-      updateSpecialEvent(eventId, date: date);
-
-  void updateSpecialEventConcurrent(String eventId, bool isConcurrent) =>
-      updateSpecialEvent(eventId, isConcurrent: isConcurrent);
 }

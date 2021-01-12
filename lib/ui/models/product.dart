@@ -4,11 +4,12 @@ class Product {
   String id;
   String name;
   double price;
-  String ageRange;
-  String brand;
+  List<dynamic> ageRange;
+  String distributor;
   String event;
   String imageUrl;
-  String category;
+  List<dynamic> categories;
+  String itemUrl;
   String gender;
   String itemId;
 
@@ -18,9 +19,10 @@ class Product {
     @required this.price,
     @required this.event,
     @required this.ageRange,
-    @required this.brand,
+    @required this.distributor,
     @required this.imageUrl,
-    @required this.category,
+    @required this.itemUrl,
+    @required this.categories,
     @required this.gender,
     @required this.itemId,
   });
@@ -31,12 +33,13 @@ class Product {
     }
 
     String name = data['name'];
-    double price = data['price'];
-    String ageRange = data['age_range'];
-    String brand = data['brand'];
+    double price = data['price'] + .0;
+    List<dynamic> ageRange = data['age_range'];
+    String distributor = data['distributor'];
     String event = data['event'];
-    String category = data['category'];
+    List<dynamic> categories = data['categories'];
     String imageUrl = data['image_url'];
+    String itemUrl = data['item_url'];
     String gender = data['gender'];
     String itemId = data['item_id'];
 
@@ -46,9 +49,10 @@ class Product {
       price: price,
       event: event,
       imageUrl: imageUrl,
+      itemUrl: itemUrl,
       ageRange: ageRange,
-      brand: brand,
-      category: category,
+      distributor: distributor,
+      categories: categories,
       gender: gender,
       itemId: itemId,
     );
