@@ -44,7 +44,7 @@ class SetFriendModel extends ChangeNotifier {
 
   Future<String> getProfileImageURL() async {
     if (selectedImage != null) return selectedImage.path;
-    if (isNewFriend) return await firebaseStorage.loadDefaultProfileUrl();
+    if (isNewFriend) return await firebaseStorage.getDefaultProfileUrl();
     return friend.imageUrl;
   }
 
@@ -72,7 +72,7 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   Future<void> _uploadProfileImage() async {
-    firebaseStorage.uploadProfileImage(image: selectedImage);
+    firebaseStorage.putFriendProfileImage(image: selectedImage);
     notifyListeners();
     await firebaseStorage.uploadTask.onComplete;
   }
@@ -95,7 +95,7 @@ class SetFriendModel extends ChangeNotifier {
 
       if (selectedImage != null) {
         await _uploadProfileImage();
-        friend.imageUrl = await firebaseStorage.downloadProfileImageURL();
+        friend.imageUrl = await firebaseStorage.getFriendProfileImageURL();
       }
 
       final newFriend = _setFriend();

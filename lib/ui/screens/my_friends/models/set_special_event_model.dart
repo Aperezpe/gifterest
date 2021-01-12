@@ -76,14 +76,14 @@ class SetSpecialEventModel extends ChangeNotifier {
         );
 
       if (selectedImage != null) {
-        firebaseStorageService.uploadProfileImage(image: selectedImage);
+        firebaseStorageService.putFriendProfileImage(image: selectedImage);
         notifyListeners();
         await firebaseStorageService.uploadTask.onComplete;
         friend.imageUrl =
-            await firebaseStorageService.downloadProfileImageURL();
+            await firebaseStorageService.getFriendProfileImageURL();
       } else {
         friend.imageUrl = friend.imageUrl ??
-            await firebaseStorageService.loadDefaultProfileUrl();
+            await firebaseStorageService.getDefaultProfileUrl();
       }
 
       await database.setFriend(friend);

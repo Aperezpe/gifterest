@@ -7,9 +7,10 @@ import 'storage_path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 abstract class Storage {
-  void uploadProfileImage();
-  Future<String> downloadProfileImageURL();
-  Future<String> loadDefaultProfileUrl();
+  void putFriendProfileImage();
+  Future<String> getFriendProfileImageURL();
+  Future<String> getDefaultProfileUrl();
+  Future<void> deleteFriendProfileImage();
 }
 
 class FirebaseStorageService implements Storage {
@@ -23,27 +24,26 @@ class FirebaseStorageService implements Storage {
     _storage = FirebaseStorage(storageBucket: storageBucket);
   }
 
-  void uploadProfileImage({@required File image}) => uploadTask = _storage
+  void putFriendProfileImage({@required File image}) => uploadTask = _storage
       .ref()
-      .child(StoragePath.profileImage(uid, friend))
+      .child(StoragePath.friendProfileImage(uid, friend))
       .putFile(image);
 
-  Future<String> downloadProfileImageURL() async => await _storage
+  Future<String> getFriendProfileImageURL() async => await _storage
       .ref()
-      .child(StoragePath.profileImage(uid, friend))
+      .child(StoragePath.friendProfileImage(uid, friend))
       .getDownloadURL();
 
-  Future<String> loadDefaultProfileUrl() async => await _storage
+  Future<String> getDefaultProfileUrl() async => await _storage
       .ref()
       .child(StoragePath.defaultProfileImage())
       .getDownloadURL();
 
-  void deleteFriendDirectory({Friend friend}) async {
-    final ref = _storage.ref();
-    print(StoragePath.profileImage(uid, friend));
-    final child = ref.child(StoragePath.profileImage(uid, friend));
-
-    // await _storage.ref().child(StoragePath.profileImage(uid, friend)).delete();
-    print("Todo bien?");
+  Future<void> deleteFriendProfileImage() async {
+    if (!friend.imageUrl.contains("placeholder")) {
+      final ref =
+          await _storage.getReferenceFromUrl(await getFriendProfileImageURL());
+      ref.delete();
+    }
   }
 }
