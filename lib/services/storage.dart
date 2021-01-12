@@ -8,6 +8,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 abstract class Storage {
   void uploadProfileImage();
+  Future<String> downloadProfileImageURL();
+  Future<String> loadDefaultProfileUrl();
 }
 
 class FirebaseStorageService implements Storage {
@@ -17,11 +19,8 @@ class FirebaseStorageService implements Storage {
   final String uid;
   final Friend friend;
 
-  // String profileImagePath;
-
   FirebaseStorageService({@required this.uid, @required this.friend}) {
     _storage = FirebaseStorage(storageBucket: storageBucket);
-    // profileImagePath = StoragePath.profileImage(uid, friend);
   }
 
   void uploadProfileImage({@required File image}) => uploadTask = _storage
@@ -33,4 +32,18 @@ class FirebaseStorageService implements Storage {
       .ref()
       .child(StoragePath.profileImage(uid, friend))
       .getDownloadURL();
+
+  Future<String> loadDefaultProfileUrl() async => await _storage
+      .ref()
+      .child(StoragePath.defaultProfileImage())
+      .getDownloadURL();
+
+  void deleteFriendDirectory({Friend friend}) async {
+    final ref = _storage.ref();
+    print(StoragePath.profileImage(uid, friend));
+    final child = ref.child(StoragePath.profileImage(uid, friend));
+
+    // await _storage.ref().child(StoragePath.profileImage(uid, friend)).delete();
+    print("Todo bien?");
+  }
 }

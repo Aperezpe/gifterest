@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
@@ -21,11 +22,8 @@ class FriendPageModel extends ChangeNotifier {
   final FirestoreDatabase database;
   final Friend friend;
   final List<SpecialEvent> friendSpecialEvents;
+  FirebaseStorageService firebaseStorage;
   EventType eventType = EventType.any;
-
-  String profileImageUrl =
-      'https://static.vecteezy.com/system/resources/previews/000/556/895/original/vector-cute-cartoon-baby-monkey.jpg';
-
   RangeValues currentRangeValues = RangeValues(0, 100);
   int get startValue => currentRangeValues.start.round();
   int get endValue => currentRangeValues.end.round();

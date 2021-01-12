@@ -57,9 +57,15 @@ class SetInterestsPageModel extends ChangeNotifier {
 
   Future<void> submit() async {
     friend.interests = _selectedInterests;
-
-    if (selectedImage != null)
+    if (selectedImage != null) {
       firebaseStorage.uploadProfileImage(image: selectedImage);
+      notifyListeners();
+      await firebaseStorage.uploadTask.onComplete;
+      friend.imageUrl = await firebaseStorage.downloadProfileImageURL();
+    } else {
+      friend.imageUrl =
+          friend.imageUrl ?? await firebaseStorage.loadDefaultProfileUrl();
+    }
 
     await database.setFriend(friend);
     for (SpecialEvent event in friendSpecialEvents) {

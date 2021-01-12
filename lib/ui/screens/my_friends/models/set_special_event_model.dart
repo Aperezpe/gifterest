@@ -75,8 +75,16 @@ class SetSpecialEventModel extends ChangeNotifier {
           message: "User has to re-select interest",
         );
 
-      if (selectedImage != null)
+      if (selectedImage != null) {
         firebaseStorageService.uploadProfileImage(image: selectedImage);
+        notifyListeners();
+        await firebaseStorageService.uploadTask.onComplete;
+        friend.imageUrl =
+            await firebaseStorageService.downloadProfileImageURL();
+      } else {
+        friend.imageUrl = friend.imageUrl ??
+            await firebaseStorageService.loadDefaultProfileUrl();
+      }
 
       await database.setFriend(friend);
       for (SpecialEvent event in friendSpecialEvents) {

@@ -68,78 +68,67 @@ class SetInterestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Displays loading screen while uploading image
-    if (model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<StorageTaskEvent>(
-        stream: model.firebaseStorage.uploadTask.events,
-        builder: (context, snapshot) {
-          var event = snapshot?.data?.snapshot;
-          double progressPercent =
-              event != null ? event.bytesTransferred / event.totalByteCount : 0;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LoadingScreen(),
-              Text('${(progressPercent * 100).toStringAsFixed(2)}'),
-            ],
-          );
-        },
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Interests"),
-          actions: model.isNewFriend
-              ? []
-              : [
-                  FlatButton(
-                    child: Text(
-                      'Save',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                    // TODO: Snackbar or something when is not ready to submit
-                    onPressed: isReadyToSubmit ? () => _submit(context) : null,
+    // Displays loading screen
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Interests"),
+        actions: model.isNewFriend
+            ? []
+            : [
+                FlatButton(
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                ],
-        ),
-        body: _buildContent(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: BottomButton(
-          onPressed: isReadyToSubmit ? () => _submit(context) : null,
-          color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
-          text: model.submitButtonText,
-          textColor: isReadyToSubmit ? Colors.black : Colors.white,
-          disableColor: Colors.grey,
-        ),
-      );
-    }
+                  // TODO: Snackbar or something when is not ready to submit
+                  onPressed: isReadyToSubmit ? () => _submit(context) : null,
+                ),
+              ],
+      ),
+      body: _buildContent(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: BottomButton(
+        onPressed: isReadyToSubmit ? () => _submit(context) : null,
+        color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
+        text: model.submitButtonText,
+        textColor: isReadyToSubmit ? Colors.black : Colors.white,
+        disableColor: Colors.grey,
+      ),
+    );
   }
 
   Widget _buildContent() {
-    return StreamBuilder<List<Interest>>(
-      stream: model.queryInterestsStream,
-      // stream: model.interestStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          snapshot.data.sort((a, b) => a.name.compareTo(b.name));
-          return GridView.builder(
-            padding: EdgeInsets.fromLTRB(8, 8, 8, 80),
-            itemCount: snapshot.data.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1,
-            ),
-            itemBuilder: (context, index) {
-              return _buildInterestCard(context, snapshot.data[index]);
-            },
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("An error occurred"));
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+    if (model.firebaseStorage?.uploadTask != null) {
+      return StreamBuilder<StorageTaskEvent>(
+        stream: model.firebaseStorage.uploadTask.events,
+        builder: (context, snapshot) => LoadingScreen(),
+      );
+    } else {
+      return StreamBuilder<List<Interest>>(
+        stream: model.queryInterestsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            snapshot.data.sort((a, b) => a.name.compareTo(b.name));
+            return GridView.builder(
+              padding: EdgeInsets.fromLTRB(8, 8, 8, 80),
+              itemCount: snapshot.data.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1,
+              ),
+              itemBuilder: (context, index) {
+                return _buildInterestCard(context, snapshot.data[index]);
+              },
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text("An error occurred"));
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+    }
   }
 
   _buildInterestCard(BuildContext context, Interest interest) {

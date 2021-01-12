@@ -38,14 +38,14 @@ class SetFriendModel extends ChangeNotifier {
   }) {
     isNewFriend = friend == null ? true : false;
     firebaseStorage = FirebaseStorageService(uid: uid, friend: friend);
-    profileImageUrl = "${firebaseStorage.storageBucket}${friend?.imageUrl}";
     initializeGenderDropdownValue();
     initializeAgeRange();
   }
 
-  Future<Widget> downloadProfileImageURL() async {
-    dynamic downloadUrl = await firebaseStorage.downloadProfileImageURL();
-    return Image.network(downloadUrl.toString(), fit: BoxFit.cover);
+  Future<String> getProfileImageURL() async {
+    if (selectedImage != null) return selectedImage.path;
+    if (isNewFriend) return await firebaseStorage.loadDefaultProfileUrl();
+    return friend.imageUrl;
   }
 
   Future pickImage() async {
@@ -66,15 +66,15 @@ class SetFriendModel extends ChangeNotifier {
         ),
       );
 
-      //TODO: Send this selectedImage to firebase when saved AND to interest page submit.
       selectedImage = cropped ?? selectedImage;
       notifyListeners();
     }
   }
 
-  void _uploadProfileImage() {
+  Future<void> _uploadProfileImage() async {
     firebaseStorage.uploadProfileImage(image: selectedImage);
     notifyListeners();
+    await firebaseStorage.uploadTask.onComplete;
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered
@@ -92,8 +92,13 @@ class SetFriendModel extends ChangeNotifier {
           code: "01",
           message: "User has to re-select interests",
         );
+
+      if (selectedImage != null) {
+        await _uploadProfileImage();
+        friend.imageUrl = await firebaseStorage.downloadProfileImageURL();
+      }
+
       final newFriend = _setFriend();
-      if (selectedImage != null) _uploadProfileImage();
       await database.setFriend(newFriend);
     } catch (e) {
       rethrow;
@@ -134,7 +139,14 @@ class SetFriendModel extends ChangeNotifier {
     return false;
   }
 
-  void onGenderDropdownChange(int value) => genderDropdownValue = value;
+  void updateBorderColor() {
+    notifyListeners();
+  }
+
+  void onGenderDropdownChange(int value) {
+    genderDropdownValue = value;
+    updateBorderColor();
+  }
 
   void updateName(String name) => updateWith(name: name);
   void updateAge(int age) => updateWith(age: age);
@@ -147,7 +159,7 @@ class SetFriendModel extends ChangeNotifier {
     this.age = age ?? this.age;
   }
 
-  void goToSpecialEvents(BuildContext context) {
+  void goToSpecialEvents(BuildContext context) async {
     final newFriend = _setFriend();
     SetSpecialEvent.show(
       context,
@@ -165,7 +177,7 @@ class SetFriendModel extends ChangeNotifier {
       uid: uid,
       name: name,
       age: age,
-      imageUrl: isNewFriend ? "" : friend.imageUrl,
+      imageUrl: friend?.imageUrl,
       gender: genders[genderDropdownValue].type,
       interests: (isNewFriend || ageRangeChanged() || genderChanged())
           ? []

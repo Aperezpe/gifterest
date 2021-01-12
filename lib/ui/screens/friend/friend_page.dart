@@ -55,12 +55,16 @@ class FriendPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(top: 15, bottom: 15),
-                child: Center(
+              Center(
+                child: Container(
+                  padding: EdgeInsets.only(top: 15, bottom: 15),
                   child: CircleAvatar(
-                    radius: 48,
-                    backgroundImage: NetworkImage(model.profileImageUrl),
+                    radius: 55,
+                    backgroundColor: Colors.pink,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(friend.imageUrl),
+                    ),
                   ),
                 ),
               ),

@@ -108,26 +108,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  Future<Widget> _getImageWidget() async {
-    if (_model.selectedImage != null) {
-      return Image.file(
-        _model.selectedImage,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      );
-    }
-
-    return (_isNewFriend)
-        ? Image.asset(
-            'assets/placeholder.jpg',
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          )
-        : _model.downloadProfileImageURL();
-  }
-
   /// Initialize values on form if editing friend
   @override
   void initState() {
@@ -148,20 +128,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
     if (_model.firebaseStorage?.uploadTask != null) {
       return StreamBuilder<StorageTaskEvent>(
         stream: _model.firebaseStorage.uploadTask.events,
-        builder: (context, snapshot) {
-          var event = snapshot?.data?.snapshot;
-
-          double progressPercent =
-              event != null ? event.bytesTransferred / event.totalByteCount : 0;
-
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LoadingScreen(),
-              Text('${(progressPercent * 100).toStringAsFixed(2)}'),
-            ],
-          );
-        },
+        builder: (context, snapshot) => LoadingScreen(),
       );
     } else {
       return SingleChildScrollView(
@@ -177,24 +144,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Center(
-                      child: Container(
-                        height: 100,
-                        child: FutureBuilder(
-                          future: _getImageWidget(),
-                          builder: (context, snapshot) =>
-                              snapshot.connectionState == ConnectionState.done
-                                  ? snapshot.data
-                                  : Container(),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: RaisedButton(
-                        onPressed: _model.pickImage,
-                        child: Text("Select Image"),
-                      ),
-                    ),
+                    _buildProfileImage(),
                     ..._buildFormFields()
                   ],
                 ),
@@ -204,6 +154,35 @@ class _SetFriendFormState extends State<SetFriendForm> {
         ),
       );
     }
+  }
+
+  Center _buildProfileImage() {
+    return Center(
+      child: InkWell(
+        child: FutureBuilder<String>(
+            future: _model.getProfileImageURL(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.connectionState == ConnectionState.done
+                    ? CircleAvatar(
+                        radius: 55,
+                        backgroundColor: Colors.pink,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: _model.selectedImage != null
+                              ? AssetImage(snapshot.data)
+                              : NetworkImage(snapshot.data),
+                        ),
+                      )
+                    : Container(height: 110);
+              } else if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              }
+              return Container();
+            }),
+        onTap: _model.pickImage,
+      ),
+    );
   }
 
   @override
@@ -228,7 +207,8 @@ class _SetFriendFormState extends State<SetFriendForm> {
       body: _buildContent(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: BottomButton(
-        onPressed: _onSetEvent,
+        onPressed:
+            _model.firebaseStorage?.uploadTask != null ? null : _onSetEvent,
         color: Colors.blue,
         text: _isNewFriend
             ? "Add Events 👉"

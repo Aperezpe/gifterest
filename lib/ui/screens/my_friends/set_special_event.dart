@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,20 +88,27 @@ class SetSpecialEvent extends StatelessWidget {
   }
 
   Widget _buildContent(List<String> events) {
-    final specialEvents = _model.friendSpecialEvents;
-    return ListView(
-      padding: EdgeInsets.only(bottom: 80),
-      children: [
-        for (var specialEvent in specialEvents)
-          AddEventCard(
-            key: ValueKey(specialEvent.id),
-            index: _model.friendSpecialEvents.indexOf(specialEvent),
-            events: events,
-            model: _model,
-            specialEvent: specialEvent,
-          ),
-      ],
-    );
+    if (_model.firebaseStorageService?.uploadTask != null) {
+      return StreamBuilder<StorageTaskEvent>(
+        stream: _model.firebaseStorageService.uploadTask.events,
+        builder: (context, snapshot) => LoadingScreen(),
+      );
+    } else {
+      final specialEvents = _model.friendSpecialEvents;
+      return ListView(
+        padding: EdgeInsets.only(bottom: 80),
+        children: [
+          for (var specialEvent in specialEvents)
+            AddEventCard(
+              key: ValueKey(specialEvent.id),
+              index: _model.friendSpecialEvents.indexOf(specialEvent),
+              events: events,
+              model: _model,
+              specialEvent: specialEvent,
+            ),
+        ],
+      );
+    }
   }
 
   @override
@@ -119,7 +128,8 @@ class SetSpecialEvent extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: BottomButton(
-              onPressed: _model.isEmpty
+              onPressed: _model.isEmpty ||
+                      _model.firebaseStorageService?.uploadTask != null
                   ? null
                   : () => _model.goToInterestsPage(context),
               color: Colors.pink,
