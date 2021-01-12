@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +31,7 @@ class SetInterestsPage extends StatelessWidget {
     @required List<SpecialEvent> friendSpecialEvents,
     @required bool isNewFriend,
     @required List<SpecialEvent> onDeleteSpecialEvents,
+    File selectedImage,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -37,6 +42,7 @@ class SetInterestsPage extends StatelessWidget {
             isNewFriend: isNewFriend,
             friendSpecialEvents: friendSpecialEvents,
             onDeleteSpecialEvents: onDeleteSpecialEvents,
+            selectedImage: selectedImage,
           ),
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
@@ -62,32 +68,51 @@ class SetInterestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Interests"),
-        actions: model.isNewFriend
-            ? []
-            : [
-                FlatButton(
-                  child: Text(
-                    'Save',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+    // Displays loading screen while uploading image
+    if (model.firebaseStorage?.uploadTask != null) {
+      return StreamBuilder<StorageTaskEvent>(
+        stream: model.firebaseStorage.uploadTask.events,
+        builder: (context, snapshot) {
+          var event = snapshot?.data?.snapshot;
+          double progressPercent =
+              event != null ? event.bytesTransferred / event.totalByteCount : 0;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoadingScreen(),
+              Text('${(progressPercent * 100).toStringAsFixed(2)}'),
+            ],
+          );
+        },
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Interests"),
+          actions: model.isNewFriend
+              ? []
+              : [
+                  FlatButton(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    // TODO: Snackbar or something when is not ready to submit
+                    onPressed: isReadyToSubmit ? () => _submit(context) : null,
                   ),
-                  // TODO: Snackbar or something when is not ready to submit
-                  onPressed: isReadyToSubmit ? () => _submit(context) : null,
-                ),
-              ],
-      ),
-      body: _buildContent(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: BottomButton(
-        onPressed: isReadyToSubmit ? () => _submit(context) : null,
-        color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
-        text: model.submitButtonText,
-        textColor: isReadyToSubmit ? Colors.black : Colors.white,
-        disableColor: Colors.grey,
-      ),
-    );
+                ],
+        ),
+        body: _buildContent(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: BottomButton(
+          onPressed: isReadyToSubmit ? () => _submit(context) : null,
+          color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
+          text: model.submitButtonText,
+          textColor: isReadyToSubmit ? Colors.black : Colors.white,
+          disableColor: Colors.grey,
+        ),
+      );
+    }
   }
 
   Widget _buildContent() {

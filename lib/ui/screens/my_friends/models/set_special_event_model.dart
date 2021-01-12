@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../../services/storage.dart';
 
 import 'friend.dart';
 
@@ -14,16 +17,21 @@ class SetSpecialEventModel extends ChangeNotifier {
     @required this.database,
     @required this.friendSpecialEvents,
     @required this.isNewFriend,
+    this.selectedImage,
   }) {
     if (friendSpecialEvents == null) friendSpecialEvents = [];
     onDeleteSpecialEvents = [];
+    firebaseStorageService =
+        FirebaseStorageService(uid: database.uid, friend: friend);
   }
 
   final Friend friend;
   final FirestoreDatabase database;
   final bool isNewFriend;
+  final File selectedImage;
   List<SpecialEvent> friendSpecialEvents;
   List<SpecialEvent> onDeleteSpecialEvents;
+  FirebaseStorageService firebaseStorageService;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
 
@@ -63,7 +71,13 @@ class SetSpecialEventModel extends ChangeNotifier {
     try {
       if (friend.interests.isEmpty)
         throw PlatformException(
-            code: "01", message: "User has to re-select interest");
+          code: "01",
+          message: "User has to re-select interest",
+        );
+
+      if (selectedImage != null)
+        firebaseStorageService.uploadProfileImage(image: selectedImage);
+
       await database.setFriend(friend);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, friend);
@@ -84,6 +98,7 @@ class SetSpecialEventModel extends ChangeNotifier {
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
       onDeleteSpecialEvents: onDeleteSpecialEvents,
+      selectedImage: selectedImage,
     );
   }
 }

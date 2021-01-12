@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
@@ -22,6 +24,7 @@ class SetSpecialEvent extends StatelessWidget {
     @required FirestoreDatabase database,
     @required bool isNewFriend,
     @required List<SpecialEvent> friendSpecialEvents,
+    File selectedImage,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -31,6 +34,7 @@ class SetSpecialEvent extends StatelessWidget {
             friend: friend,
             friendSpecialEvents: friendSpecialEvents,
             isNewFriend: isNewFriend,
+            selectedImage: selectedImage,
           ),
           child: Consumer<SetSpecialEventModel>(
             builder: (context, model, _) => SetSpecialEvent(

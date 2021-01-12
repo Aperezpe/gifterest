@@ -6,6 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import '../../../../services/storage.dart';
 
 import 'friend.dart';
 
@@ -21,6 +25,9 @@ class SetFriendModel extends ChangeNotifier {
   bool isNewFriend;
   int genderDropdownValue = 0;
   List<int> ageRange;
+  File selectedImage;
+  FirebaseStorageService firebaseStorage;
+  String profileImageUrl;
 
   SetFriendModel({
     @required this.uid,
@@ -30,8 +37,44 @@ class SetFriendModel extends ChangeNotifier {
     this.friend,
   }) {
     isNewFriend = friend == null ? true : false;
+    firebaseStorage = FirebaseStorageService(uid: uid, friend: friend);
+    profileImageUrl = "${firebaseStorage.storageBucket}${friend?.imageUrl}";
     initializeGenderDropdownValue();
     initializeAgeRange();
+  }
+
+  Future<Widget> downloadProfileImageURL() async {
+    dynamic downloadUrl = await firebaseStorage.downloadProfileImageURL();
+    return Image.network(downloadUrl.toString(), fit: BoxFit.cover);
+  }
+
+  Future pickImage() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      File cropped = await ImageCropper.cropImage(
+        sourcePath: image.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 100,
+        maxWidth: 700,
+        maxHeight: 700,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+          toolbarColor: Colors.deepOrange,
+          toolbarTitle: 'Crop It',
+          statusBarColor: Colors.deepOrange.shade900,
+          backgroundColor: Colors.white,
+        ),
+      );
+
+      //TODO: Send this selectedImage to firebase when saved AND to interest page submit.
+      selectedImage = cropped ?? selectedImage;
+      notifyListeners();
+    }
+  }
+
+  void _uploadProfileImage() {
+    firebaseStorage.uploadProfileImage(image: selectedImage);
+    notifyListeners();
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered
@@ -42,19 +85,6 @@ class SetFriendModel extends ChangeNotifier {
   ///
   /// Used in submit() and setInterestPage.
 
-  Friend get _newFriend => Friend(
-        id: isNewFriend ? documentIdFromCurrentDate() : friend.id,
-        uid: uid,
-        name: name,
-        age: age,
-        imageUrl:
-            'https://static.vecteezy.com/system/resources/previews/000/556/895/original/vector-cute-cartoon-baby-monkey.jpg',
-        gender: genders[genderDropdownValue].type,
-        interests: (isNewFriend || ageRangeChanged() || genderChanged())
-            ? []
-            : friend.interests,
-      );
-
   Future<void> onSave() async {
     try {
       if (ageRangeChanged() || genderChanged())
@@ -62,7 +92,9 @@ class SetFriendModel extends ChangeNotifier {
           code: "01",
           message: "User has to re-select interests",
         );
-      await database.setFriend(_newFriend);
+      final newFriend = _setFriend();
+      if (selectedImage != null) _uploadProfileImage();
+      await database.setFriend(newFriend);
     } catch (e) {
       rethrow;
     }
@@ -116,12 +148,28 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   void goToSpecialEvents(BuildContext context) {
+    final newFriend = _setFriend();
     SetSpecialEvent.show(
       context,
       database: database,
-      friend: _newFriend,
+      friend: newFriend,
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
+      selectedImage: selectedImage,
+    );
+  }
+
+  Friend _setFriend() {
+    return Friend(
+      id: isNewFriend ? documentIdFromCurrentDate() : friend.id,
+      uid: uid,
+      name: name,
+      age: age,
+      imageUrl: isNewFriend ? "" : friend.imageUrl,
+      gender: genders[genderDropdownValue].type,
+      interests: (isNewFriend || ageRangeChanged() || genderChanged())
+          ? []
+          : friend.interests,
     );
   }
 }

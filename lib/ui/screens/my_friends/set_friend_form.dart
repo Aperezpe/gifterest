@@ -6,10 +6,12 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/dropdown_list.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../../common_widgets/loading_screen.dart';
 
 import 'models/friend.dart';
 
@@ -49,7 +51,7 @@ class SetFriendForm extends StatefulWidget {
               } else if (snapshot.hasError) {
                 return Center(child: Text("An error has ocurred"));
               }
-              return CircularProgressIndicator();
+              return LoadingScreen();
             }),
       ),
     );
@@ -106,6 +108,26 @@ class _SetFriendFormState extends State<SetFriendForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
+  Future<Widget> _getImageWidget() async {
+    if (_model.selectedImage != null) {
+      return Image.file(
+        _model.selectedImage,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    }
+
+    return (_isNewFriend)
+        ? Image.asset(
+            'assets/placeholder.jpg',
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          )
+        : _model.downloadProfileImageURL();
+  }
+
   /// Initialize values on form if editing friend
   @override
   void initState() {
@@ -122,25 +144,66 @@ class _SetFriendFormState extends State<SetFriendForm> {
   }
 
   Widget _buildContent() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _buildFormFields(),
+    // Display a loading screen if image is uploading
+    if (_model.firebaseStorage?.uploadTask != null) {
+      return StreamBuilder<StorageTaskEvent>(
+        stream: _model.firebaseStorage.uploadTask.events,
+        builder: (context, snapshot) {
+          var event = snapshot?.data?.snapshot;
+
+          double progressPercent =
+              event != null ? event.bytesTransferred / event.totalByteCount : 0;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoadingScreen(),
+              Text('${(progressPercent * 100).toStringAsFixed(2)}'),
+            ],
+          );
+        },
+      );
+    } else {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        height: 100,
+                        child: FutureBuilder(
+                          future: _getImageWidget(),
+                          builder: (context, snapshot) =>
+                              snapshot.connectionState == ConnectionState.done
+                                  ? snapshot.data
+                                  : Container(),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: RaisedButton(
+                        onPressed: _model.pickImage,
+                        child: Text("Select Image"),
+                      ),
+                    ),
+                    ..._buildFormFields()
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 
   @override
