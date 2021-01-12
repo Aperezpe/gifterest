@@ -59,10 +59,10 @@ class FriendPage extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(top: 15, bottom: 15),
                   child: CircleAvatar(
-                    radius: 55,
+                    radius: 65,
                     backgroundColor: Colors.pink,
                     child: CircleAvatar(
-                      radius: 50,
+                      radius: 60,
                       backgroundImage: NetworkImage(friend.imageUrl),
                     ),
                   ),
@@ -92,7 +92,9 @@ class FriendPage extends StatelessWidget {
             primary: false,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 1,
+              childAspectRatio: .9,
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
             ),
             itemBuilder: (context, index) {
               return ClickableProduct(

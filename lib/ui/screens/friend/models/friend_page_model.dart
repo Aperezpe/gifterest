@@ -43,7 +43,7 @@ class FriendPageModel extends ChangeNotifier {
   bool correctGender(Product product) =>
       (product.gender == friend.gender) || (product.gender == "");
   bool inBudget(Product product) {
-    if (endValue >= 100) return true;
+    if (endValue >= 100) return product.price >= startValue;
     return product.price >= startValue && product.price <= endValue;
   }
 
@@ -61,6 +61,7 @@ class FriendPageModel extends ChangeNotifier {
 
   void updateBudget(RangeValues values) {
     currentRangeValues = values;
+    print(currentRangeValues);
     notifyListeners();
   }
 
