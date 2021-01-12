@@ -6,39 +6,39 @@ class ClickableInterest extends StatelessWidget {
     this.interest,
     this.onTap,
     this.color,
+    this.opacity: .3,
   });
 
   final Interest interest;
   final VoidCallback onTap;
   final Color color;
+  final double opacity;
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Card(
-        color: color,
-        elevation: 8.0,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(interest.imageUrl),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+      child: InkWell(
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Stack(
+            children: <Widget>[
+              Center(
+                child: Image.network(
+                  interest.imageUrl,
+                  color: Colors.black.withOpacity(opacity),
+                  colorBlendMode: BlendMode.darken,
+                  fit: BoxFit.fitHeight,
+                  height: double.infinity,
                 ),
               ),
-              Container(
-                child: Text(
-                  interest.name,
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
+              Center(
+                  child: Text(
+                "${interest.name}",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16),
+              ))
             ],
           ),
         ),

@@ -111,11 +111,13 @@ class SetInterestsPage extends StatelessWidget {
           if (snapshot.hasData) {
             snapshot.data.sort((a, b) => a.name.compareTo(b.name));
             return GridView.builder(
-              padding: EdgeInsets.fromLTRB(8, 8, 8, 80),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 80),
               itemCount: snapshot.data.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 childAspectRatio: 1,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
               ),
               itemBuilder: (context, index) {
                 return _buildInterestCard(context, snapshot.data[index]);
@@ -136,6 +138,7 @@ class SetInterestsPage extends StatelessWidget {
       interest: interest,
       onTap: () => model.tapInterest(interest),
       color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
+      opacity: model.isSelected(interest.name) ? .7 : .3,
     );
   }
 }
