@@ -43,8 +43,8 @@ class SetFriendModel extends ChangeNotifier {
     initializeAgeRange();
   }
 
-  Future<String> getProfileImageURL() async {
-    if (selectedImage != null) return selectedImage.path;
+  Future<dynamic> getImageOrURL() async {
+    if (selectedImage != null) return selectedImage;
     if (isNewFriend) return await firebaseStorage.getDefaultProfileUrl();
     return friend.imageUrl;
   }

@@ -156,34 +156,32 @@ class _SetFriendFormState extends State<SetFriendForm> {
     }
   }
 
-  ImageProvider<Object> _buildImageWidget(String path) {
-    if (_model.selectedImage != null) return AssetImage(path);
-
-    return NetworkImage(path);
-  }
-
   Center _buildProfileImage(BuildContext context) {
     return Center(
       child: InkWell(
-        child: FutureBuilder<String>(
-            future: _model.getProfileImageURL(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return snapshot.connectionState == ConnectionState.done
-                    ? CircleAvatar(
-                        radius: 55,
-                        backgroundColor: Colors.pink,
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: _buildImageWidget(snapshot.data),
-                        ),
-                      )
-                    : Container(height: 110);
-              } else if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              }
-              return Container();
-            }),
+        child: FutureBuilder<dynamic>(
+          future: _model.getImageOrURL(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return snapshot.connectionState == ConnectionState.done
+                  ? CircleAvatar(
+                      radius: 55,
+                      backgroundColor: Colors.pink,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 50,
+                        backgroundImage: _model.selectedImage != null
+                            ? FileImage(snapshot.data)
+                            : NetworkImage(snapshot.data),
+                      ),
+                    )
+                  : Container(height: 110);
+            } else if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            }
+            return Container(height: 110);
+          },
+        ),
         onTap: () => _model.pickImage(context),
       ),
     );
