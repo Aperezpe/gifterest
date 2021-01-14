@@ -138,7 +138,7 @@ class SetInterestsPage extends StatelessWidget {
       interest: interest,
       onTap: () => model.tapInterest(interest),
       color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
-      opacity: model.isSelected(interest.name) ? .7 : .3,
+      opacity: model.isSelected(interest.name) ? .7 : .2,
     );
   }
 }

@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
           scaffoldBackgroundColor: Colors.white,
         ),
-        home: SafeArea(
-          child: LandingPage(),
-        ),
+        home: LandingPage(),
       ),
     );
   }

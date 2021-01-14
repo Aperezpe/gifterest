@@ -15,32 +15,34 @@ class ClickableInterest extends StatelessWidget {
   final double opacity;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: InkWell(
-        onTap: onTap,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: Stack(
-            children: <Widget>[
-              Center(
-                child: Image.network(
-                  interest.imageUrl,
-                  color: Colors.black.withOpacity(opacity),
-                  colorBlendMode: BlendMode.darken,
-                  fit: BoxFit.fitHeight,
-                  height: double.infinity,
-                ),
+    return InkWell(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Image.network(
+                interest.imageUrl,
+                color: Colors.black.withOpacity(opacity),
+                colorBlendMode: BlendMode.darken,
+                fit: BoxFit.cover,
+                height: double.infinity,
               ),
-              Center(
-                  child: Text(
+            ),
+            Center(
+                child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
                 "${interest.name}",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 16),
-              ))
-            ],
-          ),
+              ),
+            ))
+          ],
         ),
       ),
     );
