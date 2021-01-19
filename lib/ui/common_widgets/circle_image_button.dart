@@ -19,26 +19,25 @@ class CircleImageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(150),
-        child: Container(
-          color: Colors.red,
-          child: InkWell(
-            child: CircleAvatar(
-              radius: 28,
-              backgroundImage: AssetImage(imagePath),
-            ),
-            onTap: onPressed,
+      height: 60,
+      width: 60,
+      child: InkWell(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.fitHeight,
           ),
         ),
+        onTap: onPressed,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100.0),
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
-            blurRadius: 12.0,
+            blurRadius: 5.0,
           ),
         ],
       ),
