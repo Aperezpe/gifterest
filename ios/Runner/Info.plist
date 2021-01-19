@@ -42,8 +42,19 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
+	<string>For bonobo</string>
 	<key>NSCameraUsageDescription</key>
+	<string>For bonobo</string>
 	<key>NSMicrophoneUsageDescription</key>
-
+	<string>For bonobo</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.999698806095-sk4qa9lidrshn5csm4847es84rrgh48v</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -30,3 +30,10 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Unnecesary Xcode build data
+build
+
+# Firebase files
+Runner/GoogleService-Info.plist
+
