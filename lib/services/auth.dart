@@ -69,21 +69,31 @@ class Auth implements AuthBase {
 
   @override
   Future<User> signInWithGoogle() async {
-    final googleSignIn = GoogleSignIn();
+    final googleSignIn = GoogleSignIn(scopes: []);
     final googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
-      final googleAuth = await googleAccount.authentication;
-      if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        final authResult = await _firebaseAuth.signInWithCredential(
-          GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken),
-        );
-        return _userFromFirebase(authResult.user);
-      } else {
-        throw PlatformException(
-          code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
-          message: 'Missing Google Auth Token',
-        );
+      try {
+        final googleAuth = await googleAccount.authentication;
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          final authResult = await _firebaseAuth.signInWithCredential(
+            GoogleAuthProvider.credential(
+                idToken: googleAuth.idToken,
+                accessToken: googleAuth.accessToken),
+          );
+          return _userFromFirebase(authResult.user);
+        } else {
+          throw PlatformException(
+            code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
+            message: 'Missing Google Auth Token',
+          );
+        }
+      } on PlatformException {
+        try {
+          await googleSignIn.signInSilently();
+        } catch (e) {
+          rethrow;
+        }
+        rethrow;
       }
     } else {
       throw PlatformException(
