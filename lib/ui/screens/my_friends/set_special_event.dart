@@ -89,8 +89,8 @@ class SetSpecialEvent extends StatelessWidget {
 
   Widget _buildContent(List<String> events) {
     if (_model.firebaseStorageService?.uploadTask != null) {
-      return StreamBuilder<StorageTaskEvent>(
-        stream: _model.firebaseStorageService.uploadTask.events,
+      return StreamBuilder<TaskSnapshot>(
+        stream: _model.firebaseStorageService.uploadTask.snapshotEvents,
         builder: (context, snapshot) => LoadingScreen(),
       );
     } else {

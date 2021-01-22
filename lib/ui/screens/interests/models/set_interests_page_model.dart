@@ -60,8 +60,10 @@ class SetInterestsPageModel extends ChangeNotifier {
     if (selectedImage != null) {
       firebaseStorage.putFriendProfileImage(image: selectedImage);
       notifyListeners();
-      await firebaseStorage.uploadTask.onComplete;
-      friend.imageUrl = await firebaseStorage.getFriendProfileImageURL();
+      await firebaseStorage.uploadTask.whenComplete(
+        () async =>
+            friend.imageUrl = await firebaseStorage.getFriendProfileImageURL(),
+      );
     } else {
       friend.imageUrl =
           friend.imageUrl ?? await firebaseStorage.getDefaultProfileUrl();

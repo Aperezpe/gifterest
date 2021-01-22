@@ -4,6 +4,7 @@ import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

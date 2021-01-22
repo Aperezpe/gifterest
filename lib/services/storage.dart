@@ -16,12 +16,12 @@ abstract class Storage {
 class FirebaseStorageService implements Storage {
   final String storageBucket = 'gs://important-dates-reminders.appspot.com';
   FirebaseStorage _storage;
-  StorageUploadTask uploadTask;
+  UploadTask uploadTask;
   final String uid;
   final Friend friend;
 
   FirebaseStorageService({@required this.uid, @required this.friend}) {
-    _storage = FirebaseStorage(storageBucket: storageBucket);
+    _storage = FirebaseStorage.instanceFor(bucket: storageBucket);
   }
 
   void putFriendProfileImage({@required File image}) => uploadTask = _storage
@@ -41,8 +41,7 @@ class FirebaseStorageService implements Storage {
 
   Future<void> deleteFriendProfileImage() async {
     if (!friend.imageUrl.contains("placeholder")) {
-      final ref =
-          await _storage.getReferenceFromUrl(await getFriendProfileImageURL());
+      final ref = _storage.ref(await getFriendProfileImageURL());
       ref.delete();
     }
   }
