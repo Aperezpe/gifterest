@@ -126,8 +126,8 @@ class _SetFriendFormState extends State<SetFriendForm> {
   Widget _buildContent() {
     // Display a loading screen if image is uploading
     if (_model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<StorageTaskEvent>(
-        stream: _model.firebaseStorage.uploadTask.events,
+      return StreamBuilder<TaskSnapshot>(
+        stream: _model.firebaseStorage.uploadTask.snapshotEvents,
         builder: (context, snapshot) => LoadingScreen(),
       );
     } else {

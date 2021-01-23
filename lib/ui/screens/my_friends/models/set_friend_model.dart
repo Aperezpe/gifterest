@@ -51,7 +51,9 @@ class SetFriendModel extends ChangeNotifier {
 
   Future pickImage(BuildContext context) async {
     try {
-      File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      PickedFile image =
+          await ImagePicker().getImage(source: ImageSource.gallery);
+
       if (image != null) {
         File cropped = await ImageCropper.cropImage(
           sourcePath: image.path,
@@ -85,7 +87,7 @@ class SetFriendModel extends ChangeNotifier {
   Future<void> _uploadProfileImage() async {
     firebaseStorage.putFriendProfileImage(image: selectedImage);
     notifyListeners();
-    await firebaseStorage.uploadTask.onComplete;
+    await firebaseStorage.uploadTask.whenComplete(() => null);
   }
 
   /// [Adding new friend]: Returns a friend instance with the data gathered

@@ -10,12 +10,12 @@ class FirestoreService {
   static final instance = FirestoreService._();
 
   Future<void> setData({String path, Map<String, dynamic> data}) async {
-    final reference = Firestore.instance.document(path);
-    await reference.setData(data);
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.set(data);
   }
 
   Future<void> deleteData({String path}) async {
-    final reference = Firestore.instance.document(path);
+    final reference = FirebaseFirestore.instance.doc(path);
     await reference.delete();
   }
 
@@ -24,7 +24,7 @@ class FirestoreService {
     @required T builder(Map<String, dynamic> data, String documentId),
     @required Friend friend,
   }) {
-    CollectionReference ref = Firestore.instance.collection(path);
+    CollectionReference ref = FirebaseFirestore.instance.collection(path);
     Query query;
 
     // Query interests by friend age
@@ -44,8 +44,8 @@ class FirestoreService {
     ]);
 
     final snapshots = query.snapshots();
-    return snapshots.map((snapshots) => snapshots.documents
-        .map((snapshot) => builder(snapshot.data, snapshot.documentID))
+    return snapshots.map((snapshots) => snapshots.docs
+        .map((snapshot) => builder(snapshot.data(), snapshot.id))
         .toList());
   }
 
@@ -58,7 +58,7 @@ class FirestoreService {
     @required int endPrice,
     EventType eventType,
   }) {
-    CollectionReference ref = Firestore.instance.collection(path);
+    CollectionReference ref = FirebaseFirestore.instance.collection(path);
     Query query;
 
     switch (eventType) {
@@ -77,8 +77,8 @@ class FirestoreService {
         break;
     }
     final snapshots = query.snapshots();
-    return snapshots.map((snapshots) => snapshots.documents
-        .map((snapshot) => builder(snapshot.data, snapshot.documentID))
+    return snapshots.map((snapshots) => snapshots.docs
+        .map((snapshot) => builder(snapshot.data(), snapshot.id))
         .toList());
   }
 
@@ -86,10 +86,10 @@ class FirestoreService {
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
   }) {
-    final reference = Firestore.instance.collection(path);
+    final reference = FirebaseFirestore.instance.collection(path);
     final snapshots = reference.snapshots();
-    return snapshots.map((snapshots) => snapshots.documents
-        .map((snapshot) => builder(snapshot.data, snapshot.documentID))
+    return snapshots.map((snapshots) => snapshots.docs
+        .map((snapshot) => builder(snapshot.data(), snapshot.id))
         .toList());
   }
 }

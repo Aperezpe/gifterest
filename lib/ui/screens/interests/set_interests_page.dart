@@ -100,8 +100,8 @@ class SetInterestsPage extends StatelessWidget {
 
   Widget _buildContent() {
     if (model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<StorageTaskEvent>(
-        stream: model.firebaseStorage.uploadTask.events,
+      return StreamBuilder<TaskSnapshot>(
+        stream: model.firebaseStorage.uploadTask.snapshotEvents,
         builder: (context, snapshot) => LoadingScreen(),
       );
     } else {
