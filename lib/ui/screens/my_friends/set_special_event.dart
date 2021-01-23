@@ -142,7 +142,7 @@ class SetSpecialEvent extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text("Something went wrong"));
         }
-        return CircularProgressIndicator();
+        return LoadingScreen();
       },
     );
   }
