@@ -3,7 +3,6 @@ import 'package:bonobo/ui/common_widgets/circle_image_button.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:bonobo/ui/screens/friend/widgets/range_slider.dart';
 import 'package:bonobo/ui/screens/friend/widgets/tabs.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
