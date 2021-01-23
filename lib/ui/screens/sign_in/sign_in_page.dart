@@ -1,7 +1,6 @@
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
