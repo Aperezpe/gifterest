@@ -1,16 +1,12 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/circle_image_button.dart';
-import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
 import 'package:bonobo/ui/screens/friend/widgets/range_slider.dart';
 import 'package:bonobo/ui/screens/friend/widgets/tabs.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../style/fontStyle.dart';
 import 'models/friend_page_model.dart';
 
 class FriendPage extends StatelessWidget {
