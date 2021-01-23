@@ -7,9 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import '../../../../services/storage.dart';
 
 import 'friend.dart';
@@ -51,12 +52,18 @@ class SetFriendModel extends ChangeNotifier {
 
   Future pickImage(BuildContext context) async {
     try {
-      PickedFile image =
-          await ImagePicker().getImage(source: ImageSource.gallery);
+      // PickedFile image =
+      //     await ImagePicker().getImage(source: ImageSource.gallery);
 
-      if (image != null) {
+      final List<Asset> resultList =
+          await MultiImagePicker.pickImages(maxImages: 1);
+
+      if (resultList != null || resultList.length > 0) {
+        final imagePath =
+            await FlutterAbsolutePath.getAbsolutePath(resultList[0].identifier);
+
         File cropped = await ImageCropper.cropImage(
-          sourcePath: image.path,
+          sourcePath: imagePath,
           aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
           compressQuality: 100,
           maxWidth: 700,
@@ -75,12 +82,8 @@ class SetFriendModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      PlatformAlertDialog(
-        content: e.toString(),
-        title: "Hello",
-        defaultAtionText: "Ok",
-      ).show(context);
-      // print(e.toString());
+      print(e.toString());
+      rethrow;
     }
   }
 
