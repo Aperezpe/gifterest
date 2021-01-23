@@ -52,9 +52,6 @@ class SetFriendModel extends ChangeNotifier {
 
   Future pickImage(BuildContext context) async {
     try {
-      // PickedFile image =
-      //     await ImagePicker().getImage(source: ImageSource.gallery);
-
       final List<Asset> resultList =
           await MultiImagePicker.pickImages(maxImages: 1);
 
@@ -65,9 +62,9 @@ class SetFriendModel extends ChangeNotifier {
         File cropped = await ImageCropper.cropImage(
           sourcePath: imagePath,
           aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-          compressQuality: 100,
-          maxWidth: 700,
-          maxHeight: 700,
+          compressQuality: 50,
+          maxWidth: 350,
+          maxHeight: 350,
           compressFormat: ImageCompressFormat.jpg,
           androidUiSettings: AndroidUiSettings(
             toolbarColor: Colors.deepOrange,

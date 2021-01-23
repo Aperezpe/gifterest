@@ -345,8 +345,6 @@ PODS:
   - image_cropper (0.0.3):
     - Flutter
     - TOCropViewController (~> 2.5.4)
-  - image_picker (0.0.1):
-    - Flutter
   - leveldb-library (1.22)
   - multi_image_picker (4.7.14):
     - BSImagePicker (~> 2.10.3)
@@ -370,7 +368,6 @@ DEPENDENCIES:
   - flutter_absolute_path (from `.symlinks/plugins/flutter_absolute_path/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
-  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
@@ -417,8 +414,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
-  image_picker:
-    :path: ".symlinks/plugins/image_picker/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
   path_provider:
@@ -452,7 +447,6 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_cropper: c8f9b4157933c7bb965a66d1c5e6c8fd408c6eb4
-  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   multi_image_picker: c068931d08240565e0615fb01437d16984909183
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
