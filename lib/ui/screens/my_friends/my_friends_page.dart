@@ -1,11 +1,8 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
-import 'package:bonobo/services/storage_path.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
-import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
-import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
