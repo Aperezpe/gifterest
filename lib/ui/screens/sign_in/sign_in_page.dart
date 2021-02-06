@@ -144,6 +144,7 @@ class _SignInPageState extends State<SignInPage> {
             ? Column(
                 children: <Widget>[
                   SignInTextField(
+                    key: Key("email"),
                     controller: _emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -154,6 +155,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("password"),
                     controller: _passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -169,6 +171,7 @@ class _SignInPageState extends State<SignInPage> {
             : Column(
                 children: [
                   SignInTextField(
+                    key: Key("name"),
                     controller: _nameController,
                     hintText: "Name",
                     icon: Icons.person,
@@ -179,6 +182,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("email"),
                     controller: _emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -189,6 +193,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("password"),
                     controller: _passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -200,6 +205,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("retype-password"),
                     controller: _retypePasswordController,
                     hintText: "Retype Password",
                     icon: Icons.lock,
@@ -207,13 +213,14 @@ class _SignInPageState extends State<SignInPage> {
                     onEditingComplete: _submit,
                     obscureText: true,
                     onChanged: model.updateRetypePassword,
-                    errorText: model.passwordErrorText,
+                    errorText: model.retypePasswordErrorText,
                     enabled: model.isLoading == false,
                   ),
                 ],
               ),
         SizedBox(height: 30),
         CustomButton(
+          key: Key("sign-in/up-btn"),
           text: model.primaryText,
           color: Colors.pink[400],
           disableColor: Colors.pink[400],
