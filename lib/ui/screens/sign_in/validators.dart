@@ -7,12 +7,18 @@ abstract class StringValidator {
 }
 
 class NonEmptyStringValidator implements StringValidator {
+  String _errorMessage = "Invalid name";
   @override
-  String get errorMessage => "Name can't be empty";
+  String get errorMessage => _errorMessage;
 
   @override
   bool isValid(String value) {
-    return value.isNotEmpty;
+    if (value.isEmpty) {
+      _errorMessage = "Name can't be empty";
+      return false;
+    }
+    _errorMessage = "Invalid name";
+    return value.isNotEmpty && value.length < 32;
   }
 }
 
