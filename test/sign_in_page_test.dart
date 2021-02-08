@@ -76,15 +76,14 @@ void main() {
         'THEN createUserWithEmailAndPassword is not called',
         (WidgetTester tester) async {
       await pumpSignInPage(tester);
-      final switchFormButton = find.text("Need an account? Sign Up");
+      final switchFormButton = find.byKey(Key("toggle-form"));
       await tester.tap(switchFormButton);
 
       await tester.pump();
-      final signUpButton = find.text("Create an account");
+      final signUpButton = find.byKey(Key("sign-in/up-btn"));
       expect(signUpButton, findsOneWidget);
 
-      final singUpButton = find.byKey(Key("sign-in/up-btn"));
-      await tester.tap(singUpButton);
+      await tester.tap(signUpButton);
 
       verifyNever(mockAuth.createUserWithEmailAndPassword(any, any, any));
     });
@@ -95,11 +94,11 @@ void main() {
         'THEN createUserWithEmailAndPassword is not called',
         (WidgetTester tester) async {
       await pumpSignInPage(tester);
-      final switchFormButton = find.text("Need an account? Sign Up");
+      final switchFormButton = find.byKey(Key("toggle-form"));
       await tester.tap(switchFormButton);
 
       await tester.pump();
-      final signUpButton = find.text("Create an account");
+      final signUpButton = find.byKey(Key("sign-in/up-btn"));
       expect(signUpButton, findsOneWidget);
 
       const name = "Ab";
@@ -125,8 +124,50 @@ void main() {
 
       await tester.pump();
 
-      final signInButton = find.text("Create an account");
-      await tester.tap(signInButton);
+      await tester.tap(signUpButton);
+
+      verifyNever(
+        mockAuth.createUserWithEmailAndPassword(name, email, password),
+      );
+    });
+
+    testWidgets(
+        'WHEN user enters all fields '
+        'AND user taps on the sign-in button '
+        'THEN createUserWithEmailAndPassword is called',
+        (WidgetTester tester) async {
+      await pumpSignInPage(tester);
+      final switchFormButton = find.byKey(Key("toggle-form"));
+      await tester.tap(switchFormButton);
+
+      await tester.pump();
+      final signUpButton = find.byKey(Key("sign-in/up-btn"));
+      expect(signUpButton, findsOneWidget);
+
+      const name = "Ab";
+      const email = "ab@ab.com";
+      const password = "password";
+      const retypePassword = "password";
+
+      final namefield = find.byKey(Key("name"));
+      expect(namefield, findsOneWidget);
+      await tester.enterText(namefield, name);
+
+      final emailField = find.byKey(Key("email"));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, email);
+
+      final passwordField = find.byKey(Key("password"));
+      expect(passwordField, findsOneWidget);
+      await tester.enterText(passwordField, password);
+
+      final retypePasswordField = find.byKey(Key("retype-password"));
+      expect(retypePasswordField, findsOneWidget);
+      await tester.enterText(retypePasswordField, retypePassword);
+
+      await tester.pump();
+
+      await tester.tap(signUpButton);
 
       verify(
         mockAuth.createUserWithEmailAndPassword(name, email, password),

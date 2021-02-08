@@ -1,6 +1,8 @@
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -51,8 +53,13 @@ class _SignInPageState extends State<SignInPage> {
       await model.submit();
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(
-        exception: e,
         title: 'Sign in failed',
+        exception: e,
+      ).show(context);
+    } on FirebaseAuthException catch (e) {
+      FirebaseAuthExceptionAlertDialog(
+        title: "Sign in failed",
+        exception: e,
       ).show(context);
     }
   }
@@ -229,12 +236,14 @@ class _SignInPageState extends State<SignInPage> {
         ),
         SizedBox(height: 15),
         FlatButton(
+          key: Key("toggle-form"),
           child: Text(
             model.secondaryText,
             style: TextStyle(
-                fontSize: 16,
-                color: Colors.blue.shade700,
-                fontWeight: FontWeight.w600),
+              fontSize: 16,
+              color: Colors.blue.shade700,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           onPressed: model.isLoading ? null : _toogleFormType,
         ),
@@ -256,14 +265,14 @@ class _SignInPageState extends State<SignInPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             CircleImageButton(
-              text: "G",
+              key: Key("google-signin"),
               color: Colors.white,
               textColor: Colors.blue,
               onPressed: model.isLoading ? null : _signInWithGoogle,
               imagePath: 'assets/google_logo.jpg',
             ),
             CircleImageButton(
-              text: "A",
+              key: Key("apple-signin"),
               color: Colors.grey[400],
               textColor: Colors.white,
               onPressed: null,

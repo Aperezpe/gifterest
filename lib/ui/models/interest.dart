@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:ui';
+import 'package:meta/meta.dart';
 
 class Interest {
   Interest({
@@ -35,4 +36,25 @@ class Interest {
       imageUrl: imageUrl,
     );
   }
+
+  @override
+  int get hashCode =>
+      hashValues(id, name, gender, ageRange.join(","), imageUrl);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (runtimeType != other.runtimeType) return false;
+    final Interest otherInterest = other;
+
+    return id == otherInterest.id &&
+        name == otherInterest.name &&
+        gender == otherInterest.gender &&
+        imageUrl == otherInterest.imageUrl &&
+        ageRange.join(",") == otherInterest.ageRange.join(",");
+  }
+
+  @override
+  String toString() =>
+      "id: $id, name: $name, ageRange: $ageRange, gender: $gender, imageUrl: $imageUrl";
 }

@@ -28,9 +28,10 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   bool submitted;
 
   Future<void> submit() async {
-    updateWith(submitted: true, isLoading: true);
+    updateWith(submitted: true);
+    if (!canSubmit) return;
+    updateWith(isLoading: true);
     try {
-      if (!canSubmit) return;
       if (formType == EmailSignInFormType.signIn) {
         await auth.signInWithEmailAndPassword(
           email,
@@ -74,10 +75,11 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
           passwordValidator.isValid(password) &&
           !isLoading;
     }
+
     return nameValidator.isValid(name) &&
-        emailValidator.isValid(name) &&
-        passwordValidator.isValid(password) &&
-        (password == retypePassword);
+        emailValidator.isValid(email) &&
+        retypePasswordValidator.isValid(password, retypePassword) &&
+        !isLoading;
   }
 
   String get nameErrorText {
