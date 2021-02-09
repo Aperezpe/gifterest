@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 
 class Product {
@@ -17,14 +19,14 @@ class Product {
     @required this.id,
     @required this.name,
     @required this.price,
-    @required this.event,
+    this.event,
     @required this.ageRange,
     @required this.distributor,
     @required this.imageUrl,
     @required this.itemUrl,
     @required this.categories,
     @required this.gender,
-    @required this.itemId,
+    this.itemId,
   });
 
   factory Product.fromMap(Map<String, dynamic> data, String documentId) {
@@ -57,4 +59,42 @@ class Product {
       itemId: itemId,
     );
   }
+
+  @override
+  int get hashCode => hashValues(
+        id,
+        name,
+        price,
+        event,
+        imageUrl,
+        itemUrl,
+        ageRange.join(","),
+        distributor,
+        categories.join(","),
+        gender,
+        itemId,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (runtimeType != other.runtimeType) return false;
+    final Product otherProduct = other;
+
+    return id == otherProduct.id &&
+        name == otherProduct.name &&
+        price == otherProduct.price &&
+        event == otherProduct.event &&
+        imageUrl == otherProduct.imageUrl &&
+        ageRange.join(",") == otherProduct.ageRange.join(",") &&
+        distributor == otherProduct.distributor &&
+        categories.join(",") == otherProduct.categories.join(",") &&
+        gender == otherProduct.gender &&
+        itemId == otherProduct.itemId;
+  }
+
+  @override
+  String toString() => '''id: $id, name: $name, price: $price, event: $event, 
+      imageUrl: $imageUrl, ageRange: $ageRange, distributor: $distributor, 
+      categories: $categories, gender: $gender, itemId: $itemId''';
 }

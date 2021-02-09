@@ -1,6 +1,8 @@
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -51,8 +53,13 @@ class _SignInPageState extends State<SignInPage> {
       await model.submit();
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(
-        exception: e,
         title: 'Sign in failed',
+        exception: e,
+      ).show(context);
+    } on FirebaseAuthException catch (e) {
+      FirebaseAuthExceptionAlertDialog(
+        title: "Sign in failed",
+        exception: e,
       ).show(context);
     }
   }
@@ -144,6 +151,7 @@ class _SignInPageState extends State<SignInPage> {
             ? Column(
                 children: <Widget>[
                   SignInTextField(
+                    key: Key("email"),
                     controller: _emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -154,6 +162,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("password"),
                     controller: _passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -169,6 +178,7 @@ class _SignInPageState extends State<SignInPage> {
             : Column(
                 children: [
                   SignInTextField(
+                    key: Key("name"),
                     controller: _nameController,
                     hintText: "Name",
                     icon: Icons.person,
@@ -179,6 +189,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("email"),
                     controller: _emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -189,6 +200,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("password"),
                     controller: _passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -200,6 +212,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    key: Key("retype-password"),
                     controller: _retypePasswordController,
                     hintText: "Retype Password",
                     icon: Icons.lock,
@@ -207,13 +220,14 @@ class _SignInPageState extends State<SignInPage> {
                     onEditingComplete: _submit,
                     obscureText: true,
                     onChanged: model.updateRetypePassword,
-                    errorText: model.passwordErrorText,
+                    errorText: model.retypePasswordErrorText,
                     enabled: model.isLoading == false,
                   ),
                 ],
               ),
         SizedBox(height: 30),
         CustomButton(
+          key: Key("sign-in/up-btn"),
           text: model.primaryText,
           color: Colors.pink[400],
           disableColor: Colors.pink[400],
@@ -222,12 +236,14 @@ class _SignInPageState extends State<SignInPage> {
         ),
         SizedBox(height: 15),
         FlatButton(
+          key: Key("toggle-form"),
           child: Text(
             model.secondaryText,
             style: TextStyle(
-                fontSize: 16,
-                color: Colors.blue.shade700,
-                fontWeight: FontWeight.w600),
+              fontSize: 16,
+              color: Colors.blue.shade700,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           onPressed: model.isLoading ? null : _toogleFormType,
         ),
@@ -249,14 +265,14 @@ class _SignInPageState extends State<SignInPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             CircleImageButton(
-              text: "G",
+              key: Key("google-signin"),
               color: Colors.white,
               textColor: Colors.blue,
               onPressed: model.isLoading ? null : _signInWithGoogle,
               imagePath: 'assets/google_logo.jpg',
             ),
             CircleImageButton(
-              text: "A",
+              key: Key("apple-signin"),
               color: Colors.grey[400],
               textColor: Colors.white,
               onPressed: null,

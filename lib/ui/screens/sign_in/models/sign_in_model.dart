@@ -28,7 +28,9 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   bool submitted;
 
   Future<void> submit() async {
-    updateWith(submitted: true, isLoading: true);
+    updateWith(submitted: true);
+    if (!canSubmit) return;
+    updateWith(isLoading: true);
     try {
       if (formType == EmailSignInFormType.signIn) {
         await auth.signInWithEmailAndPassword(
@@ -43,8 +45,9 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
         );
       }
     } catch (e) {
-      updateWith(isLoading: false);
       rethrow;
+    } finally {
+      updateWith(isLoading: false);
     }
   }
 
@@ -57,7 +60,7 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   String get secondaryText {
     return formType == EmailSignInFormType.signIn
         ? 'Need an account? Sign Up'
-        : 'Have an account? Sing In';
+        : 'Have an account? Sign In';
   }
 
   String get socialMediaText {
@@ -66,10 +69,18 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
         : 'Sing Up with:';
   }
 
-  bool get canSubmit =>
-      emailValidator.isValid(email) &&
-      passwordValidator.isValid(password) &&
-      !isLoading;
+  bool get canSubmit {
+    if (formType == EmailSignInFormType.signIn) {
+      return emailValidator.isValid(email) &&
+          passwordValidator.isValid(password) &&
+          !isLoading;
+    }
+
+    return nameValidator.isValid(name) &&
+        emailValidator.isValid(email) &&
+        retypePasswordValidator.isValid(password, retypePassword) &&
+        !isLoading;
+  }
 
   String get nameErrorText {
     bool showErrorText = submitted && !nameValidator.isValid(name);
@@ -84,6 +95,12 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   String get passwordErrorText {
     bool showErrorText = submitted && !passwordValidator.isValid(password);
     return showErrorText ? invalidPasswordErrorText : null;
+  }
+
+  String get retypePasswordErrorText {
+    bool showErrorText =
+        submitted && !retypePasswordValidator.isValid(password, retypePassword);
+    return showErrorText ? invalidRetypePasswordErrorText : null;
   }
 
   void toogleFormType() {

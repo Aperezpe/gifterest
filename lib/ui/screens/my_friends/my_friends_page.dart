@@ -2,6 +2,7 @@ import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
@@ -21,6 +22,27 @@ class MyFriendsPage extends StatelessWidget {
   final Auth auth;
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
+
+  static Widget create({Auth auth, FirestoreDatabase database}) {
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return MyFriendsPage(
+            auth: auth,
+            database: database,
+            allSpecialEvents: snapshot.data,
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Something went wrong!"),
+          );
+        }
+        return LoadingScreen();
+      },
+    );
+  }
 
   void _deleteFriend(BuildContext context, Friend friend) async {
     final res = await PlatformAlertDialog(

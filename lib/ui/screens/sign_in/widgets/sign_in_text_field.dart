@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class SignInTextField extends StatelessWidget {
   SignInTextField({
+    this.key,
     @required this.controller,
     this.hintText = "",
     this.icon,
@@ -13,8 +14,9 @@ class SignInTextField extends StatelessWidget {
     this.errorText = '',
     @required this.onChanged,
     this.enabled = true,
-  });
+  }) : super(key: key);
 
+  final Key key;
   final TextEditingController controller;
   final String hintText;
   final IconData icon;

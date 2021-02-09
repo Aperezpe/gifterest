@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+// TODO: Write test for Event model
 class Event {
   Event({@required this.name});
   String name;
