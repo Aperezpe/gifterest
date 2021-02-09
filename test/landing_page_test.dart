@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/screens/home/home_page.dart';
+import 'package:bonobo/ui/main_page.dart';
 import 'package:bonobo/ui/screens/landing/landing_page.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,6 +85,6 @@ void main() {
     await pumpLandingPage(tester);
 
     // TODO: Change this to HomeScreen once I have the home screen
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(MainPage), findsOneWidget);
   });
 }
