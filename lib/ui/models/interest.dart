@@ -55,6 +55,6 @@ class Interest {
   }
 
   @override
-  String toString() =>
-      "id: $id, name: $name, ageRange: $ageRange, gender: $gender, imageUrl: $imageUrl";
+  String toString() => '''id: $id, name: $name, ageRange: $ageRange, 
+      gender: $gender, imageUrl: $imageUrl''';
 }

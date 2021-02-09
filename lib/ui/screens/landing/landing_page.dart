@@ -1,6 +1,7 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
+import 'package:bonobo/ui/screens/home/home_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
@@ -9,6 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({Key key, @required this.databaseBuilder})
+      : super(key: key);
+
+  final Database Function(String) databaseBuilder;
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -21,11 +27,12 @@ class LandingPage extends StatelessWidget {
             return SignInPage.create(context);
           } else {
             return Provider<Database>(
-              create: (_) => FirestoreDatabase(uid: user.uid),
+              create: (_) => databaseBuilder(user.uid),
               child: Consumer<Database>(
                 builder: (context, database, _) {
-                  print("User: ${user.uid} is signing in");
-                  return _buildMyFriendsPage(database, auth);
+                  print("User: ${user.uid} is signing in...");
+                  return HomePage(auth: auth);
+                  // _buildMyFriendsPage(database, auth);
                 },
               ),
             );

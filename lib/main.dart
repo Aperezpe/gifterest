@@ -1,4 +1,5 @@
 import 'package:bonobo/services/auth.dart';
+import 'package:bonobo/services/database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
           scaffoldBackgroundColor: Colors.white,
         ),
-        home: LandingPage(),
+        home: LandingPage(
+          databaseBuilder: (uid) => FirestoreDatabase(uid: uid),
+        ),
       ),
     );
   }
