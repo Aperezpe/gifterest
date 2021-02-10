@@ -85,10 +85,12 @@ class MyFriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("My Friends"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => SetFriendForm.show(context),
-        child: Icon(Icons.add),
+        actions: [
+          FlatButton(
+            child: Icon(Icons.add, color: Colors.white),
+            onPressed: () => SetFriendForm.show(context),
+          )
+        ],
       ),
       body: _buildContent(context),
     );

@@ -78,8 +78,9 @@ class SetFriendModel extends ChangeNotifier {
 
         notifyListeners();
       }
-    } catch (e) {
+    } on NoImagesSelectedException catch (e) {
       print(e.toString());
+    } catch (e) {
       rethrow;
     }
   }
@@ -152,13 +153,8 @@ class SetFriendModel extends ChangeNotifier {
     return false;
   }
 
-  void updateBorderColor() {
-    notifyListeners();
-  }
-
   void onGenderDropdownChange(int value) {
     genderDropdownValue = value;
-    updateBorderColor();
   }
 
   void updateName(String name) => updateWith(name: name);

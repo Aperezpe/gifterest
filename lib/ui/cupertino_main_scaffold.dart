@@ -18,6 +18,7 @@ class CupertinoMainScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
+        border: Border(top: BorderSide(width: 1.5, color: Colors.grey[200])),
         items: [
           _buildItem(TabItem.home),
           _buildItem(TabItem.myFriends),
@@ -41,7 +42,6 @@ class CupertinoMainScaffold extends StatelessWidget {
       icon: Icon(
         itemData.icon,
       ),
-      label: itemData.label,
       activeIcon: Icon(
         itemData.activeIcon,
       ),

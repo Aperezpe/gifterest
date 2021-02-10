@@ -6,6 +6,7 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/dropdown_list.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/profile_image_builder.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class SetFriendForm extends StatefulWidget {
     final database = Provider.of<Database>(context);
     final auth = Provider.of<AuthBase>(context);
     final user = await auth.currentUser();
-    await Navigator.of(context).push(
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) => StreamBuilder<List<Gender>>(
@@ -123,76 +124,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
     super.dispose();
   }
 
-  Widget _buildContent() {
-    // Display a loading screen if image is uploading
-    if (_model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: _model.firebaseStorage.uploadTask.snapshotEvents,
-        builder: (context, snapshot) => LoadingScreen(),
-      );
-    } else {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onPanDown: (_) {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      _buildProfileImage(context),
-                      ..._buildFormFields()
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-  }
-
-  Center _buildProfileImage(BuildContext context) {
-    return Center(
-      child: InkWell(
-        child: FutureBuilder<dynamic>(
-          future: _model.getImageOrURL(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return snapshot.connectionState == ConnectionState.done
-                  ? CircleAvatar(
-                      radius: 55,
-                      backgroundColor: Colors.pink,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 50,
-                        backgroundImage: _model.selectedImage != null
-                            ? FileImage(snapshot.data)
-                            : NetworkImage(snapshot.data),
-                      ),
-                    )
-                  : Container(height: 110);
-            } else if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()));
-            }
-            return Container(height: 110);
-          },
-        ),
-        onTap: () => _model.pickImage(context),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -224,6 +155,49 @@ class _SetFriendFormState extends State<SetFriendForm> {
         textColor: Colors.white,
       ),
     );
+  }
+
+  Widget _buildContent() {
+    // Display a loading screen if image is uploading
+    if (_model.firebaseStorage?.uploadTask != null) {
+      return StreamBuilder<TaskSnapshot>(
+        stream: _model.firebaseStorage.uploadTask.snapshotEvents,
+        builder: (context, snapshot) => LoadingScreen(),
+      );
+    } else {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    ProfileImageBuilder(
+                      futureImage: _model.getImageOrURL(),
+                      onPressed: () => _model.pickImage(context),
+                      selectedImage: _model.selectedImage,
+                    ),
+                    // GestureDetector(
+                      // behavior: HitTestBehavior.opaque,
+                      // onPanDown: (_) {
+                        // FocusScope.of(context).requestFocus(FocusNode());
+                      // },
+                      child: Column(children: _buildFormFields()),
+                    // )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   List<Widget> _buildFormFields() {

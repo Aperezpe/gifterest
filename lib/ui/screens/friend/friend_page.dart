@@ -5,6 +5,7 @@ import 'package:bonobo/ui/screens/friend/widgets/range_slider.dart';
 import 'package:bonobo/ui/screens/friend/widgets/tabs.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'models/friend_page_model.dart';
@@ -20,7 +21,7 @@ class FriendPage extends StatelessWidget {
     @required FirestoreDatabase database,
   }) async {
     await Navigator.of(context).push(
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => ChangeNotifierProvider<FriendPageModel>(
           create: (context) => FriendPageModel(
             database: database,

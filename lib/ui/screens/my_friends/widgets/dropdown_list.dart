@@ -26,7 +26,10 @@ class _DropdownListState extends State<DropdownList> {
           isExpanded: true,
           value: widget.dropdownValue,
           items: widget.items,
-          onChanged: widget.onChanged,
+          onChanged: (val) {
+            widget.onChanged(val);
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
           decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             fillColor: Colors.white,
