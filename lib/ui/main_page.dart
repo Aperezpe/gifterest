@@ -1,4 +1,6 @@
 import 'package:bonobo/ui/cupertino_main_scaffold.dart';
+import 'package:bonobo/ui/screens/calendar/calendar_page.dart';
+import 'package:bonobo/ui/screens/favorites/favorites_page.dart';
 import 'package:bonobo/ui/screens/home/home_page.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/tab_item.dart';
@@ -19,11 +21,11 @@ class _MainPageState extends State<MainPage> {
 
   Map<TabItem, WidgetBuilder> get widgetBuilder {
     return {
-      TabItem.home: (_) => HomePage(),
+      TabItem.home: (_) => HomePage(auth: widget.auth),
       TabItem.myFriends: (_) =>
           MyFriendsPage.create(auth: widget.auth, database: widget.database),
-      TabItem.calendar: (_) => Container(),
-      TabItem.favorites: (_) => Container(),
+      TabItem.calendar: (_) => CalendarPage(),
+      TabItem.favorites: (_) => FavoritesPage(),
     };
   }
 
