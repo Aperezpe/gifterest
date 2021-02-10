@@ -17,9 +17,8 @@ class MyFriendsPage extends StatelessWidget {
   MyFriendsPage({
     @required this.database,
     @required this.allSpecialEvents,
-    @required this.auth,
   });
-  final Auth auth;
+
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
 
@@ -29,7 +28,6 @@ class MyFriendsPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return MyFriendsPage(
-            auth: auth,
             database: database,
             allSpecialEvents: snapshot.data,
           );
@@ -87,15 +85,6 @@ class MyFriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("My Friends"),
-        actions: [
-          FlatButton(
-            onPressed: auth.signOut,
-            child: Text(
-              "Sign Out",
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          )
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => SetFriendForm.show(context),
