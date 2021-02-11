@@ -183,13 +183,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                       onPressed: () => _model.pickImage(context),
                       selectedImage: _model.selectedImage,
                     ),
-                    // GestureDetector(
-                      // behavior: HitTestBehavior.opaque,
-                      // onPanDown: (_) {
-                        // FocusScope.of(context).requestFocus(FocusNode());
-                      // },
-                      child: Column(children: _buildFormFields()),
-                    // )
+                    ..._buildFormFields(),
                   ],
                 ),
               ),

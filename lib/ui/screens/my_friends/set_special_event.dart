@@ -64,53 +64,6 @@ class SetSpecialEvent extends StatelessWidget {
     }
   }
 
-  // Return [Add] or [Save, Add] actions if is New Friend or
-  // Edit Friend respectively
-  List<Widget> _buildActions(List<String> events, BuildContext context) {
-    final actions = [
-      FlatButton(
-        child: Text(
-          'Save',
-          style: TextStyle(fontSize: 18, color: Colors.white),
-        ),
-        onPressed: () => _onSave(context),
-      ),
-      FlatButton(
-        child: Text(
-          'Add',
-          style: TextStyle(fontSize: 18, color: Colors.white),
-        ),
-        onPressed: () => _model.addSpecialEvent(events),
-      ),
-    ];
-
-    return _isNewFriend ? [actions[1]] : actions;
-  }
-
-  Widget _buildContent(List<String> events) {
-    if (_model.firebaseStorageService?.uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: _model.firebaseStorageService.uploadTask.snapshotEvents,
-        builder: (context, snapshot) => LoadingScreen(),
-      );
-    } else {
-      final specialEvents = _model.friendSpecialEvents;
-      return ListView(
-        padding: EdgeInsets.only(bottom: 80),
-        children: [
-          for (var specialEvent in specialEvents)
-            AddEventCard(
-              key: ValueKey(specialEvent.id),
-              index: _model.friendSpecialEvents.indexOf(specialEvent),
-              events: events,
-              model: _model,
-              specialEvent: specialEvent,
-            ),
-        ],
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Event>>(
@@ -145,5 +98,49 @@ class SetSpecialEvent extends StatelessWidget {
         return LoadingScreen();
       },
     );
+  }
+
+  // Return [Add] or [Save, Add] actions if is New Friend or
+  // Edit Friend respectively
+  List<Widget> _buildActions(List<String> events, BuildContext context) {
+    final actions = [
+      FlatButton(
+        child: Text(
+          'Save',
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+        onPressed: () => _onSave(context),
+      ),
+      FlatButton(
+        child: Icon(Icons.add, color: Colors.white),
+        onPressed: () => _model.addSpecialEvent(events),
+      ),
+    ];
+
+    return _isNewFriend ? [actions[1]] : actions;
+  }
+
+  Widget _buildContent(List<String> events) {
+    if (_model.firebaseStorageService?.uploadTask != null) {
+      return StreamBuilder<TaskSnapshot>(
+        stream: _model.firebaseStorageService.uploadTask.snapshotEvents,
+        builder: (context, snapshot) => LoadingScreen(),
+      );
+    } else {
+      final specialEvents = _model.friendSpecialEvents;
+      return ListView(
+        padding: EdgeInsets.only(bottom: 80),
+        children: [
+          for (var specialEvent in specialEvents)
+            AddEventCard(
+              key: ValueKey(specialEvent.id),
+              index: _model.friendSpecialEvents.indexOf(specialEvent),
+              events: events,
+              model: _model,
+              specialEvent: specialEvent,
+            ),
+        ],
+      );
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bonobo/ui/common_widgets/platform_switch.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/date_picker.dart';
@@ -78,35 +79,38 @@ class _AddEventCardState extends State<AddEventCard> {
                   ),
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text("Concurrent", style: p),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      height: 42.0,
-                      child: Switch(
-                        value: _isConcurrent ?? false,
-                        onChanged: (value) => {
-                          setState(() => _isConcurrent = value),
-                          widget.model.updateSpecialEvent(
-                            widget.index,
-                            isConcurrent: _isConcurrent,
-                          ),
-                        },
-                        activeColor: Colors.greenAccent,
-                        activeTrackColor: Colors.lightGreenAccent[400],
+              Container(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Concurrent", style: p),
                       ),
                     ),
-                  )
-                ],
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        height: 42.0,
+                        child: PlatformSwitch(
+                          value: _isConcurrent ?? false,
+                          onChanged: (value) => {
+                            setState(() => _isConcurrent = value),
+                            widget.model.updateSpecialEvent(
+                              widget.index,
+                              isConcurrent: _isConcurrent,
+                            ),
+                          },
+                          activeColor: Colors.greenAccent,
+                          trackColor: Colors.lightGreenAccent[400],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
