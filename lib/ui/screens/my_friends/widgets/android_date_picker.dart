@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import '../format.dart';
-import 'input_dropdown.dart';
 
-class DatePicker extends StatelessWidget {
-  const DatePicker({
+class AndroidDatePicker extends StatelessWidget {
+  const AndroidDatePicker({
     Key key,
     this.labelText,
-    this.selectedDate,
+    @required this.selectedDate,
     this.selectDate,
   }) : super(key: key);
 
@@ -30,17 +30,16 @@ class DatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valueStyle = TextStyle(fontSize: 16.0);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Expanded(
           flex: 5,
-          child: InputDropdown(
-            labelText: labelText,
-            valueText: Format.date(selectedDate),
-            valueStyle: valueStyle,
-            onPressed: () => _selectDate(context),
+          child: GestureDetector(
+            onTap: () => _selectDate(context),
+            child: CustomDropdownButton(
+              selectedValue: Format.date(selectedDate),
+            ),
           ),
         ),
       ],

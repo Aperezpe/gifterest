@@ -1,11 +1,12 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
+import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/dropdown_list.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/profile_image_builder.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +19,7 @@ import 'models/friend.dart';
 
 class SetFriendForm extends StatefulWidget {
   SetFriendForm({@required this.model});
-  final model;
+  final SetFriendModel model;
 
   static Future<void> show(
     BuildContext context, {
@@ -63,10 +64,10 @@ class SetFriendForm extends StatefulWidget {
 }
 
 class _SetFriendFormState extends State<SetFriendForm> {
-  final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey;
 
-  final FocusNode _nameFocusNode = FocusNode();
-  final FocusNode _ageFocusNode = FocusNode();
+  FocusNode _nameFocusNode;
+  FocusNode _ageFocusNode;
 
   SetFriendModel get _model => widget.model;
   Friend get _friend => _model.friend;
@@ -74,6 +75,16 @@ class _SetFriendFormState extends State<SetFriendForm> {
 
   String _name = "";
   int _age;
+
+  @override
+  void initState() {
+    super.initState();
+    _formKey = GlobalKey<FormState>();
+    _nameFocusNode = FocusNode();
+    _ageFocusNode = FocusNode();
+    _name = _friend?.name;
+    _age = _friend?.age;
+  }
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -109,20 +120,14 @@ class _SetFriendFormState extends State<SetFriendForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  /// Initialize values on form if editing friend
-  @override
-  void initState() {
-    super.initState();
-    _name = _friend?.name;
-    _age = _friend?.age;
-  }
-
   @override
   void dispose() {
     _nameFocusNode.dispose();
     _ageFocusNode.dispose();
     super.dispose();
   }
+
+  void closeDropdown() {}
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +188,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                       onPressed: () => _model.pickImage(context),
                       selectedImage: _model.selectedImage,
                     ),
+                    SizedBox(height: 25),
                     ..._buildFormFields(),
                   ],
                 ),
@@ -196,23 +202,22 @@ class _SetFriendFormState extends State<SetFriendForm> {
 
   List<Widget> _buildFormFields() {
     return [
-      TextFormField(
+      CustomTextField(
         focusNode: _nameFocusNode,
         textInputAction: TextInputAction.next,
         initialValue: _name,
-        decoration: InputDecoration(
-          labelText: 'Name',
-        ),
+        labelText: "Name",
         validator: (value) => value.isNotEmpty ? null : "Name can't be empty",
         onSaved: (value) => _model.updateName(value),
         onChanged: (value) => _model.updateName(value),
         onEditingComplete: _nameEditingComplete,
       ),
-      TextFormField(
+      SizedBox(height: 15),
+      CustomTextField(
         focusNode: _ageFocusNode,
         initialValue: _age?.toString(),
         textInputAction: TextInputAction.done,
-        decoration: InputDecoration(labelText: 'Age'),
+        labelText: "Age",
         keyboardType: TextInputType.numberWithOptions(
           signed: false,
           decimal: false,
@@ -222,15 +227,9 @@ class _SetFriendFormState extends State<SetFriendForm> {
         onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
       ),
       SizedBox(height: 15.0),
-      DropdownList(
-        dropdownValue: _model.genderDropdownValue,
-        items: [
-          for (int i = 0; i < _model.genders.length; i++)
-            DropdownMenuItem(
-              child: Text(_model.genders[i].type),
-              value: i,
-            )
-        ],
+      PlatformDropdown(
+        initialValue: _model.genderTypes[_model.initialGenderValue],
+        values: _model.genderTypes,
         onChanged: _model.onGenderDropdownChange,
       ),
     ];
