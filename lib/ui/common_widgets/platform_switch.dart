@@ -3,21 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PlatformSwitch extends PlatformWidget {
-  PlatformSwitch(
-      {this.value, this.onChanged, this.activeColor, this.trackColor});
+  PlatformSwitch({this.value, this.onChanged});
 
   final bool value;
   final ValueChanged<bool> onChanged;
-  final Color activeColor;
-  final Color trackColor;
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {
     return CupertinoSwitch(
       value: value,
       onChanged: onChanged,
-      activeColor: activeColor,
-      trackColor: trackColor,
     );
   }
 
@@ -26,8 +21,7 @@ class PlatformSwitch extends PlatformWidget {
     return Switch(
       value: value,
       onChanged: onChanged,
-      activeColor: activeColor,
-      activeTrackColor: trackColor,
+      activeColor: Colors.teal[500],
     );
   }
 }

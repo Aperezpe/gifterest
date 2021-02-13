@@ -98,8 +98,6 @@ class _AddEventCardState extends State<AddEventCard> {
                               isConcurrent: _isConcurrent,
                             ),
                           },
-                          activeColor: Colors.greenAccent,
-                          trackColor: Colors.lightGreenAccent[400],
                         ),
                       ),
                     )
