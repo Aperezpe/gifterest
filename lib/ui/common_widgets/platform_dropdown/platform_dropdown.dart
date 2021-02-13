@@ -10,8 +10,10 @@ class PlatformDropdown extends PlatformWidget {
     this.onChanged,
     @required this.initialValue,
     @required this.values,
+    this.title,
   });
 
+  final String title;
   final String initialValue;
   final List<String> values;
   final ValueChanged<int> onChanged;
@@ -27,16 +29,11 @@ class PlatformDropdown extends PlatformWidget {
 
   @override
   Widget buildMaterialWidget(BuildContext context) {
-    return
-        // CupertinoDropdown(
-        //   initialValue: initialValue,
-        //   values: values,
-        //   onChanged: onChanged,
-        // );
-        AndroidDropdown(
+    return AndroidDropdown(
       initialValue: initialValue,
       values: values,
       onChanged: onChanged,
+      title: title,
     );
   }
 }

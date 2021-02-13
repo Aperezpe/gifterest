@@ -7,19 +7,19 @@ import '../format.dart';
 class AndroidDatePicker extends StatelessWidget {
   const AndroidDatePicker({
     Key key,
-    this.labelText,
+    this.initialDate,
     @required this.selectedDate,
     this.selectDate,
   }) : super(key: key);
 
-  final String labelText;
+  final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: initialDate,
       firstDate: DateTime(2019, 1),
       lastDate: DateTime(2100),
     );

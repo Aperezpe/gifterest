@@ -51,6 +51,7 @@ class _AddEventCardState extends State<AddEventCard> {
             children: [
               PlatformDropdown(
                 initialValue: widget.specialEvent.name,
+                title: "Choose Event",
                 values: widget.events,
                 onChanged: (value) => {
                   widget.model.updateSpecialEvent(
@@ -61,7 +62,7 @@ class _AddEventCardState extends State<AddEventCard> {
               ),
               SizedBox(height: 15),
               PlatformDatePicker(
-                labelText: 'Date',
+                initialDate: widget.specialEvent.date,
                 selectedDate: _specialDate,
                 selectDate: (date) => {
                   setState(() => _specialDate = date),

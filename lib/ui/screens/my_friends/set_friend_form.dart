@@ -231,6 +231,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         initialValue: _model.genderTypes[_model.initialGenderValue],
         values: _model.genderTypes,
         onChanged: _model.onGenderDropdownChange,
+        title: "Choose Gender",
       ),
     ];
   }

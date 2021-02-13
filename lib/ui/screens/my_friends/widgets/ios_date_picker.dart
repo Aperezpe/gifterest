@@ -6,12 +6,12 @@ import '../format.dart';
 class IOSDatePicker extends StatelessWidget {
   const IOSDatePicker({
     Key key,
-    this.labelText,
+    this.initialDate,
     @required this.selectedDate,
     this.selectDate,
   }) : super(key: key);
 
-  final String labelText;
+  final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
 
@@ -46,7 +46,7 @@ class IOSDatePicker extends StatelessWidget {
               ),
               Flexible(
                 child: CupertinoDatePicker(
-                  initialDateTime: DateTime.now(),
+                  initialDateTime: initialDate,
                   minimumYear: 1800,
                   maximumYear: 2500,
                   mode: CupertinoDatePickerMode.date,

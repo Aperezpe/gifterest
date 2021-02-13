@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 
 class PlatformDatePicker extends PlatformWidget {
   PlatformDatePicker({
-    this.labelText,
     this.selectedDate,
     this.selectDate,
+    this.initialDate,
   });
 
-  final String labelText;
+  final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {
     return IOSDatePicker(
-      labelText: labelText,
+      initialDate: initialDate,
       selectedDate: selectedDate,
       selectDate: selectDate,
     );
@@ -26,7 +26,7 @@ class PlatformDatePicker extends PlatformWidget {
   @override
   Widget buildMaterialWidget(BuildContext context) {
     return AndroidDatePicker(
-      labelText: labelText,
+      initialDate: initialDate,
       selectedDate: selectedDate,
       selectDate: selectDate,
     );
