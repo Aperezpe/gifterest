@@ -40,12 +40,10 @@ class ProfileImageBuilder extends StatelessWidget {
                         bottom: 0.0,
                         height: 45,
                         child: FloatingActionButton(
-                            child: Icon(Icons.camera_alt, color: Colors.blue),
-                            backgroundColor: Colors.white,
-                            onPressed: () {
-                              print("Pressed!");
-                              onPressed();
-                            }),
+                          child: Icon(Icons.camera_alt, color: Colors.blue),
+                          backgroundColor: Colors.white,
+                          onPressed: onPressed,
+                        ),
                       ),
                     ],
                   )

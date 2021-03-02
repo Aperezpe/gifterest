@@ -1,6 +1,5 @@
-import 'package:bonobo/ui/screens/friend/models/friend_page_model.dart';
+import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../extensions/string_capitalize.dart';
@@ -36,12 +35,13 @@ class FirestoreService {
       query = ref.where('age_range', arrayContains: 12);
     }
 
-    //TODO: Make sure that friend.gender is NEVER null
-    query = query.where('gender', whereIn: [
-      "",
-      friend.gender.capitalize(),
-      friend.gender.unCapitalize()
-    ]);
+    /// When friend gender is Other, GET all interests
+    /// Otherwise, Get interests with gender "" + friend gender
+    if (friend.gender == "Other") {
+      query = query.where('gender', whereIn: ["", "Male", "Female"]);
+    } else {
+      query = query.where('gender', whereIn: ["", friend.gender.capitalize()]);
+    }
 
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.docs
@@ -54,8 +54,6 @@ class FirestoreService {
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
     @required Friend friend,
-    @required int startPrice,
-    @required int endPrice,
     EventType eventType,
   }) {
     CollectionReference ref = FirebaseFirestore.instance.collection(path);
@@ -64,6 +62,9 @@ class FirestoreService {
     switch (eventType) {
       // TODO: possibly create a girl baby shower and boy baby shower
       // because this will show both since friend.gender is not relevant
+
+      /// Query by BabyShower of Anniversary. If not given, then just query
+      /// by the friend's interests
       case EventType.babyShower:
         query = ref.where('event', isEqualTo: "Babyshower");
         break;
