@@ -19,7 +19,16 @@ class SetSpecialEventModel extends ChangeNotifier {
     @required this.isNewFriend,
     this.selectedImage,
   }) {
-    if (friendSpecialEvents == null) friendSpecialEvents = [];
+    /// Create a Birthday event by default to increase friend setup speed
+    if (friendSpecialEvents == null)
+      friendSpecialEvents = [
+        SpecialEvent(
+          id: documentUUID(),
+          name: "Birthday",
+          date: DateTime.now(),
+          friendId: friend.id,
+        ),
+      ];
     onDeleteSpecialEvents = [];
     firebaseStorageService =
         FirebaseStorageService(uid: database.uid, friend: friend);
