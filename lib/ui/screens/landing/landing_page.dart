@@ -31,7 +31,6 @@ class LandingPage extends StatelessWidget {
                 builder: (context, database, _) {
                   print("User: ${user.uid} is signing in...");
                   return MainPage(auth: auth, database: database);
-                  // _buildMyFriendsPage(database, auth);
                 },
               ),
             );
@@ -42,26 +41,4 @@ class LandingPage extends StatelessWidget {
       },
     );
   }
-
-  // StreamBuilder<List<SpecialEvent>> _buildMyFriendsPage(
-  //     Database database, Auth auth) {
-  //   return StreamBuilder<List<SpecialEvent>>(
-  //     stream: database.specialEventsStream(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasData) {
-  //         return MyFriendsPage(
-  //           auth: auth,
-  //           database: database,
-  //           allSpecialEvents: snapshot.data,
-  //         );
-  //       }
-  //       if (snapshot.hasError) {
-  //         return Center(
-  //           child: Text("Something went wrong!"),
-  //         );
-  //       }
-  //       return LoadingScreen();
-  //     },
-  //   );
-  // }
 }

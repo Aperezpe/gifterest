@@ -1,5 +1,4 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
@@ -25,9 +24,10 @@ class SetFriendModel extends ChangeNotifier {
   String name = "";
   int age = 0;
   bool isNewFriend;
-  int genderDropdownValue = 0;
+  int initialGenderValue = 0;
   List<int> ageRange;
   File selectedImage;
+  List<String> genderTypes;
   FirebaseStorageService firebaseStorage;
   String profileImageUrl;
 
@@ -38,8 +38,11 @@ class SetFriendModel extends ChangeNotifier {
     @required this.genders,
     this.friend,
   }) {
+    name = friend?.name;
+    age = friend?.age;
     isNewFriend = friend == null ? true : false;
     firebaseStorage = FirebaseStorageService(uid: uid, friend: friend);
+    genderTypes = genders.map((gender) => gender.type).toList();
     initializeGenderDropdownValue();
     initializeAgeRange();
   }
@@ -78,8 +81,9 @@ class SetFriendModel extends ChangeNotifier {
 
         notifyListeners();
       }
-    } catch (e) {
+    } on NoImagesSelectedException catch (e) {
       print(e.toString());
+    } catch (e) {
       rethrow;
     }
   }
@@ -120,8 +124,7 @@ class SetFriendModel extends ChangeNotifier {
 
   void initializeGenderDropdownValue() {
     if (isNewFriend) return;
-    final genderTypes = genders.map((gender) => gender.type).toList();
-    genderDropdownValue = genderTypes.indexOf(friend.gender);
+    initialGenderValue = genderTypes.indexOf(friend.gender);
   }
 
   void initializeAgeRange() {
@@ -137,7 +140,7 @@ class SetFriendModel extends ChangeNotifier {
 
   bool genderChanged() {
     if (isNewFriend) return false;
-    if (genders[genderDropdownValue].type != friend.gender) {
+    if (genders[initialGenderValue].type != friend.gender) {
       return true;
     }
     return false;
@@ -152,13 +155,8 @@ class SetFriendModel extends ChangeNotifier {
     return false;
   }
 
-  void updateBorderColor() {
-    notifyListeners();
-  }
-
   void onGenderDropdownChange(int value) {
-    genderDropdownValue = value;
-    updateBorderColor();
+    initialGenderValue = value;
   }
 
   void updateName(String name) => updateWith(name: name);
@@ -191,7 +189,7 @@ class SetFriendModel extends ChangeNotifier {
       name: name,
       age: age,
       imageUrl: friend?.imageUrl,
-      gender: genders[genderDropdownValue].type,
+      gender: genders[initialGenderValue].type,
       interests: (isNewFriend || ageRangeChanged() || genderChanged())
           ? []
           : friend.interests,

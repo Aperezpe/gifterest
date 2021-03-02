@@ -41,7 +41,7 @@ class FirebaseStorageService implements Storage {
 
   Future<void> deleteFriendProfileImage() async {
     if (!friend.imageUrl.contains("placeholder")) {
-      final ref = _storage.ref(await getFriendProfileImageURL());
+      final ref = _storage.ref(StoragePath.friendProfileImage(uid, friend));
       ref.delete();
     }
   }

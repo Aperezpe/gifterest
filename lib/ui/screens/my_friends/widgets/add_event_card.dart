@@ -1,11 +1,11 @@
+import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
+import 'package:bonobo/ui/common_widgets/platform_switch.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/date_picker.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
 import '../../../style/fontStyle.dart';
 
 import 'package:flutter/material.dart';
-
-import 'dropdown_list.dart';
 
 class AddEventCard extends StatefulWidget {
   final int index;
@@ -26,16 +26,16 @@ class AddEventCard extends StatefulWidget {
 }
 
 class _AddEventCardState extends State<AddEventCard> {
-  int _eventDropdownValue;
   DateTime _specialDate;
   bool _isConcurrent;
+  List<String> specialEventValues;
 
   int get eventNumber => widget.index + 1;
 
   @override
   void initState() {
-    _eventDropdownValue = widget.events.indexOf(widget.specialEvent.name);
     _specialDate = widget.specialEvent.date ?? DateTime.now();
+
     _isConcurrent = widget.specialEvent.isConcurrent ?? false;
     super.initState();
   }
@@ -46,29 +46,23 @@ class _AddEventCardState extends State<AddEventCard> {
       children: [
         _buildHeader(),
         Container(
-          padding: EdgeInsets.only(left: 15.0, right: 18.0),
+          padding: EdgeInsets.only(left: 15.0, right: 18.0, top: 5),
           child: Column(
             children: [
-              DropdownList(
-                dropdownValue: _eventDropdownValue,
-                labelText: "Event",
-                items: [
-                  for (int i = 0; i < widget.events.length; i++)
-                    DropdownMenuItem(
-                      child: Text(widget.events[i]),
-                      value: i,
-                    )
-                ],
+              PlatformDropdown(
+                initialValue: widget.specialEvent.name,
+                title: "Choose Event",
+                values: widget.events,
                 onChanged: (value) => {
-                  setState(() => {_eventDropdownValue = value}),
                   widget.model.updateSpecialEvent(
                     widget.index,
                     name: widget.events[value],
                   )
                 },
               ),
-              DatePicker(
-                labelText: 'Date',
+              SizedBox(height: 15),
+              PlatformDatePicker(
+                initialDate: widget.specialEvent.date,
                 selectedDate: _specialDate,
                 selectDate: (date) => {
                   setState(() => _specialDate = date),
@@ -78,35 +72,37 @@ class _AddEventCardState extends State<AddEventCard> {
                   ),
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text("Concurrent", style: p),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      height: 42.0,
-                      child: Switch(
-                        value: _isConcurrent ?? false,
-                        onChanged: (value) => {
-                          setState(() => _isConcurrent = value),
-                          widget.model.updateSpecialEvent(
-                            widget.index,
-                            isConcurrent: _isConcurrent,
-                          ),
-                        },
-                        activeColor: Colors.greenAccent,
-                        activeTrackColor: Colors.lightGreenAccent[400],
+              Container(
+                height: 60,
+                padding: EdgeInsets.only(left: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Concurrent", style: p),
                       ),
                     ),
-                  )
-                ],
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        height: 42.0,
+                        child: PlatformSwitch(
+                          value: _isConcurrent ?? false,
+                          onChanged: (value) => {
+                            setState(() => _isConcurrent = value),
+                            widget.model.updateSpecialEvent(
+                              widget.index,
+                              isConcurrent: _isConcurrent,
+                            ),
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),

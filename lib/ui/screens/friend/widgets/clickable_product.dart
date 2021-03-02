@@ -1,22 +1,35 @@
 import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
+import 'package:bonobo/ui/screens/friend/widgets/product_page.dart';
 import 'package:flutter/material.dart';
 
-class ClickableProduct extends StatelessWidget {
+class ClickableProduct extends StatefulWidget {
   ClickableProduct({
     @required this.product,
-    @required this.onTap,
   });
 
   final Product product;
-  final VoidCallback onTap;
+
+  @override
+  _ClickableProductState createState() => _ClickableProductState();
+}
+
+class _ClickableProductState extends State<ClickableProduct> {
+  bool showProductDetails = false;
+
+  void _showProductDetails() {
+    Navigator.of(context).push(MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => ProductPage(product: widget.product),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: InkWell(
-        onTap: onTap,
+    return GestureDetector(
+      onTap: _showProductDetails,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
           children: [
             Expanded(
@@ -24,7 +37,7 @@ class ClickableProduct extends StatelessWidget {
                 margin: EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(product.imageUrl),
+                    image: NetworkImage(widget.product.imageUrl),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -35,19 +48,14 @@ class ClickableProduct extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    product.name,
+                    widget.product.name,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                    maxLines: 2,
                   ),
-                  // Text(
-                  //   product.distributor,
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(fontSize: 14),
-                  // ),
                   Text(
-                    "\$${product.price}",
+                    "\$${widget.product.price}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
