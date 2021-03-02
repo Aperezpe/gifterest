@@ -1,5 +1,6 @@
 import 'package:bonobo/ui/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductPage extends StatelessWidget {
   final Product product;
@@ -8,6 +9,15 @@ class ProductPage extends StatelessWidget {
     Key key,
     this.product,
   }) : super(key: key);
+
+  _launchURL() async {
+    String url = product.itemUrl;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +55,9 @@ class ProductPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  product.name,
+                  "\$${product.price}",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -56,14 +66,8 @@ class ProductPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  "${product.price}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 10),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: _launchURL,
                   color: Colors.orange,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),

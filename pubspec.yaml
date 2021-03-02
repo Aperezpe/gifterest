@@ -37,6 +37,7 @@ dependencies:
   test: ^1.15.7
   email_validator: "^1.0.5"
   flutter_material_pickers: ^1.9.2
+  url_launcher: ^5.7.10
 
   flutter:
     sdk: flutter
