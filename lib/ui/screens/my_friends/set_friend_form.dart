@@ -72,6 +72,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
   SetFriendModel get _model => widget.model;
   Friend get _friend => _model.friend;
   bool get _isNewFriend => _model.isNewFriend;
+  bool get _isUploadingImage => _model.firebaseStorage?.uploadTask != null;
 
   String _name = "";
   int _age;
@@ -127,8 +128,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
     super.dispose();
   }
 
-  void closeDropdown() {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,8 +150,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
       body: _buildContent(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: BottomButton(
-        onPressed:
-            _model.firebaseStorage?.uploadTask != null ? null : _onSetEvent,
+        onPressed: _isUploadingImage ? null : _onSetEvent,
         color: Colors.blue,
         text: _isNewFriend
             ? "Add Events 👉"
@@ -222,7 +220,11 @@ class _SetFriendFormState extends State<SetFriendForm> {
           signed: false,
           decimal: false,
         ),
-        validator: (value) => value.isNotEmpty ? null : "Age can't be empty",
+        validator: (value) {
+          final int age = int.tryParse(value) ?? 0;
+          final bool isDigit = age > 0 ? true : false;
+          return (value.isNotEmpty && isDigit) ? null : "Invalid Age";
+        },
         onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
         onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
       ),
