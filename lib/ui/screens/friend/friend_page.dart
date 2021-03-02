@@ -48,8 +48,6 @@ class _FriendPageState extends State<FriendPage>
   TabController _tabController;
   List<Tab> myTabs;
 
-  bool showProductDetails = false;
-
   @override
   void initState() {
     super.initState();
@@ -72,76 +70,50 @@ class _FriendPageState extends State<FriendPage>
       appBar: AppBar(
         title: Text(friend.name),
       ),
-      body: AnimatedSwitcher(
-        transitionBuilder: AnimatedSwitcher.defaultTransitionBuilder,
-        duration: Duration(microseconds: 200),
-        child: IndexedStack(
-          index: showProductDetails ? 1 : 0,
+      body: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Container(
+                padding: EdgeInsets.only(top: 15, bottom: 15),
+                child: CircleAvatar(
+                  radius: 61,
+                  backgroundColor: Colors.grey[300],
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: NetworkImage(friend.imageUrl),
+                  ),
+                ),
+              ),
+            ),
+            BudgetSlider(model: widget.model),
             Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              height: 80,
+              child: TabBar(
+                controller: _tabController,
+                indicatorColor: Colors.green,
+                tabs: myTabs,
+                labelColor: Colors.black,
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
                 children: [
-                  Center(
-                    child: Container(
-                      padding: EdgeInsets.only(top: 15, bottom: 15),
-                      child: CircleAvatar(
-                        radius: 61,
-                        backgroundColor: Colors.grey[300],
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundImage: NetworkImage(friend.imageUrl),
-                        ),
-                      ),
+                  for (var tab in myTabs)
+                    ProductsGridView.create(
+                      friend: friend,
+                      database: widget.model.database,
+                      eventType: getEventType(tab.text),
                     ),
-                  ),
-                  BudgetSlider(model: widget.model),
-                  Container(
-                    height: 80,
-                    child: TabBar(
-                      controller: _tabController,
-                      indicatorColor: Colors.green,
-                      tabs: myTabs,
-                      labelColor: Colors.black,
-                    ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        for (var tab in myTabs)
-                          ProductsGridView.create(
-                            onTap: _showProductDetails,
-                            friend: friend,
-                            database: widget.model.database,
-                            eventType: getEventType(tab.text),
-                          ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
-            Container(
-              color: Colors.red,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  RaisedButton(
-                    onPressed: () => setState(() => showProductDetails = false),
-                    child: Text("Close"),
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),
     );
-  }
-
-  void _showProductDetails() {
-    setState(() => showProductDetails = true);
   }
 }

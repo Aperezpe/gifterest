@@ -12,17 +12,14 @@ class ProductsGridView extends StatefulWidget {
   const ProductsGridView({
     Key key,
     @required this.model,
-    @required this.onTap,
   }) : super(key: key);
 
   final ProductsGridModel model;
-  final VoidCallback onTap;
 
   static Widget create({
     @required Friend friend,
     @required FirestoreDatabase database,
     @required EventType eventType,
-    @required onTap,
   }) {
     return ChangeNotifierProvider<ProductsGridModel>(
       create: (context) => ProductsGridModel(
@@ -31,7 +28,7 @@ class ProductsGridView extends StatefulWidget {
         eventType: eventType,
       ),
       child: Consumer<ProductsGridModel>(
-        builder: (_, model, __) => ProductsGridView(model: model, onTap: onTap),
+        builder: (_, model, __) => ProductsGridView(model: model),
       ),
     );
   }
@@ -72,7 +69,6 @@ class _ProductsGridViewState extends State<ProductsGridView>
             ),
             itemBuilder: (context, index) {
               return ClickableProduct(
-                onTap: widget.onTap,
                 product: snapshot.data[index],
               );
             },
