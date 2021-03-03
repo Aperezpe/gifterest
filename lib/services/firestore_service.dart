@@ -28,11 +28,11 @@ class FirestoreService {
 
     // Query interests by friend age
     if (friend.age < 3) {
-      query = ref.where('age_range', arrayContains: 0);
+      query = ref.where('age_range', isEqualTo: [0, 2]);
     } else if (friend.age >= 3 && friend.age < 12) {
-      query = ref.where('age_range', arrayContains: 3);
+      query = ref.where('age_range', isEqualTo: [3, 11]);
     } else {
-      query = ref.where('age_range', arrayContains: 12);
+      query = ref.where('age_range', isEqualTo: [12, 100]);
     }
 
     /// When friend gender is Other, GET all interests
@@ -77,6 +77,16 @@ class FirestoreService {
         query = ref.where('categories', arrayContainsAny: friend.interests);
         break;
     }
+
+    // Query products by friend age
+    if (friend.age < 3) {
+      query = query.where('age_range', isEqualTo: [0, 2]);
+    } else if (friend.age >= 3 && friend.age < 12) {
+      query = query.where('age_range', isEqualTo: [3, 11]);
+    } else {
+      query = query.where('age_range', isEqualTo: [12, 100]);
+    }
+
     final snapshots = query.snapshots();
     return snapshots.map((snapshots) => snapshots.docs
         .map((snapshot) => builder(snapshot.data(), snapshot.id))
