@@ -1,41 +1,23 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/screens/friend/widgets/products_grid.dart';
-import 'package:bonobo/ui/screens/friend/widgets/range_slider.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'models/friend_page_model.dart';
 
 class FriendPage extends StatefulWidget {
-  FriendPage({Key key, @required this.model}) : super(key: key);
-  final FriendPageModel model;
+  FriendPage({
+    Key key,
+    @required this.friend,
+    @required this.friendSpecialEvents,
+    @required this.database,
+  }) : super(key: key);
 
-  static Future<void> show(
-    BuildContext context, {
-    @required Friend friend,
-    @required List<SpecialEvent> friendSpecialEvents,
-    @required FirestoreDatabase database,
-  }) async {
-    await Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<FriendPageModel>(
-          create: (context) => FriendPageModel(
-            database: database,
-            friend: friend,
-            friendSpecialEvents: friendSpecialEvents,
-          ),
-          child: Consumer<FriendPageModel>(
-            builder: (context, model, __) => FriendPage(
-              model: model,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  final Friend friend;
+  final List<SpecialEvent> friendSpecialEvents;
+  final FirestoreDatabase database;
 
   @override
   _FriendPageState createState() => _FriendPageState();
@@ -43,24 +25,33 @@ class FriendPage extends StatefulWidget {
 
 class _FriendPageState extends State<FriendPage>
     with SingleTickerProviderStateMixin {
-  Friend get friend => widget.model.friend;
+  Friend get friend => widget.friend;
 
+  RangeValues onStartValues;
+  RangeValues currentValues;
+
+  ScrollController _scrollController;
   TabController _tabController;
   List<Tab> myTabs;
 
   @override
   void initState() {
     super.initState();
+    onStartValues = RangeValues(0, 100);
+    currentValues = onStartValues;
+
     myTabs = <Tab>[
       Tab(text: "All"),
-      for (var event in widget.model.friendSpecialEvents) Tab(text: event.name),
+      for (var event in widget.friendSpecialEvents) Tab(text: event.name),
     ];
     _tabController = TabController(vsync: this, length: myTabs.length);
+    _scrollController = ScrollController();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -71,49 +62,115 @@ class _FriendPageState extends State<FriendPage>
         title: Text(friend.name),
       ),
       body: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                padding: EdgeInsets.only(top: 15, bottom: 15),
-                child: CircleAvatar(
-                  radius: 61,
-                  backgroundColor: Colors.grey[300],
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(friend.imageUrl),
+        child: NestedScrollView(
+          controller: _scrollController,
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverToBoxAdapter(
+                child: Container(
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                          child: CircleAvatar(
+                            radius: 61,
+                            backgroundColor: Colors.grey[300],
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundImage: NetworkImage(friend.imageUrl),
+                            ),
+                          ),
+                        ),
+                      ),
+                      _buildRangeSlider(),
+                    ],
                   ),
                 ),
               ),
-            ),
-            BudgetSlider(model: widget.model),
-            Container(
-              height: 80,
-              child: TabBar(
-                controller: _tabController,
-                indicatorColor: Colors.green,
-                tabs: myTabs,
-                labelColor: Colors.black,
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 80,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: Colors.green,
+                    tabs: myTabs,
+                    labelColor: Colors.black,
+                  ),
+                ),
               ),
+            ];
+          },
+          body: Container(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                for (var tab in myTabs)
+                  ProductsGridView.create(
+                    friend: friend,
+                    database: widget.database,
+                    eventType: getEventType(tab.text),
+                  ),
+              ],
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  for (var tab in myTabs)
-                    ProductsGridView.create(
-                      friend: friend,
-                      database: widget.model.database,
-                      eventType: getEventType(tab.text),
-                    ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRangeSlider() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 15, bottom: 10),
+          child: Text("Budget", style: h3),
+        ),
+        Container(
+          padding: EdgeInsets.only(left: 18, right: 18),
+          child: Row(
+            children: [
+              Container(
+                  width: 25, child: Text("${currentValues.start.round()}")),
+              Expanded(
+                child: RangeSlider(
+                  values: currentValues,
+                  min: 0,
+                  max: 100,
+                  divisions: 10,
+                  onChanged: (values) => setState(() => currentValues = values),
+                  onChangeStart: (values) => onStartValues = values,
+                  onChangeEnd: _onChangeEnd,
+                ),
+              ),
+              Container(
+                width: 40,
+                child: currentValues.end == 100
+                    ? Text("${currentValues.end.round()}+")
+                    : Text("${currentValues.end.round()}"),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Prevents rangeValues to be equal
+  void _onChangeEnd(RangeValues endValues) {
+    setState(
+      () {
+        if (onStartValues.start != endValues.start) {
+          if (endValues.start == endValues.end) {
+            currentValues = RangeValues(endValues.start - 10, endValues.end);
+          }
+        } else if (onStartValues.end != endValues.end) {
+          if (endValues.start == endValues.end) {
+            currentValues = RangeValues(endValues.start, endValues.end + 10);
+          }
+        }
+      },
     );
   }
 }
