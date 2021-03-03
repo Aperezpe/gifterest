@@ -40,11 +40,6 @@ class ProductsGridView extends StatefulWidget {
 class _ProductsGridViewState extends State<ProductsGridView>
     with AutomaticKeepAliveClientMixin<ProductsGridView> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   bool get wantKeepAlive => true;
 
   @override
@@ -59,8 +54,6 @@ class _ProductsGridViewState extends State<ProductsGridView>
           return GridView.builder(
             padding: EdgeInsets.all(8.0),
             itemCount: snapshot.data.length,
-            shrinkWrap: true,
-            primary: false,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: .9,

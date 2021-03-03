@@ -123,11 +123,14 @@ class MyFriendsPage extends StatelessWidget {
           backgroundImage: NetworkImage(friend.imageUrl),
           friend: friend,
           onTap: () => {
-            FriendPage.show(
-              context,
-              database: database,
-              friend: friend,
-              friendSpecialEvents: getFriendSpecialEvents(friend),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => FriendPage(
+                  database: database,
+                  friend: friend,
+                  friendSpecialEvents: getFriendSpecialEvents(friend),
+                ),
+              ),
             ),
           },
         ),
