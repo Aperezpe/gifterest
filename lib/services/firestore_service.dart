@@ -78,13 +78,15 @@ class FirestoreService {
         break;
     }
 
-    // Query products by friend age
-    if (friend.age < 3) {
-      query = query.where('age_range', isEqualTo: [0, 2]);
-    } else if (friend.age >= 3 && friend.age < 12) {
-      query = query.where('age_range', isEqualTo: [3, 11]);
-    } else {
-      query = query.where('age_range', isEqualTo: [12, 100]);
+    // Babyshower does not need to query by age
+    if (eventType != EventType.babyShower) {
+      if (friend.age < 3) {
+        query = query.where('age_range', isEqualTo: [0, 2]);
+      } else if (friend.age >= 3 && friend.age < 12) {
+        query = query.where('age_range', isEqualTo: [3, 11]);
+      } else {
+        query = query.where('age_range', isEqualTo: [12, 100]);
+      }
     }
 
     final snapshots = query.snapshots();
