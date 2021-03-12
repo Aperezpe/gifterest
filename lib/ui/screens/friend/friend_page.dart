@@ -6,6 +6,7 @@ import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class FriendPage extends StatefulWidget {
   FriendPage({
@@ -41,7 +42,7 @@ class _FriendPageState extends State<FriendPage>
     currentValues = onStartValues;
 
     myTabs = <Tab>[
-      Tab(text: "All"),
+      // Tab(text: "All"),
       for (var event in widget.friendSpecialEvents) Tab(text: event.name),
     ];
     _tabController = TabController(vsync: this, length: myTabs.length);
@@ -90,12 +91,28 @@ class _FriendPageState extends State<FriendPage>
               ),
               SliverToBoxAdapter(
                 child: Container(
-                  height: 80,
+                  height: 35,
+                  padding: EdgeInsets.only(left: 10, right: 10),
                   child: TabBar(
+                    isScrollable: true,
                     controller: _tabController,
-                    indicatorColor: Colors.green,
-                    tabs: myTabs,
-                    labelColor: Colors.black,
+                    tabs: [
+                      for (var event in widget.friendSpecialEvents)
+                        Container(width: 100, child: Tab(text: event.name)),
+                    ],
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    unselectedLabelStyle:
+                        TextStyle(fontWeight: FontWeight.normal),
+                    indicator: RectangularIndicator(
+                      topLeftRadius: 100,
+                      topRightRadius: 100,
+                      bottomLeftRadius: 100,
+                      bottomRightRadius: 100,
+                      color: Colors.deepPurpleAccent,
+                      strokeWidth: 2,
+                    ),
                   ),
                 ),
               ),
