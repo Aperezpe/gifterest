@@ -12,14 +12,17 @@ class ProductsGridView extends StatefulWidget {
   const ProductsGridView({
     Key key,
     @required this.model,
+    @required this.onEndValues,
   }) : super(key: key);
 
   final ProductsGridModel model;
+  final RangeValues onEndValues;
 
   static Widget create({
     @required Friend friend,
     @required FirestoreDatabase database,
     @required EventType eventType,
+    @required RangeValues onEndValues,
   }) {
     return ChangeNotifierProvider<ProductsGridModel>(
       create: (context) => ProductsGridModel(
@@ -28,7 +31,10 @@ class ProductsGridView extends StatefulWidget {
         eventType: eventType,
       ),
       child: Consumer<ProductsGridModel>(
-        builder: (_, model, __) => ProductsGridView(model: model),
+        builder: (_, model, __) => ProductsGridView(
+          model: model,
+          onEndValues: onEndValues,
+        ),
       ),
     );
   }
@@ -42,6 +48,23 @@ class _ProductsGridViewState extends State<ProductsGridView>
   @override
   bool get wantKeepAlive => true;
 
+  int get startValue => widget.onEndValues.start.round();
+  int get endValue => widget.onEndValues.end.round();
+
+  List<Product> queryProducts(List<Product> products) {
+    products = products
+        .where((product) {
+          if (endValue >= 100) return product.price >= startValue;
+          return product.price >= startValue && product.price <= endValue;
+        })
+        .where((product) =>
+            (product.gender == widget.model.friend.gender) ||
+            (product.gender == ""))
+        .toList();
+
+    return products;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -51,9 +74,12 @@ class _ProductsGridViewState extends State<ProductsGridView>
         if (snapshot.hasError)
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
+          List<Product> products = queryProducts(snapshot.data);
+          print(widget.onEndValues);
+
           return GridView.builder(
             padding: EdgeInsets.all(8.0),
-            itemCount: snapshot.data.length,
+            itemCount: products.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: .9,
@@ -62,7 +88,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
             ),
             itemBuilder: (context, index) {
               return ClickableProduct(
-                product: snapshot.data[index],
+                product: products[index],
               );
             },
           );
