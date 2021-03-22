@@ -6,7 +6,6 @@ import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class FriendPage extends StatefulWidget {
@@ -37,12 +36,6 @@ class _FriendPageState extends State<FriendPage>
   TabController _tabController;
   List<Tab> myTabs = [];
 
-  TextEditingController _minController;
-  TextEditingController _maxController;
-
-  double get _min => double.parse(_minController.text);
-  double get _max => double.parse(_maxController.text);
-
   @override
   void initState() {
     super.initState();
@@ -56,8 +49,6 @@ class _FriendPageState extends State<FriendPage>
 
     _tabController = TabController(vsync: this, length: myTabs.length);
     _scrollController = ScrollController();
-    _minController = TextEditingController();
-    _maxController = TextEditingController();
   }
 
   @override
@@ -95,7 +86,7 @@ class _FriendPageState extends State<FriendPage>
                           ),
                         ),
                       ),
-                      _buildBudgetFilter(),
+                      _buildRangeSlider(),
                     ],
                   ),
                 ),
@@ -148,43 +139,62 @@ class _FriendPageState extends State<FriendPage>
     );
   }
 
-  Widget _buildBudgetFilter() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-      height: 60,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _minController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Min",
+  Widget _buildRangeSlider() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 15, bottom: 10),
+          child: Text("Budget", style: h3),
+        ),
+        Container(
+          padding: EdgeInsets.only(left: 18, right: 18),
+          child: Row(
+            children: [
+              Container(
+                  width: 25, child: Text("${currentValues.start.round()}")),
+              Expanded(
+                child: RangeSlider(
+                  values: currentValues,
+                  min: 0,
+                  max: 100,
+                  divisions: 10,
+                  onChanged: (values) => setState(() => currentValues = values),
+                  onChangeStart: (values) => onStartValues = values,
+                  onChangeEnd: _onChangeEnd,
+                ),
               ),
-            ),
-          ),
-          Container(width: 40, child: Text("To", textAlign: TextAlign.center)),
-          Expanded(
-            child: TextField(
-              controller: _maxController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Max",
+              Container(
+                width: 40,
+                child: currentValues.end == 100
+                    ? Text("${currentValues.end.round()}+")
+                    : Text("${currentValues.end.round()}"),
               ),
-            ),
+            ],
           ),
-          SizedBox(width: 15),
-          Container(
-            child: RaisedButton(
-              onPressed: () =>
-                  setState(() => currentValues = RangeValues(_min, _max)),
-              child: Text("Apply"),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  /// Prevents rangeValues to be equal
+  void _onChangeEnd(RangeValues endValues) {
+    if (onStartValues.start != endValues.start) {
+      if (endValues.start == endValues.end) {
+        currentValues = RangeValues(endValues.start - 10, endValues.end);
+        onEndValues = currentValues;
+      }
+    } else if (onStartValues.end != endValues.end) {
+      if (endValues.start == endValues.end) {
+        currentValues = RangeValues(endValues.start, endValues.end + 10);
+        onEndValues = currentValues;
+      }
+    } else {
+      onEndValues = currentValues;
+    }
+
+    print("ended");
+
+    setState(() {});
   }
 }
