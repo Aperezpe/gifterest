@@ -79,7 +79,7 @@ class FirestoreService {
     }
 
     // Babyshower does not need to query by age
-    if (eventType != EventType.babyShower) {
+    if (eventType == EventType.any) {
       if (friend.age < 3) {
         query = query.where('age_range', isEqualTo: [0, 2]);
       } else if (friend.age >= 3 && friend.age < 12) {
