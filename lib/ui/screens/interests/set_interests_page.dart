@@ -76,7 +76,7 @@ class SetInterestsPage extends StatelessWidget {
         actions: model.isNewFriend
             ? []
             : [
-                FlatButton(
+                TextButton(
                   child: Text(
                     'Save',
                     style: TextStyle(fontSize: 18, color: Colors.white),

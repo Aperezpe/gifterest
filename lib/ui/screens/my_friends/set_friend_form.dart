@@ -141,7 +141,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         actions: _isNewFriend
             ? []
             : [
-                FlatButton(
+                TextButton(
                   child: Text(
                     'Save',
                     style: TextStyle(fontSize: 18, color: Colors.white),

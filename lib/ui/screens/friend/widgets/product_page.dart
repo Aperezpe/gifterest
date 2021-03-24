@@ -1,3 +1,4 @@
+import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -66,17 +67,10 @@ class ProductPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 10),
-                RaisedButton(
-                  onPressed: _launchURL,
+                CustomButton(
+                  text: 'Check out in store',
                   color: Colors.orange,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    "Check Out on Amazon",
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  onPressed: _launchURL,
                 ),
                 Divider(thickness: 1, color: Colors.grey[400], height: 35),
                 Container(

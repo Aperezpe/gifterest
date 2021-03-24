@@ -38,7 +38,6 @@ class BottomButton extends StatelessWidget {
         text: text,
         textColor: textColor,
         color: color,
-        disableColor: disableColor,
       ),
     );
   }

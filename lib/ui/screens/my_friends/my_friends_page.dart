@@ -86,7 +86,7 @@ class MyFriendsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("My Friends"),
         actions: [
-          FlatButton(
+          TextButton(
             child: Icon(Icons.add, color: Colors.white),
             onPressed: () => SetFriendForm.show(context),
           )

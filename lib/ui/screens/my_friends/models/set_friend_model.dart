@@ -55,7 +55,6 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   Future pickImage(BuildContext context) async {
-    File _image;
     final picker = ImagePicker();
 
     try {

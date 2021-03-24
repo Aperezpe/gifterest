@@ -104,14 +104,14 @@ class SetSpecialEvent extends StatelessWidget {
   // Edit Friend respectively
   List<Widget> _buildActions(List<String> events, BuildContext context) {
     final actions = [
-      FlatButton(
+      TextButton(
         child: Text(
           'Save',
           style: TextStyle(fontSize: 18, color: Colors.white),
         ),
         onPressed: () => _onSave(context),
       ),
-      FlatButton(
+      TextButton(
         child: Icon(Icons.add, color: Colors.white),
         onPressed: () => _model.addSpecialEvent(events),
       ),

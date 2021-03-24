@@ -1,5 +1,4 @@
 import 'package:bonobo/services/auth.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Home"),
         actions: [
-          FlatButton(
+          TextButton(
             onPressed: auth.signOut,
             child: Text(
               "Sign Out",
@@ -78,9 +77,13 @@ class HomePage extends StatelessWidget {
                 Container(color: Colors.green),
                 Container(
                   padding: EdgeInsets.only(left: 25, bottom: 15),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
                     child: Text("See All"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.orange,
+                      onSurface: Colors.orange,
+                    ),
                   ),
                 )
               ],

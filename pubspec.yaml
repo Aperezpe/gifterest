@@ -38,6 +38,8 @@ dependencies:
   flutter_material_pickers: ^2.0.1
   url_launcher: ^6.0.2
   tab_indicator_styler: ^1.0.0
+  flutter_bloc: ^7.0.0
+  bloc: ^7.0.0
 
   flutter:
     sdk: flutter

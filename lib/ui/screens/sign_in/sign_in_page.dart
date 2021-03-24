@@ -230,12 +230,11 @@ class _SignInPageState extends State<SignInPage> {
           key: Key("sign-in/up-btn"),
           text: model.primaryText,
           color: Colors.pink[400],
-          disableColor: Colors.pink[400],
           textColor: Colors.white,
           onPressed: model.isLoading ? null : _submit,
         ),
         SizedBox(height: 15),
-        FlatButton(
+        TextButton(
           key: Key("toggle-form"),
           child: Text(
             model.secondaryText,
@@ -245,6 +244,7 @@ class _SignInPageState extends State<SignInPage> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          style: TextButton.styleFrom(primary: Colors.white),
           onPressed: model.isLoading ? null : _toogleFormType,
         ),
       ],
