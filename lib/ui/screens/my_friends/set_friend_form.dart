@@ -26,8 +26,8 @@ class SetFriendForm extends StatefulWidget {
     Friend friend,
     List<SpecialEvent> friendSpecialEvents,
   }) async {
-    final database = Provider.of<Database>(context);
-    final auth = Provider.of<AuthBase>(context);
+    final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final user = await auth.currentUser();
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
@@ -37,7 +37,10 @@ class SetFriendForm extends StatefulWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ChangeNotifierProvider<SetFriendModel>(
-                  create: (context) => SetFriendModel(
+                  create: (
+                    context,
+                  ) =>
+                      SetFriendModel(
                     uid: user.uid,
                     database: database,
                     friend: friend,
@@ -131,7 +134,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 2.0,
         title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
