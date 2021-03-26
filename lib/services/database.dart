@@ -22,10 +22,13 @@ abstract class Database {
   Stream<List<Event>> eventsStream();
   Stream<List<Interest>> queryInterestsStream(Friend friend);
   Stream<List<Gender>> genderStream();
+  Stream<List<Product>> favoritesStream();
 
   Stream<List<SpecialEvent>> specialEventsStream();
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend);
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent);
+  Future<void> setFavorite(Product product);
+  Future<void> deleteFavorite(Product product);
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
@@ -36,18 +39,19 @@ class FirestoreDatabase implements Database {
   final String uid;
   final _service = FirestoreService.instance;
 
+  @override
   Stream<List<Interest>> interestStream() => _service.collectionStream(
         path: APIPath.interests(),
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<Interest>> queryInterestsStream(Friend friend) =>
       _service.queryInterestsStream(
         path: APIPath.interests(),
         friend: friend,
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<Product>> queryProductsStream({
     @required Friend friend,
     EventType eventType,
@@ -58,40 +62,47 @@ class FirestoreDatabase implements Database {
         eventType: eventType,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<Product>> productsStream() => _service.collectionStream(
         path: APIPath.products(),
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<Gender>> genderStream() => _service.collectionStream(
         path: APIPath.genders(),
         builder: (data, documentId) => Gender.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<Event>> eventsStream() => _service.collectionStream(
         path: APIPath.events(),
         builder: (data, nameId) => Event.fromMap(data, nameId),
       );
 
+  @override
+  Stream<List<Product>> favoritesStream() => _service.collectionStream(
+        path: APIPath.favorites(uid),
+        builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
+  @override
   Future<void> setFriend(Friend friend) async => await _service.setData(
         path: APIPath.friend(uid, friend.id),
         data: friend.toMap(),
       );
-
+  @override
   Future<void> deleteFriend(Friend friend) async =>
       await _service.deleteData(path: APIPath.friend(uid, friend.id));
-
+  @override
   Stream<List<Friend>> friendsStream() => _service.collectionStream(
         path: APIPath.friends(uid),
         builder: (data, documentId) => Friend.fromMap(data, documentId),
       );
-
+  @override
   Stream<List<SpecialEvent>> specialEventsStream() => _service.collectionStream(
         path: APIPath.specialEvents(uid),
         builder: (data, documentId) => SpecialEvent.fromMap(data, documentId),
       );
-
+  @override
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend) async {
     if (friend == null) throw ("Friend can not be null");
     await _service.setData(
@@ -100,7 +111,18 @@ class FirestoreDatabase implements Database {
     );
   }
 
+  @override
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent) async =>
       await _service.deleteData(
           path: APIPath.specialEvent(uid, specialEvent.id));
+
+  @override
+  Future<void> setFavorite(Product product) async => await _service.setData(
+        path: APIPath.favorite(uid, product.id),
+        data: product.toMap(),
+      );
+
+  @override
+  Future<void> deleteFavorite(Product product) async =>
+      await _service.deleteData(path: APIPath.favorite(uid, product.id));
 }

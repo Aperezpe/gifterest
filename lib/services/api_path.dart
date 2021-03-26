@@ -1,3 +1,5 @@
+import 'package:bonobo/ui/models/product.dart';
+
 class APIPath {
   static String interests() => 'interests';
 
@@ -8,6 +10,11 @@ class APIPath {
   static String events() => 'events';
 
   static String genders() => 'genders';
+
+  static String favorites(String uid) => 'users/$uid/favorites';
+
+  static String favorite(String uid, String productId) =>
+      'users/$uid/favorites/$productId';
 
   static String friend(
     String uid,
