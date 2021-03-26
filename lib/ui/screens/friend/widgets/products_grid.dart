@@ -75,7 +75,6 @@ class _ProductsGridViewState extends State<ProductsGridView>
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
           List<Product> products = queryProducts(snapshot.data);
-          print(widget.onEndValues);
 
           return GridView.builder(
             padding: EdgeInsets.all(8.0),
@@ -88,6 +87,8 @@ class _ProductsGridViewState extends State<ProductsGridView>
             ),
             itemBuilder: (context, index) {
               return ClickableProduct(
+                key: Key("product-box-${products[index].id}"),
+                database: widget.model.database,
                 product: products[index],
               );
             },

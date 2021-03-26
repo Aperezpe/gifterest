@@ -6,11 +6,19 @@ import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/tab_item.dart';
 import 'package:flutter/material.dart';
 
+import 'models/product.dart';
+
 class MainPage extends StatefulWidget {
-  const MainPage({Key key, this.auth, this.database}) : super(key: key);
+  const MainPage({
+    Key key,
+    this.auth,
+    this.database,
+    this.favorites,
+  }) : super(key: key);
 
   final auth;
   final database;
+  final List<Product> favorites;
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -25,7 +33,7 @@ class _MainPageState extends State<MainPage> {
       TabItem.myFriends: (_) =>
           MyFriendsPage.create(auth: widget.auth, database: widget.database),
       TabItem.calendar: (_) => CalendarPage(),
-      TabItem.favorites: (_) => FavoritesPage(),
+      TabItem.favorites: (_) => FavoritesPage(database: widget.database),
     };
   }
 

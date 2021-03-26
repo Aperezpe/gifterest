@@ -1,4 +1,5 @@
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,16 +41,11 @@ class ProductPage extends StatelessWidget {
                         child: Image.network(product.imageUrl),
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      child: FloatingActionButton(
-                        onPressed: () {},
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.favorite,
-                          color: Colors.grey[300],
-                          size: 32,
-                        ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 15, right: 15),
+                      child: FavoriteButton(
+                        valueChanged: (_isFavorite) =>
+                            print("Is Favorite? $_isFavorite"),
                       ),
                     ),
                   ],
