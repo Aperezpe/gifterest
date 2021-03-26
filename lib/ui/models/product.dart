@@ -60,6 +60,21 @@ class Product {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      "name": name,
+      "price": price,
+      "event": event,
+      "image_url": imageUrl,
+      "item_url": itemUrl,
+      "age_range": ageRange,
+      "distributor": distributor,
+      "categories": categories,
+      "gender": gender,
+      "item_id": itemId,
+    };
+  }
+
   @override
   int get hashCode => hashValues(
         id,
