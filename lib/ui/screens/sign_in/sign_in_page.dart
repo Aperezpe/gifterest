@@ -93,8 +93,8 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildContent(),
+    return Material(
+      child: _buildContent(),
     );
   }
 

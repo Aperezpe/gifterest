@@ -27,12 +27,7 @@ class LandingPage extends StatelessWidget {
           } else {
             return Provider<Database>(
               create: (_) => databaseBuilder(user.uid),
-              child: Consumer<Database>(
-                builder: (context, database, _) {
-                  print("User: ${user.uid} is signing in...");
-                  return MainPage(auth: auth, database: database);
-                },
-              ),
+              child: MainPage(),
             );
           }
         } else {

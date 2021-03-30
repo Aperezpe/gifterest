@@ -1,6 +1,6 @@
-import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
+import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
@@ -9,6 +9,7 @@ import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 
 import 'models/friend.dart';
 import 'models/special_event.dart';
@@ -22,7 +23,8 @@ class MyFriendsPage extends StatelessWidget {
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
 
-  static Widget create({Auth auth, FirestoreDatabase database}) {
+  static Widget create(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<List<SpecialEvent>>(
       stream: database.specialEventsStream(),
       builder: (context, snapshot) {
@@ -93,6 +95,7 @@ class MyFriendsPage extends StatelessWidget {
         ],
       ),
       body: _buildContent(context),
+      drawer: AppDrawer(),
     );
   }
 
