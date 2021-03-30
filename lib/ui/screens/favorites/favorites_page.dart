@@ -1,3 +1,4 @@
+import 'package:bonobo/ui/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 class FavoritesPage extends StatelessWidget {
@@ -12,6 +13,7 @@ class FavoritesPage extends StatelessWidget {
           child: Text("Favorites"),
         ),
       ),
+      drawer: AppDrawer(),
     );
   }
 }
