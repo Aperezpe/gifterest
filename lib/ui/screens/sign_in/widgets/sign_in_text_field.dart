@@ -12,6 +12,7 @@ class SignInTextField extends StatelessWidget {
     this.onEditingComplete,
     this.obscureText = false,
     this.errorText = '',
+    @required this.focusNode,
     @required this.onChanged,
     this.enabled = true,
   }) : super(key: key);
@@ -26,10 +27,12 @@ class SignInTextField extends StatelessWidget {
   final bool obscureText;
   final String errorText;
   final bool enabled;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: focusNode,
       controller: controller,
       decoration: InputDecoration(
         prefixIcon: Padding(

@@ -17,16 +17,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<AuthBase>(
       create: (context) => Auth(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Bonobo",
-        theme: ThemeData(
-          primarySwatch: Colors.pink,
-          scaffoldBackgroundColor: Colors.white,
-        ),
-        home: LandingPage(
-          databaseBuilder: (uid) => FirestoreDatabase(uid: uid),
-        ),
+      child: LandingPage(
+        databaseBuilder: (uid) => FirestoreDatabase(uid: uid),
       ),
     );
   }

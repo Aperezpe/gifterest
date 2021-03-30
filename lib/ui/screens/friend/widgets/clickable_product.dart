@@ -1,7 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/screens/friend/widgets/product_page.dart';
+import 'package:bonobo/ui/common_widgets/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +22,7 @@ class ClickableProduct extends StatefulWidget {
 
 class _ClickableProductState extends State<ClickableProduct> {
   bool showProductDetails = false;
+
   bool _isFavorite = false;
   List<Product> get favorites => widget.favorites;
 
@@ -34,11 +35,20 @@ class _ClickableProductState extends State<ClickableProduct> {
     }
   }
 
-  void _showProductDetails() {
-    Navigator.of(context).push(MaterialPageRoute(
-      fullscreenDialog: true,
-      builder: (context) => ProductPage(product: widget.product),
-    ));
+  void _showProductDetails() async {
+    final res = await Navigator.of(context).push(
+      MaterialPageRoute(
+        // fullscreenDialog: true,
+        builder: (context) => ProductPage(
+          product: widget.product,
+          isFavorite: _isFavorite,
+        ),
+      ),
+    );
+
+    setState(() => _isFavorite = res);
+
+    print(res);
   }
 
   void _toggleFavorite(bool isFavorite) async {
