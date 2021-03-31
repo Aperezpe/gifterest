@@ -1,5 +1,7 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/screens/friend/models/products_grid_model.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
@@ -74,22 +76,35 @@ class _ProductsGridViewState extends State<ProductsGridView>
         if (snapshot.hasError)
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
-          List<Product> products = queryProducts(snapshot.data);
-          print(widget.onEndValues);
+          final products = queryProducts(snapshot.data);
 
-          return GridView.builder(
-            padding: EdgeInsets.all(8.0),
-            itemCount: products.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: .9,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-            ),
-            itemBuilder: (context, index) {
-              return ClickableProduct(
-                product: products[index],
-              );
+          return StreamBuilder<List<Product>>(
+            stream: widget.model.database.favoritesStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final favorites = snapshot.data;
+
+                return GridView.builder(
+                  padding: EdgeInsets.all(8.0),
+                  itemCount: products.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: .9,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                  ),
+                  itemBuilder: (context, index) {
+                    return ClickableProduct(
+                      favorites: favorites,
+                      key: Key("product-box-${products[index].id}"),
+                      product: products[index],
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                Center(child: Text(snapshot.error.toString()));
+              }
+              return Center(child: CircularProgressIndicator());
             },
           );
         }

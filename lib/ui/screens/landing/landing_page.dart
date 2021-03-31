@@ -1,6 +1,8 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
+import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

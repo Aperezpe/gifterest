@@ -128,7 +128,7 @@ class _FavoriteButtonState extends State<FavoriteButton>
           },
           child: Icon(
             (Icons.favorite),
-            color: _colorAnimation.value,
+            color: widget._iconColor,
             size: _sizeAnimation.value,
           ),
         );

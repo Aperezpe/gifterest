@@ -3,8 +3,10 @@ import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/circle_image_button.dart';
@@ -36,6 +38,11 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _retypePasswordController = TextEditingController();
+
+  FocusNode _nameFocusNode = FocusNode();
+  FocusNode _emailFocusNode = FocusNode();
+  FocusNode _passwordFocusNode = FocusNode();
+  FocusNode _reTypePasswordFocusNode = FocusNode();
 
   SignInModel get model => widget.model;
 
@@ -93,17 +100,29 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: _buildContent(),
+    return Localizations(
+      delegates: <LocalizationsDelegate<dynamic>>[
+        DefaultWidgetsLocalizations.delegate,
+        DefaultMaterialLocalizations.delegate,
+      ],
+      locale: Locale('en', "US"),
+      child: MediaQuery(
+        data: MediaQueryData.fromWindow(ui.window),
+        child: Directionality(
+          textDirection: ui.TextDirection.ltr,
+          child: Scaffold(body: _buildContent()),
+        ),
+      ),
     );
   }
 
-  SingleChildScrollView _buildContent() {
-    return SingleChildScrollView(
+  Widget _buildContent() {
+    return OverflowBox(
       child: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: EdgeInsets.all(25.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _buildHeader(),
             SizedBox(height: 15),
@@ -151,6 +170,7 @@ class _SignInPageState extends State<SignInPage> {
             ? Column(
                 children: <Widget>[
                   SignInTextField(
+                    focusNode: _emailFocusNode,
                     key: Key("email"),
                     controller: _emailController,
                     hintText: "Email",
@@ -162,6 +182,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   SizedBox(height: 15),
                   SignInTextField(
+                    focusNode: _passwordFocusNode,
                     key: Key("password"),
                     controller: _passwordController,
                     hintText: "Password",
@@ -179,6 +200,7 @@ class _SignInPageState extends State<SignInPage> {
                 children: [
                   SignInTextField(
                     key: Key("name"),
+                    focusNode: _nameFocusNode,
                     controller: _nameController,
                     hintText: "Name",
                     icon: Icons.person,
@@ -190,6 +212,7 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(height: 15),
                   SignInTextField(
                     key: Key("email"),
+                    focusNode: _emailFocusNode,
                     controller: _emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -201,6 +224,7 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(height: 15),
                   SignInTextField(
                     key: Key("password"),
+                    focusNode: _passwordFocusNode,
                     controller: _passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -213,6 +237,7 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(height: 15),
                   SignInTextField(
                     key: Key("retype-password"),
+                    focusNode: _reTypePasswordFocusNode,
                     controller: _retypePasswordController,
                     hintText: "Retype Password",
                     icon: Icons.lock,
