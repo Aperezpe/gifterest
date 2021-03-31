@@ -82,7 +82,6 @@ class SetInterestsPageModel extends ChangeNotifier {
       _selectedInterests.contains(interestName);
 
   void tapInterest(Interest interest) {
-    print(interest.id);
     if (isSelected(interest.name)) {
       _selectedInterests.remove(interest.name);
     } else if (_selectedInterests.length < interestsAllowed) {

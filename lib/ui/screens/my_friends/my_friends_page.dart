@@ -14,42 +14,14 @@ import 'models/friend.dart';
 import 'models/special_event.dart';
 
 class MyFriendsPage extends StatelessWidget {
-  MyFriendsPage({
-    @required this.model,
-  });
+  MyFriendsPage({Key key}) : super(key: key);
 
-  final MyFriendsPageModel model;
-
-  static Widget create(BuildContext context) {
-    final database = Provider.of<Database>(context, listen: false);
-    return StreamBuilder<List<SpecialEvent>>(
-      stream: database.specialEventsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ChangeNotifierProvider<MyFriendsPageModel>(
-            create: (context) => MyFriendsPageModel(
-              database: database,
-              allSpecialEvents: snapshot.data,
-            ),
-            child: Consumer<MyFriendsPageModel>(
-              builder: (_, model, __) => MyFriendsPage(
-                model: model,
-              ),
-            ),
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text("Something went wrong!"),
-          );
-        }
-        return LoadingScreen();
-      },
-    );
-  }
+  static String get routeName => "my-friends-page";
 
   @override
   Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("My Friends"),
@@ -60,30 +32,56 @@ class MyFriendsPage extends StatelessWidget {
           )
         ],
       ),
-      body: _buildContent(context),
-      drawer: AppDrawer(),
+      body: StreamBuilder<List<SpecialEvent>>(
+        stream: database.specialEventsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final allSpecialEvents = snapshot.data;
+            return StreamBuilder<List<Friend>>(
+              stream: database.friendsStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ChangeNotifierProvider<MyFriendsPageModel>(
+                    create: (context) => MyFriendsPageModel(
+                      database: database,
+                      allSpecialEvents: allSpecialEvents,
+                      friends: snapshot.data,
+                    ),
+                    child: Consumer<MyFriendsPageModel>(
+                      builder: (context, model, child) =>
+                          ListItemsBuilder<Friend>(
+                        items: snapshot.data,
+                        itemBuilder: (context, friend) =>
+                            _buildFriendCard(context, friend, model),
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("An error occurred on friendsStream"),
+                  );
+                }
+                return LoadingScreen();
+              },
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Something went wrong on specialEventsStream"),
+            );
+          }
+          return LoadingScreen();
+        },
+      ),
+      drawer: AppDrawer(
+        currentChildRouteName: MyFriendsPage.routeName,
+      ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    return StreamBuilder<List<Friend>>(
-      stream: model.database.friendsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListItemsBuilder<Friend>(
-            snapshot: snapshot,
-            itemBuilder: (context, friend) => _buildFriendCard(context, friend),
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("An error occurred"));
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-
-  Widget _buildFriendCard(BuildContext context, Friend friend) {
+  Widget _buildFriendCard(
+      BuildContext context, Friend friend, MyFriendsPageModel model) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.18,
@@ -116,11 +114,12 @@ class MyFriendsPage extends StatelessWidget {
           ),
         ),
         IconSlideAction(
-          caption: 'Delete',
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => model.deleteFriend(context, friend),
-        ),
+            caption: 'Delete',
+            color: Colors.red,
+            icon: Icons.delete,
+            onTap: () {
+              model.deleteFriend(context, friend);
+            }),
       ],
     );
   }

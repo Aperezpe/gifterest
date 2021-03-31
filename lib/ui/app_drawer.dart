@@ -50,8 +50,7 @@ class AppDrawer extends StatelessWidget {
                         else
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MyFriendsPage.create(context),
+                              builder: (context) => MyFriendsPage(),
                             ),
                           );
                       }),

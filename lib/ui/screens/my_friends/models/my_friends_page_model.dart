@@ -9,13 +9,24 @@ class MyFriendsPageModel extends ChangeNotifier {
   MyFriendsPageModel({
     @required this.database,
     @required this.allSpecialEvents,
-  });
+    @required this.friends,
+  }) {
+    // initialize list of upcomingEvents for each friend
+    friends.forEach((friend) => upcomingEvents[friend.id] = []);
+    allSpecialEvents.forEach((event) {
+      // print(event.friendId);
+      upcomingEvents[event.friendId].add(event);
+    });
+    // print(upcomingEvents);
+  }
 
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
+  final List<Friend> friends;
+  Map<String, List<SpecialEvent>> upcomingEvents = {};
 
   void deleteFriend(BuildContext context, Friend friend) async {
-    final res = await PlatformAlertDialog(
+    final yes = await PlatformAlertDialog(
       title: "Delete?",
       content: "Are you sure want to delete ${friend.name}?",
       defaultAtionText: "Yes",
@@ -23,7 +34,7 @@ class MyFriendsPageModel extends ChangeNotifier {
     ).show(context);
 
     try {
-      if (res) {
+      if (yes) {
         final storageService =
             FirebaseStorageService(uid: database.uid, friend: friend);
 
@@ -41,6 +52,8 @@ class MyFriendsPageModel extends ChangeNotifier {
         content: "Something went wrong",
         defaultAtionText: "Ok",
       ).show(context);
+    } finally {
+      notifyListeners();
     }
   }
 
