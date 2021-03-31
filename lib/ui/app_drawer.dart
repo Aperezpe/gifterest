@@ -8,6 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
+  AppDrawer({@required this.currentChildRouteName});
+
+  final String currentChildRouteName;
+
+  bool isSameRoute(String routeName) => currentChildRouteName == routeName;
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<AuthBase, Database>(
@@ -36,28 +42,31 @@ class AppDrawer extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 children: [
                   CustomListTile(
-                    title: "My Friends",
-                    icon: Icons.people,
-                    onTap: () => Navigator.of(context).push(
-                      // PageRouteBuilder(
-                      //   pageBuilder: (context, __, ___) =>
-                      //       MyFriendsPage.create(context),
-                      // ),
-                      MaterialPageRoute(
-                        builder: (context) => MyFriendsPage.create(context),
-                      ),
-                    ),
-                  ),
+                      title: "My Friends",
+                      icon: Icons.people,
+                      onTap: () {
+                        if (isSameRoute(MyFriendsPage.routeName))
+                          Scaffold.of(context).openEndDrawer();
+                        else
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MyFriendsPage.create(context),
+                            ),
+                          );
+                      }),
                   CustomListTile(
-                    title: "Favorites",
-                    icon: Icons.favorite,
-                    onTap: () => Navigator.of(context).push(
-                      // PageRouteBuilder(
-                      //   pageBuilder: (_, __, ___) => FavoritesPage(),
-                      // ),
-                      MaterialPageRoute(builder: (context) => FavoritesPage()),
-                    ),
-                  ),
+                      title: "Favorites",
+                      icon: Icons.favorite,
+                      onTap: () {
+                        if (isSameRoute(FavoritesPage.routeName))
+                          Scaffold.of(context).openEndDrawer();
+                        else
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => FavoritesPage()),
+                          );
+                      }),
                   CustomListTile(
                     title: "Sign Out",
                     icon: Icons.power_settings_new,
