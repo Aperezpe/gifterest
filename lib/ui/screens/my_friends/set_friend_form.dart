@@ -37,10 +37,7 @@ class SetFriendForm extends StatefulWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ChangeNotifierProvider<SetFriendModel>(
-                  create: (
-                    context,
-                  ) =>
-                      SetFriendModel(
+                  create: (context) => SetFriendModel(
                     uid: user.uid,
                     database: database,
                     friend: friend,
