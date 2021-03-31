@@ -1,7 +1,9 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/product_page.dart';
+import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,39 +25,40 @@ class ClickableProduct extends StatefulWidget {
 class _ClickableProductState extends State<ClickableProduct> {
   bool showProductDetails = false;
 
-  bool _isFavorite = false;
   List<Product> get favorites => widget.favorites;
+  final favoritesController = locator.get<FavoritesController>();
+  bool get isFavorite => favoritesController.isFavorite[widget.product.id];
 
   @override
   void initState() {
     super.initState();
 
     if (favorites.contains(widget.product)) {
-      _isFavorite = true;
+      favoritesController.isFavorite[widget.product.id] = true;
+    } else {
+      favoritesController.isFavorite[widget.product.id] = false;
     }
   }
 
   void _showProductDetails() async {
-    final res = await Navigator.of(context).push(
+    Navigator.push(
+      context,
       MaterialPageRoute(
-        // fullscreenDialog: true,
+        fullscreenDialog: true,
         builder: (context) => ProductPage(
           product: widget.product,
-          isFavorite: _isFavorite,
+          onChanged: _toggleFavorite,
         ),
       ),
     );
-
-    setState(() => _isFavorite = res);
-
-    print(res);
   }
 
   void _toggleFavorite(bool isFavorite) async {
     final database = Provider.of<Database>(context, listen: false);
-    _isFavorite = isFavorite;
+    favoritesController.isFavorite[widget.product.id] =
+        !favoritesController.isFavorite[widget.product.id];
 
-    if (_isFavorite) {
+    if (isFavorite) {
       await database.setFavorite(widget.product);
     } else {
       await database.deleteFavorite(widget.product);
@@ -116,9 +119,10 @@ class _ClickableProductState extends State<ClickableProduct> {
           Container(
             padding: EdgeInsets.only(top: 12, right: 12),
             child: FavoriteButton(
-              valueChanged: (value) => _toggleFavorite(value),
+              valueChanged: _toggleFavorite,
               iconSize: 45,
-              isFavorite: _isFavorite,
+              isFavorite: isFavorite,
+              iconColor: isFavorite ? Colors.red : Colors.grey[300],
             ),
           ),
         ],

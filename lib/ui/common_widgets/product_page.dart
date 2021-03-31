@@ -1,19 +1,21 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductPage extends StatefulWidget {
   final Product product;
-  final bool isFavorite;
+  final ValueChanged<bool> onChanged;
 
   ProductPage({
     Key key,
     this.product,
-    this.isFavorite,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -21,12 +23,12 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  bool _isFavoriteResponse;
+  final favoritesController = locator.get<FavoritesController>();
+  bool get isFavorite => favoritesController.isFavorite[widget.product.id];
 
   @override
   void initState() {
     super.initState();
-    _isFavoriteResponse = widget.isFavorite;
   }
 
   _launchURL() async {
@@ -38,15 +40,18 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
-  void _toggleFavorite(BuildContext context, bool _isFavorite) async {
+  void _toggleFavorite(bool isFavorite) async {
     final database = Provider.of<Database>(context, listen: false);
-    _isFavoriteResponse = _isFavorite;
+    favoritesController.isFavorite[widget.product.id] =
+        !favoritesController.isFavorite[widget.product.id];
 
-    if (_isFavorite) {
+    if (isFavorite) {
       await database.setFavorite(widget.product);
     } else {
       await database.deleteFavorite(widget.product);
     }
+
+    setState(() {});
   }
 
   @override
@@ -56,7 +61,7 @@ class _ProductPageState extends State<ProductPage> {
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.close, color: Colors.white),
-            onPressed: () => Navigator.pop(context, _isFavoriteResponse),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
         title: Text(widget.product.name),
@@ -80,9 +85,9 @@ class _ProductPageState extends State<ProductPage> {
                     Padding(
                       padding: EdgeInsets.only(bottom: 15, right: 15),
                       child: FavoriteButton(
-                        valueChanged: (_isFavorite) =>
-                            _toggleFavorite(context, _isFavorite),
-                        isFavorite: widget.isFavorite,
+                        valueChanged: _toggleFavorite,
+                        iconColor: isFavorite ? Colors.red : Colors.grey[300],
+                        isFavorite: isFavorite,
                       ),
                     ),
                   ],

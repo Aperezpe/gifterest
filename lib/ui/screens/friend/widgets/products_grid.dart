@@ -1,5 +1,7 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/models/product.dart';
+import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/screens/friend/models/products_grid_model.dart';
 import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';

@@ -1,13 +1,7 @@
-import 'package:bonobo/ui/models/product.dart';
 import 'package:flutter/material.dart';
 
-class Favorites extends ChangeNotifier {
-  List<Product> _favorites = [];
+class FavoritesController extends ChangeNotifier {
+  Map<String, bool> _isFavorite = {};
 
-  List<Product> get favorites => _favorites;
-
-  void setFavorites(List<Product> favorites) {
-    _favorites = favorites;
-    notifyListeners();
-  }
+  Map<String, bool> get isFavorite => _isFavorite;
 }
