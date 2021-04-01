@@ -82,19 +82,23 @@ class SetSpecialEvent extends StatelessWidget {
               title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
               actions: _buildActions(events, context),
             ),
-            body: _buildContent(events),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: BottomButton(
-              onPressed: _model.isEmpty ||
-                      _model.firebaseStorageService?.uploadTask != null
-                  ? null
-                  : () => _model.goToInterestsPage(context),
-              color: Colors.pink,
-              text: _isNewFriend
-                  ? "Add Interests 😍"
-                  : 'Edit ${_friend.name}\'s Interests 😍',
-              textColor: Colors.white,
+            body: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                _buildContent(events),
+                BottomButton(
+                  text: _isNewFriend
+                      ? "Add Interests 😍"
+                      : 'Edit ${_friend.name}\'s Interests 😍',
+                  onPressed: _model.isEmpty ||
+                          _model.firebaseStorageService?.uploadTask != null
+                      ? null
+                      : () => _model.goToInterestsPage(context),
+                  color: Colors.pink,
+                  padding: EdgeInsets.fromLTRB(25, 0, 25, 50),
+                  textColor: Colors.white,
+                ),
+              ],
             ),
           );
         } else if (snapshot.hasError) {
@@ -134,7 +138,7 @@ class SetSpecialEvent extends StatelessWidget {
     } else {
       final specialEvents = _model.friendSpecialEvents;
       return ListView(
-        padding: EdgeInsets.only(bottom: 80),
+        padding: EdgeInsets.only(bottom: 120),
         children: [
           for (var specialEvent in specialEvents)
             AddEventCard(

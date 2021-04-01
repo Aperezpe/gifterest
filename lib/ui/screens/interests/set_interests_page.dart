@@ -81,24 +81,30 @@ class SetInterestsPage extends StatelessWidget {
         actions: model.isNewFriend
             ? []
             : [
-                TextButton(
-                  child: Text(
-                    'Save',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                  // TODO: Snackbar or something when is not ready to submit
-                  onPressed: isReadyToSubmit ? () => _submit(context) : null,
-                ),
+                isReadyToSubmit
+                    ? TextButton(
+                        child: Text(
+                          'Save',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        onPressed: () => _submit(context),
+                      )
+                    : Container()
               ],
       ),
-      body: _buildContent(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: BottomButton(
-        onPressed: isReadyToSubmit ? () => _submit(context) : null,
-        color: isReadyToSubmit ? Colors.orange[600] : Colors.grey,
-        text: model.submitButtonText,
-        textColor: isReadyToSubmit ? Colors.black : Colors.white,
-        disableColor: Colors.grey,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          _buildContent(),
+          BottomButton(
+            text: model.submitButtonText,
+            onPressed: isReadyToSubmit ? () => _submit(context) : null,
+            color: Colors.orange[600],
+            disableColor: Colors.grey,
+            padding: EdgeInsets.fromLTRB(25, 0, 25, 50),
+            textColor: isReadyToSubmit ? Colors.black : Colors.white,
+          ),
+        ],
       ),
     );
   }
@@ -116,7 +122,7 @@ class SetInterestsPage extends StatelessWidget {
           if (snapshot.hasData) {
             snapshot.data.sort((a, b) => a.name.compareTo(b.name));
             return GridView.builder(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 80),
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 120),
               itemCount: snapshot.data.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
