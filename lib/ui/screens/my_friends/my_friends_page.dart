@@ -5,7 +5,7 @@ import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
-import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
 import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
 import 'package:flutter/material.dart';
