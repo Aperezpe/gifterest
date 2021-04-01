@@ -1,9 +1,9 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/profile_page/widgets/custom_range_slider.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/screens/friend/widgets/products_grid.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
@@ -28,9 +28,7 @@ class _FriendPageState extends State<FriendPage>
     with SingleTickerProviderStateMixin {
   Friend get friend => widget.friend;
 
-  RangeValues onStartValues;
-  RangeValues currentValues;
-  RangeValues onEndValues;
+  RangeValues sliderValues = RangeValues(0, 100);
 
   ScrollController _scrollController;
   TabController _tabController;
@@ -39,9 +37,6 @@ class _FriendPageState extends State<FriendPage>
   @override
   void initState() {
     super.initState();
-    onStartValues = RangeValues(0, 100);
-    currentValues = onStartValues;
-    onEndValues = currentValues;
 
     widget.friendSpecialEvents.forEach((event) {
       myTabs.add(Tab(text: event.name));
@@ -86,7 +81,10 @@ class _FriendPageState extends State<FriendPage>
                           ),
                         ),
                       ),
-                      _buildRangeSlider(),
+                      CustomRangeSlider(
+                        onChanged: (values) =>
+                            setState(() => sliderValues = values),
+                      ),
                     ],
                   ),
                 ),
@@ -128,7 +126,7 @@ class _FriendPageState extends State<FriendPage>
                   ProductsGridView.create(
                     friend: friend,
                     database: widget.database,
-                    onEndValues: currentValues,
+                    onEndValues: sliderValues,
                     eventType: getEventType(tab.text),
                   ),
               ],
@@ -137,62 +135,5 @@ class _FriendPageState extends State<FriendPage>
         ),
       ),
     );
-  }
-
-  Widget _buildRangeSlider() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(left: 15, bottom: 10),
-          child: Text("Budget", style: h3),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 18, right: 18),
-          child: Row(
-            children: [
-              Container(
-                  width: 25, child: Text("${currentValues.start.round()}")),
-              Expanded(
-                child: RangeSlider(
-                  values: currentValues,
-                  min: 0,
-                  max: 100,
-                  divisions: 10,
-                  onChanged: (values) => setState(() => currentValues = values),
-                  onChangeStart: (values) => onStartValues = values,
-                  onChangeEnd: _onChangeEnd,
-                ),
-              ),
-              Container(
-                width: 40,
-                child: currentValues.end == 100
-                    ? Text("${currentValues.end.round()}+")
-                    : Text("${currentValues.end.round()}"),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Prevents rangeValues to be equal
-  void _onChangeEnd(RangeValues endValues) {
-    if (onStartValues.start != endValues.start) {
-      if (endValues.start == endValues.end) {
-        currentValues = RangeValues(endValues.start - 10, endValues.end);
-        onEndValues = currentValues;
-      }
-    } else if (onStartValues.end != endValues.end) {
-      if (endValues.start == endValues.end) {
-        currentValues = RangeValues(endValues.start, endValues.end + 10);
-        onEndValues = currentValues;
-      }
-    } else {
-      onEndValues = currentValues;
-    }
-
-    setState(() {});
   }
 }
