@@ -10,7 +10,7 @@ class BottomButton extends StatelessWidget {
     this.disableColor,
     this.textColor,
     @required this.onPressed,
-    this.padding,
+    this.padding: const EdgeInsets.fromLTRB(25, 0, 25, 15),
   });
 
   final String text;
@@ -32,10 +32,11 @@ class BottomButton extends StatelessWidget {
         ),
       ),
       width: double.infinity,
-      padding: padding != null ? padding : EdgeInsets.fromLTRB(25, 0, 25, 15),
+      padding: padding,
       child: CustomButton(
         onPressed: onPressed,
         text: text,
+        disableColor: disableColor,
         textColor: textColor,
         color: color,
       ),
