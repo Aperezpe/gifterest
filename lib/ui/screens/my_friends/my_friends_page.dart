@@ -107,6 +107,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
 
     return Slidable(
+      key: Key("slidable-${friend.id}"),
       closeOnScroll: true,
       actionPane: SlidableDrawerActionPane(),
       controller: _silableController,
@@ -118,9 +119,8 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
             model: model,
             friend: friend,
             onTap: () async {
-              Slidable.of(context)?.renderingMode == SlidableRenderingMode.none
-                  ? Slidable.of(context)?.open()
-                  : Slidable.of(context)?.close();
+              Slidable.of(context)?.open();
+              Slidable.of(context)?.close();
 
               await Navigator.of(context).push(
                 MaterialPageRoute(
