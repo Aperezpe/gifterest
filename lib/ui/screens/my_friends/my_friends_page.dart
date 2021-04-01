@@ -15,10 +15,18 @@ import 'package:provider/provider.dart';
 import 'models/friend.dart';
 import 'models/special_event.dart';
 
-class MyFriendsPage extends StatelessWidget {
+class MyFriendsPage extends StatefulWidget {
   MyFriendsPage({Key key}) : super(key: key);
 
   static String get routeName => "my-friends-page";
+
+  @override
+  _MyFriendsPageState createState() => _MyFriendsPageState();
+}
+
+class _MyFriendsPageState extends State<MyFriendsPage> {
+  bool _isSlidableEnabled = true;
+  final _silableController = SlidableController();
 
   void _deleteFriend(BuildContext context, Friend friend) async {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
@@ -97,27 +105,36 @@ class MyFriendsPage extends StatelessWidget {
 
   Widget _buildFriendCard(BuildContext context, Friend friend) {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
+
     return Slidable(
+      closeOnScroll: true,
       actionPane: SlidableDrawerActionPane(),
+      controller: _silableController,
       actionExtentRatio: 0.18,
-      child: Container(
-        child: FriendListTile(
-          backgroundImage: NetworkImage(friend.imageUrl),
-          model: model,
-          friend: friend,
-          onTap: () => {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => FriendPage(
-                  database: model.database,
-                  friend: friend,
-                  friendSpecialEvents: model.getFriendSpecialEvents(friend),
+      child: Builder(builder: (context) {
+        return Container(
+          child: FriendListTile(
+            backgroundImage: NetworkImage(friend.imageUrl),
+            model: model,
+            friend: friend,
+            onTap: () async {
+              Slidable.of(context)?.renderingMode == SlidableRenderingMode.none
+                  ? Slidable.of(context)?.open()
+                  : Slidable.of(context)?.close();
+
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FriendPage(
+                    database: model.database,
+                    friend: friend,
+                    friendSpecialEvents: model.getFriendSpecialEvents(friend),
+                  ),
                 ),
-              ),
-            ),
-          },
-        ),
-      ),
+              );
+            },
+          ),
+        );
+      }),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: 'Edit',

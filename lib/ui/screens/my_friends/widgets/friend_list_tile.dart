@@ -9,7 +9,7 @@ class FriendListTile extends StatelessWidget {
     @required this.friend,
     @required this.backgroundImage,
     @required this.model,
-    @required this.onTap,
+    this.onTap,
   });
   final Friend friend;
   final MyFriendsPageModel model;
