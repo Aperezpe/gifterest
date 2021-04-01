@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 class FavoritesPage extends StatelessWidget {
   FavoritesPage({Key key}) : super(key: key);
 
+  static String get routeName => 'favorites-page';
+
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
@@ -17,7 +19,9 @@ class FavoritesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Favorites"),
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer(
+        currentChildRouteName: routeName,
+      ),
       body: StreamBuilder<List<Product>>(
         stream: database.favoritesStream(),
         builder: (context, snapshot) {

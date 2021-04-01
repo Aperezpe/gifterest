@@ -27,6 +27,7 @@ class LandingPage extends StatelessWidget {
           if (snapshot.data == null) {
             return SignInPage.create(context);
           } else {
+            print("signing in user: ${user.uid}");
             return Provider<Database>(
               create: (_) => databaseBuilder(user.uid),
               child: MainPage(),

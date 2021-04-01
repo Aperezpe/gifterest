@@ -18,7 +18,7 @@ class _MainPageState extends State<MainPage> {
         primarySwatch: Colors.pink,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: MyFriendsPage.create(context),
+      home: MyFriendsPage(),
     );
   }
 }

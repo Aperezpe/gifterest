@@ -7,6 +7,7 @@ import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/profile_image_builder.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,11 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../common_widgets/loading_screen.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'models/friend.dart';
 
 class SetFriendForm extends StatefulWidget {
-  SetFriendForm({@required this.model});
+  SetFriendForm({Key key, @required this.model}) : super(key: key);
   final SetFriendModel model;
 
   static Future<void> show(
@@ -37,10 +39,7 @@ class SetFriendForm extends StatefulWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ChangeNotifierProvider<SetFriendModel>(
-                  create: (
-                    context,
-                  ) =>
-                      SetFriendModel(
+                  create: (context) => SetFriendModel(
                     uid: user.uid,
                     database: database,
                     friend: friend,
@@ -109,7 +108,10 @@ class _SetFriendFormState extends State<SetFriendForm> {
     if (_validateAndSaveForm()) {
       try {
         await _model.onSave();
-        Navigator.pop(context);
+        Navigator.of(context).push(PageTransition(
+          type: PageTransitionType.fade,
+          child: MyFriendsPage(),
+        ));
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
           title: 'Operation failed',

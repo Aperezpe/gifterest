@@ -193,8 +193,6 @@ class _FriendPageState extends State<FriendPage>
       onEndValues = currentValues;
     }
 
-    print("ended");
-
     setState(() {});
   }
 }

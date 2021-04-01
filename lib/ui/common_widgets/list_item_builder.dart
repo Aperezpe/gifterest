@@ -1,32 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'empty_content.dart';
-
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
 class ListItemsBuilder<T> extends StatelessWidget {
   const ListItemsBuilder(
-      {Key key, @required this.snapshot, @required this.itemBuilder})
+      {Key key, @required this.items, @required this.itemBuilder})
       : super(key: key);
-  final AsyncSnapshot<List<T>> snapshot;
+  final List<T> items;
   final ItemWidgetBuilder<T> itemBuilder;
 
   @override
   Widget build(BuildContext context) {
-    if (snapshot.hasData) {
-      final List<T> items = snapshot.data;
-      if (items.isNotEmpty) {
-        return _buildList(items);
-      } else {
-        return EmptyContent();
-      }
-    } else if (snapshot.hasError) {
-      return EmptyContent(
-        title: 'Something went wrong',
-        message: 'Can\'t load items right now',
-      );
-    }
-    return Center(child: CircularProgressIndicator());
+    return _buildList(items);
   }
 
   Widget _buildList(List<T> items) {
