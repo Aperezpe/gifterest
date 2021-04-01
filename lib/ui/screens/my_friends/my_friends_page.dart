@@ -1,7 +1,9 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/app_drawer.dart';
+import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
+import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
@@ -17,6 +19,25 @@ class MyFriendsPage extends StatelessWidget {
   MyFriendsPage({Key key}) : super(key: key);
 
   static String get routeName => "my-friends-page";
+
+  void _deleteFriend(BuildContext context, Friend friend) async {
+    final model = Provider.of<MyFriendsPageModel>(context, listen: false);
+    try {
+      final yes = await PlatformAlertDialog(
+        title: "Delete?",
+        content: "Are you sure want to delete ${friend.name}?",
+        defaultAtionText: "Yes",
+        cancelActionText: "Cancel",
+      ).show(context);
+      if (yes) await model.deleteFriend(friend);
+    } catch (e) {
+      await PlatformAlertDialog(
+        title: "Error",
+        content: "Something went wrong",
+        defaultAtionText: "Ok",
+      ).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,36 +62,30 @@ class MyFriendsPage extends StatelessWidget {
               stream: database.friendsStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  final friends = snapshot.data;
                   return ChangeNotifierProvider<MyFriendsPageModel>(
                     create: (context) => MyFriendsPageModel(
                       database: database,
                       allSpecialEvents: allSpecialEvents,
-                      friends: snapshot.data,
+                      friends: friends,
                     ),
-                    child: Consumer<MyFriendsPageModel>(
-                      builder: (context, model, child) =>
-                          ListItemsBuilder<Friend>(
-                        items: snapshot.data,
+                    builder: (context, child) {
+                      final model = Provider.of<MyFriendsPageModel>(context,
+                          listen: false);
+                      return ListItemsBuilder(
+                        items: model.friends,
                         itemBuilder: (context, friend) =>
-                            _buildFriendCard(context, friend, model),
-                      ),
-                    ),
+                            _buildFriendCard(context, friend),
+                      );
+                    },
                   );
                 }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text("An error occurred on friendsStream"),
-                  );
-                }
+                if (snapshot.hasError) ErrorPage(snapshot.error);
                 return LoadingScreen();
               },
             );
           }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Something went wrong on specialEventsStream"),
-            );
-          }
+          if (snapshot.hasError) ErrorPage(snapshot.error);
           return LoadingScreen();
         },
       ),
@@ -80,14 +95,15 @@ class MyFriendsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFriendCard(
-      BuildContext context, Friend friend, MyFriendsPageModel model) {
+  Widget _buildFriendCard(BuildContext context, Friend friend) {
+    final model = Provider.of<MyFriendsPageModel>(context, listen: false);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.18,
       child: Container(
         child: FriendListTile(
           backgroundImage: NetworkImage(friend.imageUrl),
+          model: model,
           friend: friend,
           onTap: () => {
             Navigator.of(context).push(
@@ -114,12 +130,11 @@ class MyFriendsPage extends StatelessWidget {
           ),
         ),
         IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () {
-              model.deleteFriend(context, friend);
-            }),
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () => _deleteFriend(context, friend),
+        ),
       ],
     );
   }

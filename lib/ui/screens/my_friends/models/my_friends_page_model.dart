@@ -1,6 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
-import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
+import 'package:bonobo/ui/screens/my_friends/dates.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/material.dart';
@@ -11,50 +11,62 @@ class MyFriendsPageModel extends ChangeNotifier {
     @required this.allSpecialEvents,
     @required this.friends,
   }) {
-    // initialize list of upcomingEvents for each friend
-    friends.forEach((friend) => upcomingEvents[friend.id] = []);
-    allSpecialEvents.forEach((event) {
-      // print(event.friendId);
-      upcomingEvents[event.friendId].add(event);
+    setupUpcomingEvents();
+    // sort friends by top most recent event
+    friends.sort((friendA, friendB) {
+      final firstRemainingA =
+          Dates.getRemainingDays(upcomingEvents[friendA.id].elementAt(0).date);
+      final firstRemainingB =
+          Dates.getRemainingDays(upcomingEvents[friendB.id].elementAt(0).date);
+
+      return firstRemainingA.compareTo(firstRemainingB);
     });
-    // print(upcomingEvents);
   }
 
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
   final List<Friend> friends;
+
+  /// [upcomingEvents] contains a hashmap of
+  /// key = friend.id, value = sorted events by remaining days for that event
+  /// Every value[0] is the most recent upcoming event
+  /// [upcomingEvents] is initialized and populated in constructor
   Map<String, List<SpecialEvent>> upcomingEvents = {};
 
-  void deleteFriend(BuildContext context, Friend friend) async {
-    final yes = await PlatformAlertDialog(
-      title: "Delete?",
-      content: "Are you sure want to delete ${friend.name}?",
-      defaultAtionText: "Yes",
-      cancelActionText: "Cancel",
-    ).show(context);
+  void setupUpcomingEvents() {
+    print("setting up upcoming events...");
+    friends.forEach((friend) => upcomingEvents[friend.id] = []);
+    allSpecialEvents.forEach((event) {
+      upcomingEvents[event.friendId].add(event);
+    });
+    upcomingEvents.forEach((friendId, specialEvents) {
+      specialEvents.sort(
+        (event1, event2) => Dates.getRemainingDays(event1.date).compareTo(
+          Dates.getRemainingDays(event2.date),
+        ),
+      );
+    });
+  }
 
-    try {
-      if (yes) {
-        final storageService =
-            FirebaseStorageService(uid: database.uid, friend: friend);
+  SpecialEvent mostRescentEvent(Friend friend) =>
+      upcomingEvents[friend.id].elementAt(0);
 
-        await storageService.deleteFriendProfileImage();
-        database.deleteFriend(friend);
-        for (SpecialEvent event in allSpecialEvents) {
-          if (event.friendId == friend.id) {
-            database.deleteSpecialEvent(event);
-          }
-        }
+  /// [deleteFriend] deletes friend, profilePic, specialEvents associated to it
+  /// and updates [upcomingEvents] hashMap
+  Future<void> deleteFriend(Friend friend) async {
+    final storageService =
+        FirebaseStorageService(uid: database.uid, friend: friend);
+
+    await storageService.deleteFriendProfileImage(); // profilePic
+    database.deleteFriend(friend); // friend
+    for (SpecialEvent event in allSpecialEvents) // specialEvents
+    {
+      if (event.friendId == friend.id) {
+        database.deleteSpecialEvent(event);
       }
-    } catch (e) {
-      await PlatformAlertDialog(
-        title: "Error",
-        content: "Something went wrong",
-        defaultAtionText: "Ok",
-      ).show(context);
-    } finally {
-      notifyListeners();
     }
+    upcomingEvents.remove(friend.id); // updates upcomingEvents
+    notifyListeners();
   }
 
   List<SpecialEvent> getFriendSpecialEvents(Friend friend) {

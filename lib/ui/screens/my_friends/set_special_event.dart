@@ -6,12 +6,14 @@ import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'models/friend.dart';
 import 'models/set_special_event_model.dart';
@@ -55,7 +57,10 @@ class SetSpecialEvent extends StatelessWidget {
   void _onSave(BuildContext context) async {
     try {
       await _model.onSave();
-      Navigator.popUntil(context, (route) => route.isFirst);
+      Navigator.of(context).push(PageTransition(
+        type: PageTransitionType.fade,
+        child: MyFriendsPage(),
+      ));
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(
         title: 'Operation failed',
