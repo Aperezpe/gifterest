@@ -53,7 +53,9 @@ class FirestoreService {
   Stream<List<T>> queryProductsStream<T>({
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
-    @required Friend friend,
+    @required List<dynamic> interests,
+    @required int age,
+    String gender,
     EventType eventType,
   }) {
     CollectionReference ref = FirebaseFirestore.instance.collection(path);
@@ -71,18 +73,18 @@ class FirestoreService {
       case EventType.anniversary:
         query = ref
             .where('event', isEqualTo: "Anniversary")
-            .where('gender', whereIn: [friend.gender, ""]);
+            .where('gender', whereIn: [gender, ""]);
         break;
       default:
-        query = ref.where('categories', arrayContainsAny: friend.interests);
+        query = ref.where('categories', arrayContainsAny: interests);
         break;
     }
 
     // Only query by age on Any, since other events are age irrelevant
-    if (eventType == EventType.any) {
-      if (friend.age < 3) {
+    if (eventType == EventType.any || eventType == null) {
+      if (age < 3) {
         query = query.where('age_range', isEqualTo: [0, 2]);
-      } else if (friend.age >= 3 && friend.age < 12) {
+      } else if (age >= 3 && age < 12) {
         query = query.where('age_range', isEqualTo: [3, 11]);
       } else {
         query = query.where('age_range', isEqualTo: [12, 100]);

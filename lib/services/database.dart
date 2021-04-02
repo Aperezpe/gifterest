@@ -16,8 +16,14 @@ abstract class Database {
   Stream<List<Friend>> friendsStream();
   Stream<List<Interest>> interestStream();
   Stream<List<Product>> productsStream();
-  Stream<List<Product>> queryProductsStream({
+  Stream<List<Product>> queryUserProductsStream({
+    @required int age,
+    @required List<dynamic> interests,
+    @required String gender,
+  });
+  Stream<List<Product>> queryFriendProductsStream({
     @required Friend friend,
+    EventType eventType,
   });
   Stream<List<Event>> eventsStream();
   Stream<List<Interest>> queryInterestsStream(Friend friend);
@@ -51,17 +57,35 @@ class FirestoreDatabase implements Database {
         friend: friend,
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
+
   @override
-  Stream<List<Product>> queryProductsStream({
+  Stream<List<Product>> queryUserProductsStream({
+    @required int age,
+    @required List<dynamic> interests,
+    @required String gender,
+  }) =>
+      _service.queryProductsStream(
+        path: APIPath.products(),
+        age: age,
+        interests: interests,
+        gender: gender,
+        builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<List<Product>> queryFriendProductsStream({
     @required Friend friend,
     EventType eventType,
   }) =>
       _service.queryProductsStream(
         path: APIPath.products(),
-        friend: friend,
+        age: friend.age,
+        interests: friend.interests,
+        gender: friend.gender,
         eventType: eventType,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
+
   @override
   Stream<List<Product>> productsStream() => _service.collectionStream(
         path: APIPath.products(),

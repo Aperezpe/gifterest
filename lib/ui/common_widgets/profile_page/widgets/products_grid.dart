@@ -1,45 +1,22 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/screens/favorites.dart';
-import 'package:bonobo/ui/screens/friend/event_type.dart';
-import 'package:bonobo/ui/screens/friend/models/products_grid_model.dart';
-import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ProductsGridView extends StatefulWidget {
   const ProductsGridView({
     Key key,
-    @required this.model,
-    @required this.onEndValues,
+    @required this.sliderValues,
+    @required this.productStream,
+    @required this.gender,
+    @required this.database,
   }) : super(key: key);
 
-  final ProductsGridModel model;
-  final RangeValues onEndValues;
-
-  static Widget create({
-    @required Friend friend,
-    @required FirestoreDatabase database,
-    @required EventType eventType,
-    @required RangeValues onEndValues,
-  }) {
-    return ChangeNotifierProvider<ProductsGridModel>(
-      create: (context) => ProductsGridModel(
-        friend: friend,
-        database: database,
-        eventType: eventType,
-      ),
-      child: Consumer<ProductsGridModel>(
-        builder: (_, model, __) => ProductsGridView(
-          model: model,
-          onEndValues: onEndValues,
-        ),
-      ),
-    );
-  }
+  final RangeValues sliderValues;
+  final Stream<List<Product>> productStream;
+  final String gender;
+  final FirestoreDatabase database;
 
   @override
   _ProductsGridViewState createState() => _ProductsGridViewState();
@@ -50,8 +27,8 @@ class _ProductsGridViewState extends State<ProductsGridView>
   @override
   bool get wantKeepAlive => true;
 
-  int get startValue => widget.onEndValues.start.round();
-  int get endValue => widget.onEndValues.end.round();
+  int get startValue => widget.sliderValues.start.round();
+  int get endValue => widget.sliderValues.end.round();
 
   List<Product> queryProducts(List<Product> products) {
     products = products
@@ -60,8 +37,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
           return product.price >= startValue && product.price <= endValue;
         })
         .where((product) =>
-            (product.gender == widget.model.friend.gender) ||
-            (product.gender == ""))
+            (product.gender == widget.gender) || (product.gender == ""))
         .toList();
 
     return products;
@@ -71,7 +47,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
   Widget build(BuildContext context) {
     super.build(context);
     return StreamBuilder<List<Product>>(
-      stream: widget.model.queryProductsStream,
+      stream: widget.productStream,
       builder: (context, snapshot) {
         if (snapshot.hasError)
           return Center(child: Text(snapshot.error.toString()));
@@ -79,7 +55,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
           final products = queryProducts(snapshot.data);
 
           return StreamBuilder<List<Product>>(
-            stream: widget.model.database.favoritesStream(),
+            stream: widget.database.favoritesStream(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final favorites = snapshot.data;

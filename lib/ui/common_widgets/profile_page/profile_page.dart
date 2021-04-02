@@ -7,15 +7,15 @@ class ProfilePage extends StatefulWidget {
     Key key,
     @required this.database,
     @required this.title,
-    @required this.imageUrl,
     @required this.rangeSliderCallBack,
+    @required this.profileImage,
     this.sliverTabs,
     this.body,
   }) : super(key: key);
 
   final FirestoreDatabase database;
   final String title;
-  final String imageUrl;
+  final ImageProvider<Object> profileImage;
   final ValueChanged<RangeValues> rangeSliderCallBack;
   final SliverToBoxAdapter sliverTabs;
   final Widget body;
@@ -30,11 +30,17 @@ class _ProfilePageState extends State<ProfilePage>
   RangeValues rangeValues = RangeValues(0, 100);
 
   ScrollController _scrollController;
+  Widget _sliverTabs;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    if (widget.sliverTabs == null) {
+      _sliverTabs = SliverToBoxAdapter();
+    } else {
+      _sliverTabs = widget.sliverTabs;
+    }
   }
 
   @override
@@ -45,42 +51,37 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Container(
-        child: NestedScrollView(
-          controller: _scrollController,
-          headerSliverBuilder: (context, value) {
-            return [
-              SliverToBoxAdapter(
-                child: Container(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
+    return Container(
+      child: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverToBoxAdapter(
+              child: Container(
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        child: CircleAvatar(
+                          radius: 61,
+                          backgroundColor: Colors.grey[300],
                           child: CircleAvatar(
-                            radius: 61,
-                            backgroundColor: Colors.grey[300],
-                            child: CircleAvatar(
-                              radius: 60,
-                              backgroundImage: NetworkImage(widget.imageUrl),
-                            ),
+                            radius: 60,
+                            backgroundImage: widget.profileImage,
                           ),
                         ),
                       ),
-                      CustomRangeSlider(onChanged: widget.rangeSliderCallBack),
-                    ],
-                  ),
+                    ),
+                    CustomRangeSlider(onChanged: widget.rangeSliderCallBack),
+                  ],
                 ),
               ),
-              widget.sliverTabs,
-            ];
-          },
-          body: widget.body,
-        ),
+            ),
+            _sliverTabs,
+          ];
+        },
+        body: widget.body,
       ),
     );
   }

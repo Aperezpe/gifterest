@@ -1,7 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
-import 'package:bonobo/ui/screens/friend/widgets/products_grid.dart';
+import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,51 +49,57 @@ class _FriendPageState extends State<FriendPage>
   TabController _tabController;
   @override
   Widget build(BuildContext context) {
-    return ProfilePage(
-      database: widget.database,
-      imageUrl: widget.friend.imageUrl,
-      title: widget.friend.name,
-      rangeSliderCallBack: (values) => setState(() {
-        sliderValues = values;
-      }),
-      sliverTabs: SliverToBoxAdapter(
-        child: Container(
-          height: 35,
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: TabBar(
-            isScrollable: true,
-            controller: _tabController,
-            tabs: [
-              for (var event in widget.friendSpecialEvents)
-                Container(width: 100, child: Tab(text: event.name)),
-            ],
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.black,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-            indicator: RectangularIndicator(
-              topLeftRadius: 100,
-              topRightRadius: 100,
-              bottomLeftRadius: 100,
-              bottomRightRadius: 100,
-              color: Colors.deepPurpleAccent,
-              strokeWidth: 2,
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.friend.name)),
+      body: ProfilePage(
+        database: widget.database,
+        title: widget.friend.name,
+        rangeSliderCallBack: (values) => setState(() {
+          sliderValues = values;
+        }),
+        profileImage: NetworkImage(widget.friend.imageUrl),
+        sliverTabs: SliverToBoxAdapter(
+          child: Container(
+            height: 35,
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: TabBar(
+              isScrollable: true,
+              controller: _tabController,
+              tabs: [
+                for (var event in widget.friendSpecialEvents)
+                  Container(width: 100, child: Tab(text: event.name)),
+              ],
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.black,
+              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+              unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+              indicator: RectangularIndicator(
+                topLeftRadius: 100,
+                topRightRadius: 100,
+                bottomLeftRadius: 100,
+                bottomRightRadius: 100,
+                color: Colors.deepPurpleAccent,
+                strokeWidth: 2,
+              ),
             ),
           ),
         ),
-      ),
-      body: Container(
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            for (var tab in myTabs)
-              ProductsGridView.create(
-                friend: widget.friend,
-                database: widget.database,
-                onEndValues: sliderValues,
-                eventType: getEventType(tab.text),
-              ),
-          ],
+        body: Container(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              for (var tab in myTabs)
+                ProductsGridView(
+                  sliderValues: sliderValues,
+                  productStream: widget.database.queryFriendProductsStream(
+                    friend: widget.friend,
+                    eventType: getEventType(tab.text),
+                  ),
+                  gender: widget.friend.gender,
+                  database: widget.database,
+                ),
+            ],
+          ),
         ),
       ),
     );

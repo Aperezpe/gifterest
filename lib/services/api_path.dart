@@ -1,5 +1,3 @@
-import 'package:bonobo/ui/models/product.dart';
-
 class APIPath {
   static String interests() => 'interests';
 
