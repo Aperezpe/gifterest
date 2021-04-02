@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
@@ -6,34 +7,50 @@ import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class FriendPage extends StatefulWidget {
   FriendPage({
     Key key,
     @required this.friend,
-    @required this.friendSpecialEvents,
-    @required this.database,
+    @required this.allSpecialEvents,
   }) : super(key: key);
 
   final Friend friend;
-  final List<SpecialEvent> friendSpecialEvents;
-  final FirestoreDatabase database;
+  final List<SpecialEvent> allSpecialEvents;
+
+  static Widget create(BuildContext context, {@required Friend friend}) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return FriendPage(friend: friend, allSpecialEvents: snapshot.data);
+        }
+        return LoadingScreen();
+      },
+    );
+  }
 
   @override
   _FriendPageState createState() => _FriendPageState();
 }
 
 class _FriendPageState extends State<FriendPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, FriendSpecialEvents {
   RangeValues sliderValues = RangeValues(0, 100);
   List<Tab> myTabs = [];
+  List<SpecialEvent> friendSpecialEvents = [];
 
   @override
   void initState() {
     super.initState();
 
-    widget.friendSpecialEvents.forEach((event) {
+    friendSpecialEvents =
+        getFriendSpecialEvents(widget.friend, widget.allSpecialEvents);
+
+    friendSpecialEvents.forEach((event) {
       myTabs.add(Tab(text: event.name));
     });
 
@@ -49,10 +66,12 @@ class _FriendPageState extends State<FriendPage>
   TabController _tabController;
   @override
   Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.friend.name)),
       body: ProfilePage(
-        database: widget.database,
+        database: database,
         title: widget.friend.name,
         rangeSliderCallBack: (values) => setState(() {
           sliderValues = values;
@@ -66,7 +85,7 @@ class _FriendPageState extends State<FriendPage>
               isScrollable: true,
               controller: _tabController,
               tabs: [
-                for (var event in widget.friendSpecialEvents)
+                for (var event in friendSpecialEvents)
                   Container(width: 100, child: Tab(text: event.name)),
               ],
               labelColor: Colors.white,
@@ -91,12 +110,12 @@ class _FriendPageState extends State<FriendPage>
               for (var tab in myTabs)
                 ProductsGridView(
                   sliderValues: sliderValues,
-                  productStream: widget.database.queryFriendProductsStream(
+                  productStream: database.queryFriendProductsStream(
                     friend: widget.friend,
                     eventType: getEventType(tab.text),
                   ),
                   gender: widget.friend.gender,
-                  database: widget.database,
+                  database: database,
                 ),
             ],
           ),

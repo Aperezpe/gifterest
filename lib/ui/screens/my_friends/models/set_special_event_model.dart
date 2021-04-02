@@ -11,14 +11,17 @@ import '../../../../services/storage.dart';
 
 import 'friend.dart';
 
-class SetSpecialEventModel extends ChangeNotifier {
+class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
   SetSpecialEventModel({
     @required this.friend,
     @required this.database,
-    @required this.friendSpecialEvents,
+    // @required this.friendSpecialEvents,
+    @required this.allSpecialEvents,
     @required this.isNewFriend,
     this.selectedImage,
   }) {
+    friendSpecialEvents = getFriendSpecialEvents(friend, allSpecialEvents);
+
     /// Create a Birthday event by default to increase friend setup speed
     if (friendSpecialEvents == null)
       friendSpecialEvents = [
@@ -38,7 +41,8 @@ class SetSpecialEventModel extends ChangeNotifier {
   final FirestoreDatabase database;
   final bool isNewFriend;
   final File selectedImage;
-  List<SpecialEvent> friendSpecialEvents;
+  final List<SpecialEvent> allSpecialEvents;
+  List<SpecialEvent> friendSpecialEvents = [];
   List<SpecialEvent> onDeleteSpecialEvents;
   FirebaseStorageService firebaseStorageService;
 

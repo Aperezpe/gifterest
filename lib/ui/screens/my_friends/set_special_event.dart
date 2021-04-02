@@ -22,31 +22,36 @@ class SetSpecialEvent extends StatelessWidget {
   SetSpecialEvent({@required this.model});
   final SetSpecialEventModel model;
 
-  static Future<void> show(
+  static Widget show(
     BuildContext context, {
     @required Friend friend,
-    @required FirestoreDatabase database,
     @required bool isNewFriend,
-    @required List<SpecialEvent> friendSpecialEvents,
     File selectedImage,
-  }) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ChangeNotifierProvider<SetSpecialEventModel>(
-          create: (context) => SetSpecialEventModel(
-            database: database,
-            friend: friend,
-            friendSpecialEvents: friendSpecialEvents,
-            isNewFriend: isNewFriend,
-            selectedImage: selectedImage,
-          ),
-          child: Consumer<SetSpecialEventModel>(
-            builder: (context, model, _) => SetSpecialEvent(
-              model: model,
+  }) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final allSpecialEvents = snapshot.data;
+
+          return ChangeNotifierProvider<SetSpecialEventModel>(
+            create: (context) => SetSpecialEventModel(
+              database: database,
+              friend: friend,
+              allSpecialEvents: allSpecialEvents,
+              isNewFriend: isNewFriend,
+              selectedImage: selectedImage,
             ),
-          ),
-        ),
-      ),
+            child: Consumer<SetSpecialEventModel>(
+              builder: (context, model, _) => SetSpecialEvent(
+                model: model,
+              ),
+            ),
+          );
+        }
+        return LoadingScreen();
+      },
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -19,6 +20,13 @@ import 'package:page_transition/page_transition.dart';
 
 import 'models/friend.dart';
 
+// class SetFrenForm extends SetForm {
+//   SetFrenForm({Key key, @required Friend friend});
+// }
+//
+
+// StreamProvider<List<Gender>>.value(),
+
 class SetFriendForm extends StatefulWidget {
   SetFriendForm({Key key, @required this.model}) : super(key: key);
   final SetFriendModel model;
@@ -26,7 +34,7 @@ class SetFriendForm extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     Friend friend,
-    List<SpecialEvent> friendSpecialEvents,
+    // List<SpecialEvent> friendSpecialEvents,
   }) async {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -35,28 +43,29 @@ class SetFriendForm extends StatefulWidget {
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) => StreamBuilder<List<Gender>>(
-            stream: database.genderStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ChangeNotifierProvider<SetFriendModel>(
-                  create: (context) => SetFriendModel(
-                    uid: user.uid,
-                    database: database,
-                    friend: friend,
-                    friendSpecialEvents: friendSpecialEvents,
-                    genders: snapshot.data,
+          stream: database.genderStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ChangeNotifierProvider<SetFriendModel>(
+                create: (context) => SetFriendModel(
+                  uid: user.uid,
+                  database: database,
+                  friend: friend,
+                  // friendSpecialEvents: friendSpecialEvents,
+                  genders: snapshot.data,
+                ),
+                child: Consumer<SetFriendModel>(
+                  builder: (context, model, __) => SetFriendForm(
+                    model: model,
                   ),
-                  child: Consumer<SetFriendModel>(
-                    builder: (context, model, __) => SetFriendForm(
-                      model: model,
-                    ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text("An error has ocurred"));
-              }
-              return LoadingScreen();
-            }),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text("An error has ocurred"));
+            }
+            return LoadingScreen();
+          },
+        ),
       ),
     );
   }
@@ -188,7 +197,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
                   children: <Widget>[
                     ProfileImageBuilder(
                       futureImage: _model.getImageOrURL(),
-                      onPressed: () => _model.pickImage(context),
+                      onPressed: _model.pickImage,
                       selectedImage: _model.selectedImage,
                     ),
                     SizedBox(height: 25),

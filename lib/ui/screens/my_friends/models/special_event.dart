@@ -1,3 +1,5 @@
+import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+
 class SpecialEvent {
   SpecialEvent({
     this.id,
@@ -40,5 +42,18 @@ class SpecialEvent {
       'isConcurrent': isConcurrent,
       'friendId': _friendId,
     };
+  }
+}
+
+mixin FriendSpecialEvents {
+  List<SpecialEvent> getFriendSpecialEvents(
+    Friend friend,
+    List<SpecialEvent> allSpecialEvents,
+  ) {
+    final friendSpecialEvents = allSpecialEvents
+        .where((event) => event.friendId == friend?.id)
+        .toList();
+    if (friendSpecialEvents.isEmpty) return [];
+    return friendSpecialEvents;
   }
 }

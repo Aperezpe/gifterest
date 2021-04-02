@@ -1,15 +1,12 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-// import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../services/storage.dart';
 
@@ -18,7 +15,6 @@ import 'friend.dart';
 class SetFriendModel extends ChangeNotifier {
   final String uid;
   final FirestoreDatabase database;
-  final List<SpecialEvent> friendSpecialEvents;
   final Friend friend;
   final List<Gender> genders;
 
@@ -35,7 +31,6 @@ class SetFriendModel extends ChangeNotifier {
   SetFriendModel({
     @required this.uid,
     @required this.database,
-    @required this.friendSpecialEvents,
     @required this.genders,
     this.friend,
   }) {
@@ -54,7 +49,7 @@ class SetFriendModel extends ChangeNotifier {
     return friend.imageUrl;
   }
 
-  Future pickImage(BuildContext context) async {
+  Future pickImage() async {
     final picker = ImagePicker();
 
     try {
@@ -171,13 +166,15 @@ class SetFriendModel extends ChangeNotifier {
 
   void goToSpecialEvents(BuildContext context) async {
     final newFriend = _setFriend();
-    SetSpecialEvent.show(
-      context,
-      database: database,
-      friend: newFriend,
-      friendSpecialEvents: friendSpecialEvents,
-      isNewFriend: isNewFriend,
-      selectedImage: selectedImage,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SetSpecialEvent.show(
+          context,
+          friend: newFriend,
+          isNewFriend: isNewFriend,
+          selectedImage: selectedImage,
+        ),
+      ),
     );
   }
 

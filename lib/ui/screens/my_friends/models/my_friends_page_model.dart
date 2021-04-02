@@ -68,12 +68,4 @@ class MyFriendsPageModel extends ChangeNotifier {
     upcomingEvents.remove(friend.id); // updates upcomingEvents
     notifyListeners();
   }
-
-  List<SpecialEvent> getFriendSpecialEvents(Friend friend) {
-    List<SpecialEvent> friendSpecialEvents = allSpecialEvents
-        .where((event) => event.friendId == friend?.id)
-        .toList();
-    if (friendSpecialEvents.isEmpty) return [];
-    return friendSpecialEvents;
-  }
 }

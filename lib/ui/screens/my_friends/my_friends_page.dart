@@ -123,10 +123,9 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
               await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => FriendPage(
-                    database: model.database,
+                  builder: (context) => FriendPage.create(
+                    context,
                     friend: friend,
-                    friendSpecialEvents: model.getFriendSpecialEvents(friend),
                   ),
                 ),
               );
@@ -142,7 +141,6 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
           onTap: () => SetFriendForm.show(
             context,
             friend: friend,
-            friendSpecialEvents: model.getFriendSpecialEvents(friend),
           ),
         ),
         IconSlideAction(
