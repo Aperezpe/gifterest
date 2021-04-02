@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class CustomRangeSlider extends StatefulWidget {
   final ValueChanged<RangeValues> onChanged;
 
-  const CustomRangeSlider({Key key, this.onChanged}) : super(key: key);
+  const CustomRangeSlider({Key key, @required this.onChanged})
+      : super(key: key);
 
   @override
   _CustomRangeSliderState createState() => _CustomRangeSliderState();

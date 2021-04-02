@@ -25,7 +25,6 @@ class MyFriendsPage extends StatefulWidget {
 }
 
 class _MyFriendsPageState extends State<MyFriendsPage> {
-  bool _isSlidableEnabled = true;
   final _silableController = SlidableController();
 
   void _deleteFriend(BuildContext context, Friend friend) async {
