@@ -5,6 +5,7 @@ import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
@@ -15,16 +16,17 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'models/friend.dart';
 import 'models/set_special_event_model.dart';
 
+// TODO: Prevent user from deleting all events for a friend, cz this will cause
+// errors when sorting friends by upcoming events
 class SetSpecialEvent extends StatelessWidget {
   SetSpecialEvent({@required this.model});
   final SetSpecialEventModel model;
 
   static Widget show(
     BuildContext context, {
-    @required Friend friend,
+    @required Person person,
     @required bool isNewFriend,
     File selectedImage,
   }) {
@@ -38,7 +40,7 @@ class SetSpecialEvent extends StatelessWidget {
           return ChangeNotifierProvider<SetSpecialEventModel>(
             create: (context) => SetSpecialEventModel(
               database: database,
-              friend: friend,
+              person: person,
               allSpecialEvents: allSpecialEvents,
               isNewFriend: isNewFriend,
               selectedImage: selectedImage,
@@ -56,7 +58,7 @@ class SetSpecialEvent extends StatelessWidget {
   }
 
   SetSpecialEventModel get _model => model;
-  Friend get _friend => _model.friend;
+  Person get _person => _model.person;
   bool get _isNewFriend => _model.isNewFriend;
 
   void _onSave(BuildContext context) async {
@@ -94,7 +96,7 @@ class SetSpecialEvent extends StatelessWidget {
                 BottomButton(
                   text: _isNewFriend
                       ? "Add Interests 😍"
-                      : 'Edit ${_friend.name}\'s Interests 😍',
+                      : 'Edit ${_person.name}\'s Interests 😍',
                   onPressed: _model.isEmpty ||
                           _model.firebaseStorageService?.uploadTask != null
                       ? null

@@ -1,5 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/gender.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -10,12 +11,10 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../../../../services/storage.dart';
 
-import 'friend.dart';
-
 class SetFriendModel extends ChangeNotifier {
   final String uid;
   final FirestoreDatabase database;
-  final Friend friend;
+  final Person person;
   final List<Gender> genders;
 
   String name = "";
@@ -32,12 +31,12 @@ class SetFriendModel extends ChangeNotifier {
     @required this.uid,
     @required this.database,
     @required this.genders,
-    this.friend,
+    this.person,
   }) {
-    name = friend?.name;
-    age = friend?.age;
-    isNewFriend = friend == null ? true : false;
-    firebaseStorage = FirebaseStorageService(uid: uid, friend: friend);
+    name = person?.name;
+    age = person?.age;
+    isNewFriend = person == null ? true : false;
+    firebaseStorage = FirebaseStorageService(uid: uid, person: person);
     genderTypes = genders.map((gender) => gender.type).toList();
     initializeGenderDropdownValue();
     initializeAgeRange();
@@ -45,8 +44,8 @@ class SetFriendModel extends ChangeNotifier {
 
   Future<dynamic> getImageOrURL() async {
     if (selectedImage != null) return selectedImage;
-    if (isNewFriend) return await firebaseStorage.getDefaultProfileUrl();
-    return friend.imageUrl;
+    if (isNewFriend) return await firebaseStorage.getDefaultProfileImageUrl();
+    return person.imageUrl;
   }
 
   Future pickImage() async {
@@ -106,7 +105,7 @@ class SetFriendModel extends ChangeNotifier {
 
       if (selectedImage != null) {
         await _uploadProfileImage();
-        friend.imageUrl = await firebaseStorage.getFriendProfileImageURL();
+        person.imageUrl = await firebaseStorage.getFriendProfileImageURL();
       }
 
       final newFriend = _setFriend();
@@ -118,14 +117,14 @@ class SetFriendModel extends ChangeNotifier {
 
   void initializeGenderDropdownValue() {
     if (isNewFriend) return;
-    initialGenderValue = genderTypes.indexOf(friend.gender);
+    initialGenderValue = genderTypes.indexOf(person.gender);
   }
 
   void initializeAgeRange() {
     if (isNewFriend) return;
-    if (friend.age >= 0 && friend.age <= 2) {
+    if (person.age >= 0 && person.age <= 2) {
       ageRange = [0, 2];
-    } else if (friend.age >= 3 && friend.age <= 11) {
+    } else if (person.age >= 3 && person.age <= 11) {
       ageRange = [3, 11];
     } else {
       ageRange = [12, 100];
@@ -134,7 +133,7 @@ class SetFriendModel extends ChangeNotifier {
 
   bool genderChanged() {
     if (isNewFriend) return false;
-    if (genders[initialGenderValue].type != friend.gender) {
+    if (genders[initialGenderValue].type != person.gender) {
       return true;
     }
     return false;
@@ -142,7 +141,7 @@ class SetFriendModel extends ChangeNotifier {
 
   bool ageRangeChanged() {
     if (isNewFriend) return false;
-    if (friend.age != age) {
+    if (person.age != age) {
       if (age >= ageRange[0] && age <= ageRange[1]) return false;
       return true;
     }
@@ -170,7 +169,7 @@ class SetFriendModel extends ChangeNotifier {
       MaterialPageRoute(
         builder: (context) => SetSpecialEvent.show(
           context,
-          friend: newFriend,
+          person: newFriend,
           isNewFriend: isNewFriend,
           selectedImage: selectedImage,
         ),
@@ -178,17 +177,16 @@ class SetFriendModel extends ChangeNotifier {
     );
   }
 
-  Friend _setFriend() {
-    return Friend(
-      id: isNewFriend ? documentIdFromCurrentDate() : friend.id,
-      uid: uid,
+  Person _setFriend() {
+    return Person(
+      id: isNewFriend ? documentIdFromCurrentDate() : person.id,
       name: name,
       age: age,
-      imageUrl: friend?.imageUrl,
+      imageUrl: person?.imageUrl,
       gender: genders[initialGenderValue].type,
       interests: (isNewFriend || ageRangeChanged() || genderChanged())
           ? []
-          : friend.interests,
+          : person.interests,
     );
   }
 }

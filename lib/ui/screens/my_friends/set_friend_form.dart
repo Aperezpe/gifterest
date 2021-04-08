@@ -6,6 +6,7 @@ import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dar
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/gender.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
@@ -17,8 +18,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../common_widgets/loading_screen.dart';
 import 'package:page_transition/page_transition.dart';
-
-import 'models/friend.dart';
 
 // class SetFrenForm extends SetForm {
 //   SetFrenForm({Key key, @required Friend friend});
@@ -33,8 +32,7 @@ class SetFriendForm extends StatefulWidget {
 
   static Future<void> show(
     BuildContext context, {
-    Friend friend,
-    // List<SpecialEvent> friendSpecialEvents,
+    Person person,
   }) async {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -50,8 +48,7 @@ class SetFriendForm extends StatefulWidget {
                 create: (context) => SetFriendModel(
                   uid: user.uid,
                   database: database,
-                  friend: friend,
-                  // friendSpecialEvents: friendSpecialEvents,
+                  person: person,
                   genders: snapshot.data,
                 ),
                 child: Consumer<SetFriendModel>(
@@ -81,7 +78,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
   FocusNode _ageFocusNode;
 
   SetFriendModel get _model => widget.model;
-  Friend get _friend => _model.friend;
+  Person get _person => _model.person;
   bool get _isNewFriend => _model.isNewFriend;
   bool get _isUploadingImage => _model.firebaseStorage?.uploadTask != null;
 
@@ -94,8 +91,8 @@ class _SetFriendFormState extends State<SetFriendForm> {
     _formKey = GlobalKey<FormState>();
     _nameFocusNode = FocusNode();
     _ageFocusNode = FocusNode();
-    _name = _friend?.name;
-    _age = _friend?.age;
+    _name = _person?.name;
+    _age = _person?.age;
   }
 
   bool _validateAndSaveForm() {
@@ -168,7 +165,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         color: Colors.blue,
         text: _isNewFriend
             ? "Add Events 👉"
-            : 'Edit ${_friend.name}\'s Events 👉',
+            : 'Edit ${_person.name}\'s Events 👉',
         textColor: Colors.white,
       ),
     );

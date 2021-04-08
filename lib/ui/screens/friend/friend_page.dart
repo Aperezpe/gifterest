@@ -1,9 +1,9 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,20 +13,20 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 class FriendPage extends StatefulWidget {
   FriendPage({
     Key key,
-    @required this.friend,
+    @required this.person,
     @required this.allSpecialEvents,
   }) : super(key: key);
 
-  final Friend friend;
+  final Person person;
   final List<SpecialEvent> allSpecialEvents;
 
-  static Widget create(BuildContext context, {@required Friend friend}) {
+  static Widget create(BuildContext context, {@required Person person}) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<List<SpecialEvent>>(
       stream: database.specialEventsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return FriendPage(friend: friend, allSpecialEvents: snapshot.data);
+          return FriendPage(person: person, allSpecialEvents: snapshot.data);
         }
         return LoadingScreen();
       },
@@ -48,7 +48,7 @@ class _FriendPageState extends State<FriendPage>
     super.initState();
 
     friendSpecialEvents =
-        getFriendSpecialEvents(widget.friend, widget.allSpecialEvents);
+        getFriendSpecialEvents(widget.person, widget.allSpecialEvents);
 
     friendSpecialEvents.forEach((event) {
       myTabs.add(Tab(text: event.name));
@@ -69,14 +69,14 @@ class _FriendPageState extends State<FriendPage>
     final database = Provider.of<Database>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.friend.name)),
+      appBar: AppBar(title: Text(widget.person.name)),
       body: ProfilePage(
         database: database,
-        title: widget.friend.name,
+        title: widget.person.name,
         rangeSliderCallBack: (values) => setState(() {
           sliderValues = values;
         }),
-        profileImage: NetworkImage(widget.friend.imageUrl),
+        profileImage: NetworkImage(widget.person.imageUrl),
         sliverTabs: SliverToBoxAdapter(
           child: Container(
             height: 35,
@@ -111,10 +111,10 @@ class _FriendPageState extends State<FriendPage>
                 ProductsGridView(
                   sliderValues: sliderValues,
                   productStream: database.queryFriendProductsStream(
-                    friend: widget.friend,
+                    person: widget.person,
                     eventType: getEventType(tab.text),
                   ),
-                  gender: widget.friend.gender,
+                  gender: widget.person.gender,
                   database: database,
                 ),
             ],

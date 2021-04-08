@@ -4,9 +4,9 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,11 +24,11 @@ class SetInterestsPage extends StatelessWidget {
   final SetInterestsPageModel model;
 
   bool get isReadyToSubmit => model.isReadyToSubmit;
-  Friend get friend => model.friend;
+  Person get person => model.person;
 
   static Future<void> show(
     BuildContext context, {
-    @required Friend friend,
+    @required Person person,
     @required FirestoreDatabase database,
     @required List<SpecialEvent> friendSpecialEvents,
     @required bool isNewFriend,
@@ -40,7 +40,7 @@ class SetInterestsPage extends StatelessWidget {
         builder: (context) => ChangeNotifierProvider<SetInterestsPageModel>(
           create: (context) => SetInterestsPageModel(
             database: database,
-            friend: friend,
+            person: person,
             isNewFriend: isNewFriend,
             friendSpecialEvents: friendSpecialEvents,
             onDeleteSpecialEvents: onDeleteSpecialEvents,

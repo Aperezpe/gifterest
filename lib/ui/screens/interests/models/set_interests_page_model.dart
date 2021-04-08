@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
 
@@ -11,21 +11,21 @@ import '../../../models/interest.dart';
 class SetInterestsPageModel extends ChangeNotifier {
   SetInterestsPageModel({
     @required this.database,
-    @required this.friend,
+    @required this.person,
     @required this.friendSpecialEvents,
     @required this.isNewFriend,
     @required this.onDeleteSpecialEvents,
     this.selectedImage,
-  }) : assert(friend != null) {
+  }) : assert(person != null) {
     _initializeInterests();
-    firebaseStorage = FirebaseStorageService(uid: database.uid, friend: friend);
+    firebaseStorage = FirebaseStorageService(uid: database.uid, person: person);
   }
 
   final FirestoreDatabase database;
   final File selectedImage;
   final bool isNewFriend;
   FirebaseStorageService firebaseStorage;
-  Friend friend;
+  Person person;
   List<SpecialEvent> friendSpecialEvents;
   List<SpecialEvent> onDeleteSpecialEvents;
 
@@ -34,12 +34,12 @@ class SetInterestsPageModel extends ChangeNotifier {
 
   void _initializeInterests() {
     _selectedInterests =
-        friend.interests.map((interest) => interest.toString()).toList();
+        person.interests.map((interest) => interest.toString()).toList();
   }
 
   Stream<List<Interest>> get interestStream => database.interestStream();
   Stream<List<Interest>> get queryInterestsStream =>
-      database.queryInterestsStream(friend);
+      database.queryInterestsStream(person);
 
   bool get isReadyToSubmit =>
       _selectedInterests.length == interestsAllowed ? true : false;
@@ -56,22 +56,22 @@ class SetInterestsPageModel extends ChangeNotifier {
   }
 
   Future<void> submit() async {
-    friend.interests = _selectedInterests;
+    person.interests = _selectedInterests;
     if (selectedImage != null) {
       firebaseStorage.putFriendProfileImage(image: selectedImage);
       notifyListeners();
       await firebaseStorage.uploadTask.whenComplete(
         () async =>
-            friend.imageUrl = await firebaseStorage.getFriendProfileImageURL(),
+            person.imageUrl = await firebaseStorage.getFriendProfileImageURL(),
       );
     } else {
-      friend.imageUrl =
-          friend.imageUrl ?? await firebaseStorage.getDefaultProfileUrl();
+      person.imageUrl =
+          person.imageUrl ?? await firebaseStorage.getDefaultProfileImageUrl();
     }
 
-    await database.setFriend(friend);
+    await database.setFriend(person);
     for (SpecialEvent event in friendSpecialEvents) {
-      await database.setSpecialEvent(event, friend);
+      await database.setSpecialEvent(event, person);
     }
     for (SpecialEvent event in onDeleteSpecialEvents) {
       await database.deleteSpecialEvent(event);
@@ -97,9 +97,9 @@ class SetInterestsPageModel extends ChangeNotifier {
     for (var interest in interests) {
       int fromAge = interest.ageRange[0];
       int toAge = interest.ageRange[1];
-      bool isBetweenRange = fromAge <= friend.age && toAge >= friend.age;
+      bool isBetweenRange = fromAge <= person.age && toAge >= person.age;
       bool isRightGender =
-          interest.gender == "any" || interest.gender == friend.gender;
+          interest.gender == "any" || interest.gender == person.gender;
 
       if (isBetweenRange && isRightGender) {
         filteredInterests.add(interest);
