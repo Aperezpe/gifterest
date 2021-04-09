@@ -47,7 +47,7 @@ class SpecialEvent {
 }
 
 class FriendSpecialEvents {
-  List<SpecialEvent> getFriendSpecialEvents(
+  static List<SpecialEvent> getFriendSpecialEvents(
     Person person,
     List<SpecialEvent> allSpecialEvents,
   ) {

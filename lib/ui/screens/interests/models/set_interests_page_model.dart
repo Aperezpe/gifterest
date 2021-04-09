@@ -12,23 +12,24 @@ class SetInterestsPageModel extends ChangeNotifier {
   SetInterestsPageModel({
     @required this.database,
     @required this.person,
-    @required this.friendSpecialEvents,
-    @required this.isNewFriend,
+    this.friendSpecialEvents,
+    this.isNewFriend: false,
     @required this.onDeleteSpecialEvents,
+    @required this.firebaseStorage,
     this.selectedImage,
   }) : assert(person != null) {
     _initializeInterests();
-    firebaseStorage = FirebaseStorageService(uid: database.uid, person: person);
   }
 
   final FirestoreDatabase database;
   final File selectedImage;
   final bool isNewFriend;
-  FirebaseStorageService firebaseStorage;
+  final Storage firebaseStorage;
   Person person;
   List<SpecialEvent> friendSpecialEvents;
-  List<SpecialEvent> onDeleteSpecialEvents;
 
+  /// [onDeleteSpecialEvents] Are the events that are on wait to be deleted on submit
+  List<SpecialEvent> onDeleteSpecialEvents;
   final int interestsAllowed = 5;
   List<String> _selectedInterests = [];
 
@@ -58,24 +59,24 @@ class SetInterestsPageModel extends ChangeNotifier {
   Future<void> submit() async {
     person.interests = _selectedInterests;
     if (selectedImage != null) {
-      firebaseStorage.putFriendProfileImage(image: selectedImage);
+      firebaseStorage.putProfileImage(image: selectedImage, person: person);
       notifyListeners();
       await firebaseStorage.uploadTask.whenComplete(
-        () async =>
-            person.imageUrl = await firebaseStorage.getFriendProfileImageURL(),
+        () async => person.imageUrl =
+            await firebaseStorage.getProfileImageURL(person: person),
       );
     } else {
       person.imageUrl =
           person.imageUrl ?? await firebaseStorage.getDefaultProfileImageUrl();
     }
 
-    await database.setFriend(person);
-    for (SpecialEvent event in friendSpecialEvents) {
-      await database.setSpecialEvent(event, person);
-    }
-    for (SpecialEvent event in onDeleteSpecialEvents) {
-      await database.deleteSpecialEvent(event);
-    }
+    await database.setPerson(person);
+
+    friendSpecialEvents?.forEach(
+        (event) async => await database.setSpecialEvent(event, person));
+
+    onDeleteSpecialEvents
+        ?.forEach((event) async => await database.deleteSpecialEvent(event));
   }
 
   bool isSelected(String interestName) =>

@@ -1,20 +1,22 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
+import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
-import 'package:bonobo/ui/screens/my_friends/set_friend_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 import 'models/special_event.dart';
 
+// TODO: Sacar un snackbar o hacer highlight el friend que acaban de hacer update
 class MyFriendsPage extends StatefulWidget {
   MyFriendsPage({Key key}) : super(key: key);
 
@@ -48,7 +50,8 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context, listen: false);
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +59,11 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
         actions: [
           TextButton(
             child: Icon(Icons.add, color: Colors.white),
-            onPressed: () => SetFriendForm.show(context),
+            onPressed: () => SetPersonForm.create(
+              context,
+              firebaseStorage: FirebaseFriendStorage(uid: database.uid),
+              mainPage: widget,
+            ),
           )
         ],
       ),
@@ -81,8 +88,11 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                           listen: false);
                       return ListItemsBuilder(
                         items: model.friends,
-                        itemBuilder: (context, friend) =>
-                            _buildFriendCard(context, friend),
+                        itemBuilder: (context, friend) => _buildFriendCard(
+                          context,
+                          person: friend,
+                          model: model,
+                        ),
                       );
                     },
                   );
@@ -103,10 +113,10 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   }
 
   Widget _buildFriendCard(
-    BuildContext context,
-    Person person,
-  ) {
-    final model = Provider.of<MyFriendsPageModel>(context, listen: false);
+    BuildContext context, {
+    @required Person person,
+    @required MyFriendsPageModel model,
+  }) {
     return Slidable(
       key: Key("slidable-${person.id}"),
       closeOnScroll: true,
@@ -140,7 +150,12 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
           caption: 'Edit',
           color: Colors.blue,
           icon: Icons.edit,
-          onTap: () => SetFriendForm.show(context, person: person),
+          onTap: () => SetPersonForm.create(
+            context,
+            person: person,
+            firebaseStorage: model.friendStorage,
+            mainPage: widget,
+          ),
         ),
         IconSlideAction(
           caption: 'Delete',

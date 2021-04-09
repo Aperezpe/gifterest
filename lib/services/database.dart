@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class Database {
-  Future<void> setFriend(Person person);
+  Future<void> setPerson(Person person);
   Future<void> deleteFriend(Person person);
   Stream<List<Person>> friendsStream();
   Stream<List<Interest>> interestStream();
@@ -108,11 +108,16 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 
-  @override
-  Future<void> setFriend(Person person) async => await _service.setData(
-        path: APIPath.friend(uid, person.id),
-        data: person.toMap(),
-      );
+  /// Sets friend or user depending on person object
+  Future<void> setPerson(Person person) async {
+    if (person.id == uid) {
+      await _service.setData(path: APIPath.user(uid), data: person.toMap());
+    } else {
+      await _service.setData(
+          path: APIPath.friend(uid, person.id), data: person.toMap());
+    }
+  }
+
   @override
   Future<void> deleteFriend(Person person) async =>
       await _service.deleteData(path: APIPath.friend(uid, person.id));

@@ -38,7 +38,7 @@ class FriendPage extends StatefulWidget {
 }
 
 class _FriendPageState extends State<FriendPage>
-    with SingleTickerProviderStateMixin, FriendSpecialEvents {
+    with SingleTickerProviderStateMixin {
   RangeValues sliderValues = RangeValues(0, 100);
   List<Tab> myTabs = [];
   List<SpecialEvent> friendSpecialEvents = [];
@@ -47,8 +47,8 @@ class _FriendPageState extends State<FriendPage>
   void initState() {
     super.initState();
 
-    friendSpecialEvents =
-        getFriendSpecialEvents(widget.person, widget.allSpecialEvents);
+    friendSpecialEvents = FriendSpecialEvents.getFriendSpecialEvents(
+        widget.person, widget.allSpecialEvents);
 
     friendSpecialEvents.forEach((event) {
       myTabs.add(Tab(text: event.name));

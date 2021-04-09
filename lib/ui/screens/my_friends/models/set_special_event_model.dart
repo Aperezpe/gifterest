@@ -4,13 +4,14 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../services/storage.dart';
 
-class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
+class SetSpecialEventModel extends ChangeNotifier {
   SetSpecialEventModel({
     @required this.person,
     @required this.database,
@@ -20,7 +21,8 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
     @required this.firebaseStorageService,
     this.selectedImage,
   }) {
-    friendSpecialEvents = getFriendSpecialEvents(person, allSpecialEvents);
+    friendSpecialEvents =
+        FriendSpecialEvents.getFriendSpecialEvents(person, allSpecialEvents);
 
     /// Create a Birthday event by default to increase friend setup speed
     if (friendSpecialEvents.isEmpty && isNewFriend)
@@ -99,7 +101,7 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
             await firebaseStorageService.getDefaultProfileImageUrl();
       }
 
-      await database.setFriend(person);
+      await database.setPerson(person);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, person);
       }
@@ -114,9 +116,10 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
   void goToInterestsPage(BuildContext context) {
     SetInterestsPage.show(
       context,
-      database: database,
-      firebaseFriendStorage: firebaseStorageService,
+      // database: database,
+      firebaseStorage: firebaseStorageService,
       person: person,
+      mainPage: MyFriendsPage(),
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
       onDeleteSpecialEvents: onDeleteSpecialEvents,

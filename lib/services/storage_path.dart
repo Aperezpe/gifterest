@@ -5,4 +5,6 @@ class StoragePath {
 
   static String friendProfileImage(String uid, Person person) =>
       "/$uid/${person.id}/profileImage.jpg";
+
+  static String userProfileImage(String uid) => '$uid/profileImage.jpg';
 }

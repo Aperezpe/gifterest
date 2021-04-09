@@ -105,7 +105,7 @@ class SetFormModel extends ChangeNotifier {
             await firebaseStorage.getProfileImageURL(person: person);
       }
 
-      await database.setFriend(setPerson());
+      await database.setPerson(setPerson());
     } catch (e) {
       rethrow;
     }
@@ -149,7 +149,6 @@ class SetFormModel extends ChangeNotifier {
     return false;
   }
 
-  //
   void onGenderDropdownChange(int value) => initialGenderValue = value;
 
   void updateName(String name) => updateWith(name: name);

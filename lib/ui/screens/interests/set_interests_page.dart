@@ -21,8 +21,10 @@ import '../../models/interest.dart';
 class SetInterestsPage extends StatelessWidget {
   SetInterestsPage({
     @required this.model,
+    @required this.mainPage,
   });
   final SetInterestsPageModel model;
+  final Widget mainPage;
 
   bool get isReadyToSubmit => model.isReadyToSubmit;
   Person get person => model.person;
@@ -30,18 +32,22 @@ class SetInterestsPage extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     @required Person person,
-    @required FirestoreDatabase database,
-    @required List<SpecialEvent> friendSpecialEvents,
-    @required bool isNewFriend,
+    // @required FirestoreDatabase database,
+    List<SpecialEvent>
+        friendSpecialEvents, // TODO: shape so that friendSpecialEvents is not needed if isUser
+    bool isNewFriend: false,
     @required List<SpecialEvent> onDeleteSpecialEvents,
-    @required FirebaseFriendStorage firebaseFriendStorage,
+    @required Storage firebaseStorage,
+    @required Widget mainPage,
     File selectedImage,
   }) async {
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<SetInterestsPageModel>(
           create: (context) => SetInterestsPageModel(
-            firebaseStorage: firebaseFriendStorage,
+            firebaseStorage: firebaseStorage,
             database: database,
             person: person,
             isNewFriend: isNewFriend,
@@ -52,6 +58,7 @@ class SetInterestsPage extends StatelessWidget {
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
               model: model,
+              mainPage: mainPage,
             ),
           ),
         ),
@@ -62,9 +69,10 @@ class SetInterestsPage extends StatelessWidget {
   Future<void> _submit(BuildContext context) async {
     try {
       await model.submit();
+
       Navigator.of(context).push(PageTransition(
         type: PageTransitionType.fade,
-        child: MyFriendsPage(),
+        child: mainPage,
       ));
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(

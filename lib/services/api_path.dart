@@ -20,6 +20,8 @@ class APIPath {
   ) =>
       'users/$uid/friends/$friendId';
 
+  static String user(String uid) => 'users/$uid';
+
   static String friends(String uid) => 'users/$uid/friends';
 
   static String friendSpecialEvents(String uid, String friendId) =>
