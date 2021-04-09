@@ -17,6 +17,7 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
     // @required this.friendSpecialEvents,
     @required this.allSpecialEvents,
     @required this.isNewFriend,
+    @required this.firebaseStorageService,
     this.selectedImage,
   }) {
     friendSpecialEvents = getFriendSpecialEvents(person, allSpecialEvents);
@@ -32,8 +33,6 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
         ),
       ];
     onDeleteSpecialEvents = [];
-    firebaseStorageService =
-        FirebaseStorageService(uid: database.uid, person: person);
   }
 
   final Person person;
@@ -43,7 +42,7 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
   final List<SpecialEvent> allSpecialEvents;
   List<SpecialEvent> friendSpecialEvents = [];
   List<SpecialEvent> onDeleteSpecialEvents;
-  FirebaseStorageService firebaseStorageService;
+  final Storage firebaseStorageService;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
 
@@ -88,11 +87,12 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
         );
 
       if (selectedImage != null) {
-        firebaseStorageService.putFriendProfileImage(image: selectedImage);
+        firebaseStorageService.putProfileImage(
+            image: selectedImage, person: person);
         notifyListeners();
         await firebaseStorageService.uploadTask.whenComplete(
           () async => person.imageUrl =
-              await firebaseStorageService.getFriendProfileImageURL(),
+              await firebaseStorageService.getProfileImageURL(person: person),
         );
       } else {
         person.imageUrl = person.imageUrl ??
@@ -115,6 +115,7 @@ class SetSpecialEventModel extends ChangeNotifier with FriendSpecialEvents {
     SetInterestsPage.show(
       context,
       database: database,
+      firebaseFriendStorage: firebaseStorageService,
       person: person,
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,

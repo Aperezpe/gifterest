@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
@@ -28,6 +29,7 @@ class SetSpecialEvent extends StatelessWidget {
     BuildContext context, {
     @required Person person,
     @required bool isNewFriend,
+    @required FirebaseFriendStorage firebaseFriendStorage,
     File selectedImage,
   }) {
     final database = Provider.of<Database>(context, listen: false);
@@ -43,6 +45,7 @@ class SetSpecialEvent extends StatelessWidget {
               person: person,
               allSpecialEvents: allSpecialEvents,
               isNewFriend: isNewFriend,
+              firebaseStorageService: firebaseFriendStorage,
               selectedImage: selectedImage,
             ),
             child: Consumer<SetSpecialEventModel>(

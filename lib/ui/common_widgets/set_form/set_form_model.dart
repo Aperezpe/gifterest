@@ -1,50 +1,46 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import '../../../../services/storage.dart';
 
-class SetFriendModel extends ChangeNotifier {
-  final String uid;
-  final FirestoreDatabase database;
-  final Person person;
-  final List<Gender> genders;
-
-  String name = "";
-  int age = 0;
-  bool isNewFriend;
-  int initialGenderValue = 0;
-  List<int> ageRange;
-  File selectedImage;
-  List<String> genderTypes;
-  FirebaseStorageService firebaseStorage;
-  String profileImageUrl;
-
-  SetFriendModel({
-    @required this.uid,
-    @required this.database,
+class SetFormModel extends ChangeNotifier {
+  SetFormModel({
     @required this.genders,
-    this.person,
+    @required this.database,
+    @required this.person,
+    @required this.uid,
+    @required this.firebaseStorage,
+    this.isNew: false,
   }) {
     name = person?.name;
     age = person?.age;
-    isNewFriend = person == null ? true : false;
-    firebaseStorage = FirebaseStorageService(uid: uid, person: person);
     genderTypes = genders.map((gender) => gender.type).toList();
     initializeGenderDropdownValue();
     initializeAgeRange();
   }
+  final String uid;
+  final FirestoreDatabase database;
+  final Person person;
+  final List<Gender> genders;
+  final bool isNew;
+  final Storage firebaseStorage;
+
+  File selectedImage;
+  int initialGenderValue = 0;
+  List<int> ageRange;
+  List<String> genderTypes;
+
+  String name = "";
+  int age = 0;
 
   Future<dynamic> getImageOrURL() async {
     if (selectedImage != null) return selectedImage;
-    if (isNewFriend) return await firebaseStorage.getDefaultProfileImageUrl();
+    if (isNew) return await firebaseStorage.getDefaultProfileImageUrl();
     return person.imageUrl;
   }
 
@@ -82,15 +78,15 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   Future<void> _uploadProfileImage() async {
-    firebaseStorage.putFriendProfileImage(image: selectedImage);
+    firebaseStorage.putProfileImage(image: selectedImage, person: person);
     notifyListeners();
     await firebaseStorage.uploadTask.whenComplete(() => null);
   }
 
-  /// [Adding new friend]: Returns a friend instance with the data gathered
+  /// [Adding new person]: Returns a person object with the data gathered
   /// from from form + initial valules
   ///
-  /// [Editing friend]: Returns friend instance with data gathered from form +
+  /// [Editing person]: Returns person object with data gathered from form +
   /// previous values on friend instance
   ///
   /// Used in submit() and setInterestPage.
@@ -105,23 +101,28 @@ class SetFriendModel extends ChangeNotifier {
 
       if (selectedImage != null) {
         await _uploadProfileImage();
-        person.imageUrl = await firebaseStorage.getFriendProfileImageURL();
+        person.imageUrl =
+            await firebaseStorage.getProfileImageURL(person: person);
       }
 
-      final newFriend = _setFriend();
-      await database.setFriend(newFriend);
+      await database.setFriend(setPerson());
     } catch (e) {
       rethrow;
     }
   }
 
   void initializeGenderDropdownValue() {
-    if (isNewFriend) return;
+    if (isNew) return;
     initialGenderValue = genderTypes.indexOf(person.gender);
   }
 
+  List<String> getGenderTypes(List<Gender> genders) {
+    return genders.map((gender) => gender.type).toList();
+  }
+
   void initializeAgeRange() {
-    if (isNewFriend) return;
+    if (isNew) return;
+    if (isNew) return;
     if (person.age >= 0 && person.age <= 2) {
       ageRange = [0, 2];
     } else if (person.age >= 3 && person.age <= 11) {
@@ -132,7 +133,7 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   bool genderChanged() {
-    if (isNewFriend) return false;
+    if (isNew) return false;
     if (genders[initialGenderValue].type != person.gender) {
       return true;
     }
@@ -140,7 +141,7 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   bool ageRangeChanged() {
-    if (isNewFriend) return false;
+    if (isNew) return false;
     if (person.age != age) {
       if (age >= ageRange[0] && age <= ageRange[1]) return false;
       return true;
@@ -148,9 +149,8 @@ class SetFriendModel extends ChangeNotifier {
     return false;
   }
 
-  void onGenderDropdownChange(int value) {
-    initialGenderValue = value;
-  }
+  //
+  void onGenderDropdownChange(int value) => initialGenderValue = value;
 
   void updateName(String name) => updateWith(name: name);
   void updateAge(int age) => updateWith(age: age);
@@ -163,28 +163,14 @@ class SetFriendModel extends ChangeNotifier {
     this.age = age ?? this.age;
   }
 
-  void goToSpecialEvents(BuildContext context) async {
-    final newFriend = _setFriend();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SetSpecialEvent.show(
-          context,
-          person: newFriend,
-          isNewFriend: isNewFriend,
-          selectedImage: selectedImage,
-        ),
-      ),
-    );
-  }
-
-  Person _setFriend() {
+  Person setPerson() {
     return Person(
-      id: isNewFriend ? documentIdFromCurrentDate() : person.id,
+      id: isNew ? documentIdFromCurrentDate() : person.id,
       name: name,
       age: age,
       imageUrl: person?.imageUrl,
       gender: genders[initialGenderValue].type,
-      interests: (isNewFriend || ageRangeChanged() || genderChanged())
+      interests: (isNew || ageRangeChanged() || genderChanged())
           ? []
           : person.interests,
     );

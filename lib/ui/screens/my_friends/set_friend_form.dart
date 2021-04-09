@@ -1,15 +1,15 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
-import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
+import 'package:bonobo/ui/common_widgets/set_form/set_form_model.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
+import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/profile_image_builder.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,20 +19,14 @@ import 'package:provider/provider.dart';
 import '../../common_widgets/loading_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
-// class SetFrenForm extends SetForm {
-//   SetFrenForm({Key key, @required Friend friend});
-// }
-//
-
-// StreamProvider<List<Gender>>.value(),
-
 class SetFriendForm extends StatefulWidget {
   SetFriendForm({Key key, @required this.model}) : super(key: key);
-  final SetFriendModel model;
+  final SetFormModel model;
 
-  static Future<void> show(
+  static Future<void> create(
     BuildContext context, {
     Person person,
+    @required FirebaseFriendStorage firebaseFriendStorage,
   }) async {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -44,14 +38,16 @@ class SetFriendForm extends StatefulWidget {
           stream: database.genderStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return ChangeNotifierProvider<SetFriendModel>(
-                create: (context) => SetFriendModel(
+              return ChangeNotifierProvider<SetFormModel>(
+                create: (context) => SetFormModel(
                   uid: user.uid,
                   database: database,
+                  isNew: person == null ? true : false,
                   person: person,
+                  firebaseStorage: firebaseFriendStorage,
                   genders: snapshot.data,
                 ),
-                child: Consumer<SetFriendModel>(
+                child: Consumer<SetFormModel>(
                   builder: (context, model, __) => SetFriendForm(
                     model: model,
                   ),
@@ -77,9 +73,9 @@ class _SetFriendFormState extends State<SetFriendForm> {
   FocusNode _nameFocusNode;
   FocusNode _ageFocusNode;
 
-  SetFriendModel get _model => widget.model;
+  SetFormModel get _model => widget.model;
   Person get _person => _model.person;
-  bool get _isNewFriend => _model.isNewFriend;
+  bool get _isNewFriend => _model.isNew;
   bool get _isUploadingImage => _model.firebaseStorage?.uploadTask != null;
 
   String _name = "";
@@ -106,14 +102,24 @@ class _SetFriendFormState extends State<SetFriendForm> {
 
   void _onSetEvent() {
     if (_validateAndSaveForm()) {
-      _model.goToSpecialEvents(context);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SetSpecialEvent.show(
+            context,
+            person: _model.setPerson(),
+            firebaseFriendStorage: _model.firebaseStorage,
+            isNewFriend: _model.isNew,
+            selectedImage: _model.selectedImage,
+          ),
+        ),
+      );
     }
   }
 
   void _onSave() async {
     if (_validateAndSaveForm()) {
       try {
-        await _model.onSave();
+        await _model.onSave(); // Just updated
         Navigator.of(context).push(PageTransition(
           type: PageTransitionType.fade,
           child: MyFriendsPage(),
@@ -142,7 +148,6 @@ class _SetFriendFormState extends State<SetFriendForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 2.0,
         title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
@@ -193,8 +198,8 @@ class _SetFriendFormState extends State<SetFriendForm> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     ProfileImageBuilder(
-                      futureImage: _model.getImageOrURL(),
-                      onPressed: _model.pickImage,
+                      futureImage: _model.getImageOrURL(), // Updated
+                      onPressed: _model.pickImage, // Cool
                       selectedImage: _model.selectedImage,
                     ),
                     SizedBox(height: 25),

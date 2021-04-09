@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
@@ -33,12 +34,14 @@ class SetInterestsPage extends StatelessWidget {
     @required List<SpecialEvent> friendSpecialEvents,
     @required bool isNewFriend,
     @required List<SpecialEvent> onDeleteSpecialEvents,
+    @required FirebaseFriendStorage firebaseFriendStorage,
     File selectedImage,
   }) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<SetInterestsPageModel>(
           create: (context) => SetInterestsPageModel(
+            firebaseStorage: firebaseFriendStorage,
             database: database,
             person: person,
             isNewFriend: isNewFriend,
