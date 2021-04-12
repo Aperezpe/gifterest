@@ -1,60 +1,50 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-// import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../services/storage.dart';
 
-import 'friend.dart';
-
-class SetFriendModel extends ChangeNotifier {
-  final String uid;
-  final FirestoreDatabase database;
-  final List<SpecialEvent> friendSpecialEvents;
-  final Friend friend;
-  final List<Gender> genders;
-
-  String name = "";
-  int age = 0;
-  bool isNewFriend;
-  int initialGenderValue = 0;
-  List<int> ageRange;
-  File selectedImage;
-  List<String> genderTypes;
-  FirebaseStorageService firebaseStorage;
-  String profileImageUrl;
-
-  SetFriendModel({
-    @required this.uid,
-    @required this.database,
-    @required this.friendSpecialEvents,
+class SetFormModel extends ChangeNotifier {
+  SetFormModel({
     @required this.genders,
-    this.friend,
+    @required this.database,
+    @required this.person,
+    @required this.uid,
+    @required this.firebaseStorage,
+    this.isNew: false,
   }) {
-    name = friend?.name;
-    age = friend?.age;
-    isNewFriend = friend == null ? true : false;
-    firebaseStorage = FirebaseStorageService(uid: uid, friend: friend);
+    name = person?.name;
+    age = person?.age;
     genderTypes = genders.map((gender) => gender.type).toList();
     initializeGenderDropdownValue();
     initializeAgeRange();
   }
+  final String uid;
+  final FirestoreDatabase database;
+  final Person person;
+  final List<Gender> genders;
+  final bool isNew;
+  final Storage firebaseStorage;
+
+  File selectedImage;
+  int initialGenderValue = 0;
+  List<int> ageRange;
+  List<String> genderTypes;
+
+  String name = "";
+  int age = 0;
 
   Future<dynamic> getImageOrURL() async {
     if (selectedImage != null) return selectedImage;
-    if (isNewFriend) return await firebaseStorage.getDefaultProfileUrl();
-    return friend.imageUrl;
+    if (isNew) return await firebaseStorage.getDefaultProfileImageUrl();
+    return person.imageUrl;
   }
 
-  Future pickImage(BuildContext context) async {
+  Future pickImage() async {
     final picker = ImagePicker();
 
     try {
@@ -88,15 +78,15 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   Future<void> _uploadProfileImage() async {
-    firebaseStorage.putFriendProfileImage(image: selectedImage);
+    firebaseStorage.putProfileImage(image: selectedImage, person: person);
     notifyListeners();
     await firebaseStorage.uploadTask.whenComplete(() => null);
   }
 
-  /// [Adding new friend]: Returns a friend instance with the data gathered
+  /// [Adding new person]: Returns a person object with the data gathered
   /// from from form + initial valules
   ///
-  /// [Editing friend]: Returns friend instance with data gathered from form +
+  /// [Editing person]: Returns person object with data gathered from form +
   /// previous values on friend instance
   ///
   /// Used in submit() and setInterestPage.
@@ -111,26 +101,31 @@ class SetFriendModel extends ChangeNotifier {
 
       if (selectedImage != null) {
         await _uploadProfileImage();
-        friend.imageUrl = await firebaseStorage.getFriendProfileImageURL();
+        person.imageUrl =
+            await firebaseStorage.getProfileImageURL(person: person);
       }
 
-      final newFriend = _setFriend();
-      await database.setFriend(newFriend);
+      await database.setPerson(setPerson());
     } catch (e) {
       rethrow;
     }
   }
 
   void initializeGenderDropdownValue() {
-    if (isNewFriend) return;
-    initialGenderValue = genderTypes.indexOf(friend.gender);
+    if (isNew) return;
+    initialGenderValue = genderTypes.indexOf(person.gender);
+  }
+
+  List<String> getGenderTypes(List<Gender> genders) {
+    return genders.map((gender) => gender.type).toList();
   }
 
   void initializeAgeRange() {
-    if (isNewFriend) return;
-    if (friend.age >= 0 && friend.age <= 2) {
+    if (isNew) return;
+    if (isNew) return;
+    if (person.age >= 0 && person.age <= 2) {
       ageRange = [0, 2];
-    } else if (friend.age >= 3 && friend.age <= 11) {
+    } else if (person.age >= 3 && person.age <= 11) {
       ageRange = [3, 11];
     } else {
       ageRange = [12, 100];
@@ -138,25 +133,23 @@ class SetFriendModel extends ChangeNotifier {
   }
 
   bool genderChanged() {
-    if (isNewFriend) return false;
-    if (genders[initialGenderValue].type != friend.gender) {
+    if (isNew) return false;
+    if (genders[initialGenderValue].type != person.gender) {
       return true;
     }
     return false;
   }
 
   bool ageRangeChanged() {
-    if (isNewFriend) return false;
-    if (friend.age != age) {
+    if (isNew) return false;
+    if (person.age != age) {
       if (age >= ageRange[0] && age <= ageRange[1]) return false;
       return true;
     }
     return false;
   }
 
-  void onGenderDropdownChange(int value) {
-    initialGenderValue = value;
-  }
+  void onGenderDropdownChange(int value) => initialGenderValue = value;
 
   void updateName(String name) => updateWith(name: name);
   void updateAge(int age) => updateWith(age: age);
@@ -169,29 +162,16 @@ class SetFriendModel extends ChangeNotifier {
     this.age = age ?? this.age;
   }
 
-  void goToSpecialEvents(BuildContext context) async {
-    final newFriend = _setFriend();
-    SetSpecialEvent.show(
-      context,
-      database: database,
-      friend: newFriend,
-      friendSpecialEvents: friendSpecialEvents,
-      isNewFriend: isNewFriend,
-      selectedImage: selectedImage,
-    );
-  }
-
-  Friend _setFriend() {
-    return Friend(
-      id: isNewFriend ? documentIdFromCurrentDate() : friend.id,
-      uid: uid,
+  Person setPerson() {
+    return Person(
+      id: isNew ? documentIdFromCurrentDate() : person.id,
       name: name,
       age: age,
-      imageUrl: friend?.imageUrl,
+      imageUrl: person?.imageUrl,
       gender: genders[initialGenderValue].type,
-      interests: (isNewFriend || ageRangeChanged() || genderChanged())
+      interests: (isNew || ageRangeChanged() || genderChanged())
           ? []
-          : friend.interests,
+          : person.interests,
     );
   }
 }

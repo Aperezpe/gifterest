@@ -1,46 +1,50 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../services/storage.dart';
 
-import 'friend.dart';
-
 class SetSpecialEventModel extends ChangeNotifier {
   SetSpecialEventModel({
-    @required this.friend,
+    @required this.person,
     @required this.database,
-    @required this.friendSpecialEvents,
+    // @required this.friendSpecialEvents,
+    @required this.allSpecialEvents,
     @required this.isNewFriend,
+    @required this.firebaseStorageService,
     this.selectedImage,
   }) {
+    friendSpecialEvents =
+        FriendSpecialEvents.getFriendSpecialEvents(person, allSpecialEvents);
+
     /// Create a Birthday event by default to increase friend setup speed
-    if (friendSpecialEvents == null)
+    if (friendSpecialEvents.isEmpty && isNewFriend)
       friendSpecialEvents = [
         SpecialEvent(
           id: documentUUID(),
           name: "Birthday",
           date: DateTime.now(),
-          friendId: friend.id,
+          personId: person.id,
         ),
       ];
     onDeleteSpecialEvents = [];
-    firebaseStorageService =
-        FirebaseStorageService(uid: database.uid, friend: friend);
   }
 
-  final Friend friend;
+  final Person person;
   final FirestoreDatabase database;
   final bool isNewFriend;
   final File selectedImage;
-  List<SpecialEvent> friendSpecialEvents;
+  final List<SpecialEvent> allSpecialEvents;
+  List<SpecialEvent> friendSpecialEvents = [];
   List<SpecialEvent> onDeleteSpecialEvents;
-  FirebaseStorageService firebaseStorageService;
+  final Storage firebaseStorageService;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
 
@@ -49,7 +53,7 @@ class SetSpecialEventModel extends ChangeNotifier {
       id: documentUUID(),
       name: events[0],
       date: DateTime.now(),
-      friendId: friend.id,
+      personId: person.id,
     ));
     notifyListeners();
   }
@@ -78,27 +82,28 @@ class SetSpecialEventModel extends ChangeNotifier {
 
   Future<void> onSave() async {
     try {
-      if (friend.interests.isEmpty)
+      if (person.interests.isEmpty)
         throw PlatformException(
           code: "01",
           message: "User has to re-select interest",
         );
 
       if (selectedImage != null) {
-        firebaseStorageService.putFriendProfileImage(image: selectedImage);
+        firebaseStorageService.putProfileImage(
+            image: selectedImage, person: person);
         notifyListeners();
         await firebaseStorageService.uploadTask.whenComplete(
-          () async => friend.imageUrl =
-              await firebaseStorageService.getFriendProfileImageURL(),
+          () async => person.imageUrl =
+              await firebaseStorageService.getProfileImageURL(person: person),
         );
       } else {
-        friend.imageUrl = friend.imageUrl ??
-            await firebaseStorageService.getDefaultProfileUrl();
+        person.imageUrl = person.imageUrl ??
+            await firebaseStorageService.getDefaultProfileImageUrl();
       }
 
-      await database.setFriend(friend);
+      await database.setPerson(person);
       for (SpecialEvent event in friendSpecialEvents) {
-        await database.setSpecialEvent(event, friend);
+        await database.setSpecialEvent(event, person);
       }
       for (SpecialEvent event in onDeleteSpecialEvents) {
         await database.deleteSpecialEvent(event);
@@ -111,8 +116,10 @@ class SetSpecialEventModel extends ChangeNotifier {
   void goToInterestsPage(BuildContext context) {
     SetInterestsPage.show(
       context,
-      database: database,
-      friend: friend,
+      // database: database,
+      firebaseStorage: firebaseStorageService,
+      person: person,
+      mainPage: MyFriendsPage(),
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
       onDeleteSpecialEvents: onDeleteSpecialEvents,

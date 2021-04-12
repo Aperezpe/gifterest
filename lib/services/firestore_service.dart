@@ -1,5 +1,5 @@
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../extensions/string_capitalize.dart';
@@ -21,15 +21,15 @@ class FirestoreService {
   Stream<List<T>> queryInterestsStream<T>({
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
-    @required Friend friend,
+    @required Person person,
   }) {
     CollectionReference ref = FirebaseFirestore.instance.collection(path);
     Query query;
 
     // Query interests by friend age
-    if (friend.age < 3) {
+    if (person.age < 3) {
       query = ref.where('age_range', isEqualTo: [0, 2]);
-    } else if (friend.age >= 3 && friend.age < 12) {
+    } else if (person.age >= 3 && person.age < 12) {
       query = ref.where('age_range', isEqualTo: [3, 11]);
     } else {
       query = ref.where('age_range', isEqualTo: [12, 100]);
@@ -37,10 +37,10 @@ class FirestoreService {
 
     /// When friend gender is Other, GET all interests
     /// Otherwise, Get interests with gender "" + friend gender
-    if (friend.gender == "Other") {
+    if (person.gender == "Other") {
       query = query.where('gender', whereIn: ["", "Male", "Female"]);
     } else {
-      query = query.where('gender', whereIn: ["", friend.gender.capitalize()]);
+      query = query.where('gender', whereIn: ["", person.gender.capitalize()]);
     }
 
     final snapshots = query.snapshots();
@@ -53,7 +53,9 @@ class FirestoreService {
   Stream<List<T>> queryProductsStream<T>({
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
-    @required Friend friend,
+    @required List<dynamic> interests,
+    @required int age,
+    String gender,
     EventType eventType,
   }) {
     CollectionReference ref = FirebaseFirestore.instance.collection(path);
@@ -71,18 +73,18 @@ class FirestoreService {
       case EventType.anniversary:
         query = ref
             .where('event', isEqualTo: "Anniversary")
-            .where('gender', whereIn: [friend.gender, ""]);
+            .where('gender', whereIn: [gender, ""]);
         break;
       default:
-        query = ref.where('categories', arrayContainsAny: friend.interests);
+        query = ref.where('categories', arrayContainsAny: interests);
         break;
     }
 
     // Only query by age on Any, since other events are age irrelevant
-    if (eventType == EventType.any) {
-      if (friend.age < 3) {
+    if (eventType == EventType.any || eventType == null) {
+      if (age < 3) {
         query = query.where('age_range', isEqualTo: [0, 2]);
-      } else if (friend.age >= 3 && friend.age < 12) {
+      } else if (age >= 3 && age < 12) {
         query = query.where('age_range', isEqualTo: [3, 11]);
       } else {
         query = query.where('age_range', isEqualTo: [12, 100]);
@@ -104,5 +106,16 @@ class FirestoreService {
     return snapshots.map((snapshots) => snapshots.docs
         .map((snapshot) => builder(snapshot.data(), snapshot.id))
         .toList());
+  }
+
+  Stream<T> documentStream<T>({
+    @required String path,
+    @required T builder(Map<String, dynamic> data),
+  }) {
+    final reference = FirebaseFirestore.instance.doc(path);
+    final snapshots = reference.snapshots();
+
+    return snapshots.map((snapshot) => builder(snapshot.data()));
+    // return builder(snapshots.asyncMap((event) => null));
   }
 }

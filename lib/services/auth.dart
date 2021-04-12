@@ -2,11 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-// class User {
-//   User({@required this.uid});
-//   final String uid;
-// }
-
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
   Future<User> currentUser();

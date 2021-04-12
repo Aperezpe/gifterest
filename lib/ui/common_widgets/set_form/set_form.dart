@@ -1,14 +1,19 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:bonobo/ui/common_widgets/set_form/set_form_model.dart';
 import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/screens/my_friends/models/set_friend_model.dart';
+import 'package:bonobo/ui/models/person.dart';
+import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/profile_image_builder.dart';
+import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
+import 'package:bonobo/ui/common_widgets/profile_image_builder.dart';
+import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +22,20 @@ import 'package:provider/provider.dart';
 import '../../common_widgets/loading_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'models/friend.dart';
+class SetPersonForm extends StatefulWidget {
+  SetPersonForm({
+    Key key,
+    @required this.model,
+    @required this.mainPage,
+  }) : super(key: key);
+  final SetFormModel model;
+  final Widget mainPage;
 
-class SetFriendForm extends StatefulWidget {
-  SetFriendForm({Key key, @required this.model}) : super(key: key);
-  final SetFriendModel model;
-
-  static Future<void> show(
+  static Future<void> create(
     BuildContext context, {
-    Friend friend,
-    List<SpecialEvent> friendSpecialEvents,
+    Person person,
+    @required Storage firebaseStorage,
+    @required Widget mainPage,
   }) async {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -35,46 +44,50 @@ class SetFriendForm extends StatefulWidget {
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) => StreamBuilder<List<Gender>>(
-            stream: database.genderStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ChangeNotifierProvider<SetFriendModel>(
-                  create: (context) => SetFriendModel(
-                    uid: user.uid,
-                    database: database,
-                    friend: friend,
-                    friendSpecialEvents: friendSpecialEvents,
-                    genders: snapshot.data,
+          stream: database.genderStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ChangeNotifierProvider<SetFormModel>(
+                create: (context) => SetFormModel(
+                  uid: user.uid,
+                  database: database,
+                  isNew: person == null ? true : false,
+                  person: person,
+                  firebaseStorage: firebaseStorage,
+                  genders: snapshot.data,
+                ),
+                child: Consumer<SetFormModel>(
+                  builder: (context, model, __) => SetPersonForm(
+                    model: model,
+                    mainPage: mainPage,
                   ),
-                  child: Consumer<SetFriendModel>(
-                    builder: (context, model, __) => SetFriendForm(
-                      model: model,
-                    ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text("An error has ocurred"));
-              }
-              return LoadingScreen();
-            }),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text("An error has ocurred"));
+            }
+            return LoadingScreen();
+          },
+        ),
       ),
     );
   }
 
   @override
-  _SetFriendFormState createState() => _SetFriendFormState();
+  _SetPersonFormState createState() => _SetPersonFormState();
 }
 
-class _SetFriendFormState extends State<SetFriendForm> {
+class _SetPersonFormState extends State<SetPersonForm> {
   GlobalKey<FormState> _formKey;
 
   FocusNode _nameFocusNode;
   FocusNode _ageFocusNode;
 
-  SetFriendModel get _model => widget.model;
-  Friend get _friend => _model.friend;
-  bool get _isNewFriend => _model.isNewFriend;
+  SetFormModel get _model => widget.model;
+  Person get _person => _model.person;
+  bool get _isNewFriend => _model.isNew;
   bool get _isUploadingImage => _model.firebaseStorage?.uploadTask != null;
+  bool get _isUser => _model.person?.id == _model.database.uid;
 
   String _name = "";
   int _age;
@@ -85,8 +98,15 @@ class _SetFriendFormState extends State<SetFriendForm> {
     _formKey = GlobalKey<FormState>();
     _nameFocusNode = FocusNode();
     _ageFocusNode = FocusNode();
-    _name = _friend?.name;
-    _age = _friend?.age;
+    _name = _person?.name;
+    _age = _person?.age;
+  }
+
+  @override
+  void dispose() {
+    _nameFocusNode.dispose();
+    _ageFocusNode.dispose();
+    super.dispose();
   }
 
   bool _validateAndSaveForm() {
@@ -98,9 +118,32 @@ class _SetFriendFormState extends State<SetFriendForm> {
     return false;
   }
 
-  void _onSetEvent() {
+  void _onNextPage() {
     if (_validateAndSaveForm()) {
-      _model.goToSpecialEvents(context);
+      if (_isUser) {
+        SetInterestsPage.show(
+          context,
+          person: _model.setPerson(),
+          mainPage: MyProfilePage(),
+          // database: database,
+          // friendSpecialEvents: FriendSpecialEvents.getFriendSpecialEvents(updatedPerson, allSpecialEvents),
+          isNewFriend: _model.isNew,
+          onDeleteSpecialEvents: [],
+          firebaseStorage: FirebaseUserStorage(uid: _model.database.uid),
+        );
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SetSpecialEvent.show(
+              context,
+              person: _model.setPerson(),
+              firebaseFriendStorage: _model.firebaseStorage,
+              isNewFriend: _model.isNew,
+              selectedImage: _model.selectedImage,
+            ),
+          ),
+        );
+      }
     }
   }
 
@@ -110,7 +153,7 @@ class _SetFriendFormState extends State<SetFriendForm> {
         await _model.onSave();
         Navigator.of(context).push(PageTransition(
           type: PageTransitionType.fade,
-          child: MyFriendsPage(),
+          child: widget.mainPage, // TODO: go back to mainPage // done
         ));
       } on PlatformException catch (e) {
         PlatformExceptionAlertDialog(
@@ -126,20 +169,24 @@ class _SetFriendFormState extends State<SetFriendForm> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  @override
-  void dispose() {
-    _nameFocusNode.dispose();
-    _ageFocusNode.dispose();
-    super.dispose();
+  String get appBarText {
+    if (_isUser) return "Edit Profile";
+    return _isNewFriend ? "New Friend" : "Edit Friend";
+  }
+
+  String get floatingActionbuttonText {
+    if (_isUser) return "Choose Interests 😍";
+    return _isNewFriend
+        ? "Add Events 👉"
+        : 'Edit ${_person.name}\'s Events 👉'; // TODO: This to interests
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 2.0,
-        title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
+        title: Text(appBarText), // TODO: This to Edig Profile // Done
         actions: _isNewFriend
             ? []
             : [
@@ -155,11 +202,11 @@ class _SetFriendFormState extends State<SetFriendForm> {
       body: _buildContent(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: BottomButton(
-        onPressed: _isUploadingImage ? null : _onSetEvent,
-        color: Colors.blue,
-        text: _isNewFriend
-            ? "Add Events 👉"
-            : 'Edit ${_friend.name}\'s Events 👉',
+        onPressed: _isUploadingImage
+            ? null
+            : _onNextPage, // TODO: This to go to InterestsPage // Done
+        color: _isUser ? Colors.pink : Colors.blue,
+        text: floatingActionbuttonText, // TODO: This to interests // done
         textColor: Colors.white,
       ),
     );
@@ -187,8 +234,9 @@ class _SetFriendFormState extends State<SetFriendForm> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     ProfileImageBuilder(
-                      futureImage: _model.getImageOrURL(),
-                      onPressed: () => _model.pickImage(context),
+                      futureImage: _model
+                          .getImageOrURL(), // TODO: This should get it from UserStorage // Done
+                      onPressed: _model.pickImage,
                       selectedImage: _model.selectedImage,
                     ),
                     SizedBox(height: 25),

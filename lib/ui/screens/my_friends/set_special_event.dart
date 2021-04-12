@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
@@ -15,43 +17,51 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'models/friend.dart';
 import 'models/set_special_event_model.dart';
 
+// TODO: Prevent user from deleting all events for a friend, cz this will cause
+// errors when sorting friends by upcoming events
 class SetSpecialEvent extends StatelessWidget {
   SetSpecialEvent({@required this.model});
   final SetSpecialEventModel model;
 
-  static Future<void> show(
+  static Widget show(
     BuildContext context, {
-    @required Friend friend,
-    @required FirestoreDatabase database,
+    @required Person person,
     @required bool isNewFriend,
-    @required List<SpecialEvent> friendSpecialEvents,
+    @required FirebaseFriendStorage firebaseFriendStorage,
     File selectedImage,
-  }) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ChangeNotifierProvider<SetSpecialEventModel>(
-          create: (context) => SetSpecialEventModel(
-            database: database,
-            friend: friend,
-            friendSpecialEvents: friendSpecialEvents,
-            isNewFriend: isNewFriend,
-            selectedImage: selectedImage,
-          ),
-          child: Consumer<SetSpecialEventModel>(
-            builder: (context, model, _) => SetSpecialEvent(
-              model: model,
+  }) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final allSpecialEvents = snapshot.data;
+
+          return ChangeNotifierProvider<SetSpecialEventModel>(
+            create: (context) => SetSpecialEventModel(
+              database: database,
+              person: person,
+              allSpecialEvents: allSpecialEvents,
+              isNewFriend: isNewFriend,
+              firebaseStorageService: firebaseFriendStorage,
+              selectedImage: selectedImage,
             ),
-          ),
-        ),
-      ),
+            child: Consumer<SetSpecialEventModel>(
+              builder: (context, model, _) => SetSpecialEvent(
+                model: model,
+              ),
+            ),
+          );
+        }
+        return LoadingScreen();
+      },
     );
   }
 
   SetSpecialEventModel get _model => model;
-  Friend get _friend => _model.friend;
+  Person get _person => _model.person;
   bool get _isNewFriend => _model.isNewFriend;
 
   void _onSave(BuildContext context) async {
@@ -89,7 +99,7 @@ class SetSpecialEvent extends StatelessWidget {
                 BottomButton(
                   text: _isNewFriend
                       ? "Add Interests 😍"
-                      : 'Edit ${_friend.name}\'s Interests 😍',
+                      : 'Edit ${_person.name}\'s Interests 😍',
                   onPressed: _model.isEmpty ||
                           _model.firebaseStorageService?.uploadTask != null
                       ? null

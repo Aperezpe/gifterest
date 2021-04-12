@@ -1,8 +1,10 @@
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:bonobo/ui/models/person.dart';
 
 class StoragePath {
-  static String defaultProfileImage() => "/placeholder.jpg";
+  static String get defaultProfileImage => "/placeholder.jpg";
 
-  static String friendProfileImage(String uid, Friend friend) =>
-      "/$uid/${friend.id}/profileImage.jpg";
+  static String friendProfileImage(String uid, Person person) =>
+      "/$uid/${person.id}/profileImage.jpg";
+
+  static String userProfileImage(String uid) => '$uid/profileImage.jpg';
 }

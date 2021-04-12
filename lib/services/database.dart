@@ -3,29 +3,36 @@ import 'package:bonobo/services/firestore_service.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/interest.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class Database {
-  Future<void> setFriend(Friend friend);
-  Future<void> deleteFriend(Friend friend);
-  Stream<List<Friend>> friendsStream();
+  Future<void> setPerson(Person person);
+  Future<void> deleteFriend(Person person);
+  Stream<List<Person>> friendsStream();
+  Stream<Person> userStream();
   Stream<List<Interest>> interestStream();
   Stream<List<Product>> productsStream();
-  Stream<List<Product>> queryProductsStream({
-    @required Friend friend,
+  Stream<List<Product>> queryUserProductsStream({
+    @required int age,
+    @required List<dynamic> interests,
+    @required String gender,
+  });
+  Stream<List<Product>> queryFriendProductsStream({
+    @required Person person,
+    EventType eventType,
   });
   Stream<List<Event>> eventsStream();
-  Stream<List<Interest>> queryInterestsStream(Friend friend);
+  Stream<List<Interest>> queryInterestsStream(Person person);
   Stream<List<Gender>> genderStream();
   Stream<List<Product>> favoritesStream();
 
   Stream<List<SpecialEvent>> specialEventsStream();
-  Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend);
+  Future<void> setSpecialEvent(SpecialEvent specialEvent, Person person);
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent);
   Future<void> setFavorite(Product product);
   Future<void> deleteFavorite(Product product);
@@ -45,23 +52,41 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
   @override
-  Stream<List<Interest>> queryInterestsStream(Friend friend) =>
+  Stream<List<Interest>> queryInterestsStream(Person person) =>
       _service.queryInterestsStream(
         path: APIPath.interests(),
-        friend: friend,
+        person: person,
         builder: (data, documentId) => Interest.fromMap(data, documentId),
       );
+
   @override
-  Stream<List<Product>> queryProductsStream({
-    @required Friend friend,
+  Stream<List<Product>> queryUserProductsStream({
+    @required int age,
+    @required List<dynamic> interests,
+    @required String gender,
+  }) =>
+      _service.queryProductsStream(
+        path: APIPath.products(),
+        age: age,
+        interests: interests,
+        gender: gender,
+        builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<List<Product>> queryFriendProductsStream({
+    @required Person person,
     EventType eventType,
   }) =>
       _service.queryProductsStream(
         path: APIPath.products(),
-        friend: friend,
+        age: person.age,
+        interests: person.interests,
+        gender: person.gender,
         eventType: eventType,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
+
   @override
   Stream<List<Product>> productsStream() => _service.collectionStream(
         path: APIPath.products(),
@@ -84,30 +109,41 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 
+  /// Sets friend or user depending on person object
+  Future<void> setPerson(Person person) async {
+    if (person.id == uid) {
+      await _service.setData(path: APIPath.user(uid), data: person.toMap());
+    } else {
+      await _service.setData(
+          path: APIPath.friend(uid, person.id), data: person.toMap());
+    }
+  }
+
   @override
-  Future<void> setFriend(Friend friend) async => await _service.setData(
-        path: APIPath.friend(uid, friend.id),
-        data: friend.toMap(),
-      );
+  Future<void> deleteFriend(Person person) async =>
+      await _service.deleteData(path: APIPath.friend(uid, person.id));
+
   @override
-  Future<void> deleteFriend(Friend friend) async =>
-      await _service.deleteData(path: APIPath.friend(uid, friend.id));
-  @override
-  Stream<List<Friend>> friendsStream() => _service.collectionStream(
+  Stream<List<Person>> friendsStream() => _service.collectionStream(
         path: APIPath.friends(uid),
-        builder: (data, documentId) => Friend.fromMap(data, documentId),
+        builder: (data, documentId) => Person.fromMap(data, documentId),
       );
+
+  @override
+  Stream<Person> userStream() => _service.documentStream(
+      path: APIPath.user(uid), builder: (data) => Person.fromMap(data, uid));
+
   @override
   Stream<List<SpecialEvent>> specialEventsStream() => _service.collectionStream(
         path: APIPath.specialEvents(uid),
         builder: (data, documentId) => SpecialEvent.fromMap(data, documentId),
       );
   @override
-  Future<void> setSpecialEvent(SpecialEvent specialEvent, Friend friend) async {
-    if (friend == null) throw ("Friend can not be null");
+  Future<void> setSpecialEvent(SpecialEvent specialEvent, Person person) async {
+    if (person == null) throw ("Friend can not be null");
     await _service.setData(
       path: APIPath.specialEvent(uid, specialEvent.id),
-      data: specialEvent.toMap(friend.id),
+      data: specialEvent.toMap(person.id),
     );
   }
 

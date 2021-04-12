@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,27 +21,35 @@ import '../../models/interest.dart';
 class SetInterestsPage extends StatelessWidget {
   SetInterestsPage({
     @required this.model,
+    @required this.mainPage,
   });
   final SetInterestsPageModel model;
+  final Widget mainPage;
 
   bool get isReadyToSubmit => model.isReadyToSubmit;
-  Friend get friend => model.friend;
+  Person get person => model.person;
 
   static Future<void> show(
     BuildContext context, {
-    @required Friend friend,
-    @required FirestoreDatabase database,
-    @required List<SpecialEvent> friendSpecialEvents,
-    @required bool isNewFriend,
+    @required Person person,
+    // @required FirestoreDatabase database,
+    List<SpecialEvent>
+        friendSpecialEvents, // TODO: shape so that friendSpecialEvents is not needed if isUser
+    bool isNewFriend: false,
     @required List<SpecialEvent> onDeleteSpecialEvents,
+    @required Storage firebaseStorage,
+    @required Widget mainPage,
     File selectedImage,
   }) async {
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<SetInterestsPageModel>(
           create: (context) => SetInterestsPageModel(
+            firebaseStorage: firebaseStorage,
             database: database,
-            friend: friend,
+            person: person,
             isNewFriend: isNewFriend,
             friendSpecialEvents: friendSpecialEvents,
             onDeleteSpecialEvents: onDeleteSpecialEvents,
@@ -49,6 +58,7 @@ class SetInterestsPage extends StatelessWidget {
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
               model: model,
+              mainPage: mainPage,
             ),
           ),
         ),
@@ -59,9 +69,10 @@ class SetInterestsPage extends StatelessWidget {
   Future<void> _submit(BuildContext context) async {
     try {
       await model.submit();
+
       Navigator.of(context).push(PageTransition(
         type: PageTransitionType.fade,
-        child: MyFriendsPage(),
+        child: mainPage,
       ));
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(

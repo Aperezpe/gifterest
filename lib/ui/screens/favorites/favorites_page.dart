@@ -2,7 +2,7 @@ import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/empty_widgets.dart';
 import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/screens/friend/widgets/clickable_product.dart';
+import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

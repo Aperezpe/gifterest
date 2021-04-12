@@ -1,7 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/dates.dart';
-import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/material.dart';
 
@@ -21,11 +21,15 @@ class MyFriendsPageModel extends ChangeNotifier {
 
       return firstRemainingA.compareTo(firstRemainingB);
     });
+
+    // Initliaze FriendStorage to use on each friend
+    friendStorage = FirebaseFriendStorage(uid: database.uid);
   }
 
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
-  final List<Friend> friends;
+  final List<Person> friends;
+  FirebaseFriendStorage friendStorage;
 
   /// [upcomingEvents] contains a hashmap of
   /// key = friend.id, value = sorted events by remaining days for that event
@@ -37,7 +41,7 @@ class MyFriendsPageModel extends ChangeNotifier {
     print("setting up upcoming events...");
     friends.forEach((friend) => upcomingEvents[friend.id] = []);
     allSpecialEvents.forEach((event) {
-      upcomingEvents[event.friendId].add(event);
+      upcomingEvents[event.personId].add(event);
     });
     upcomingEvents.forEach((friendId, specialEvents) {
       specialEvents.sort(
@@ -48,32 +52,19 @@ class MyFriendsPageModel extends ChangeNotifier {
     });
   }
 
-  SpecialEvent mostRescentEvent(Friend friend) =>
-      upcomingEvents[friend.id].elementAt(0);
-
   /// [deleteFriend] deletes friend, profilePic, specialEvents associated to it
   /// and updates [upcomingEvents] hashMap
-  Future<void> deleteFriend(Friend friend) async {
-    final storageService =
-        FirebaseStorageService(uid: database.uid, friend: friend);
-
-    await storageService.deleteFriendProfileImage(); // profilePic
-    database.deleteFriend(friend); // friend
+  Future<void> deleteFriend(Person person) async {
+    await friendStorage.deleteProfileImage(person: person); // profilePic
+    database.deleteFriend(person); // friend
     for (SpecialEvent event in allSpecialEvents) // specialEvents
     {
-      if (event.friendId == friend.id) {
+      if (event.personId == person.id) {
         database.deleteSpecialEvent(event);
       }
     }
-    upcomingEvents.remove(friend.id); // updates upcomingEvents
-    notifyListeners();
-  }
+    upcomingEvents.remove(person.id); // updates upcomingEvents
 
-  List<SpecialEvent> getFriendSpecialEvents(Friend friend) {
-    List<SpecialEvent> friendSpecialEvents = allSpecialEvents
-        .where((event) => event.friendId == friend?.id)
-        .toList();
-    if (friendSpecialEvents.isEmpty) return [];
-    return friendSpecialEvents;
+    notifyListeners();
   }
 }
