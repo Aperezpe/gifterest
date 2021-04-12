@@ -43,21 +43,20 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    return FutureBuilder<User>(
-      future: auth.currentUser(),
+    return StreamBuilder<Person>(
+      stream: database.userStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final user = snapshot.data;
           return Scaffold(
             appBar: AppBar(
-              title: Text(user.displayName),
+              title: Text('${user.name} (Me)'),
               actions: [
                 TextButton(
                   child: Icon(Icons.edit, color: Colors.white),
                   onPressed: () => SetPersonForm.create(
                     context,
-                    person: userToPerson(user),
+                    person: user,
                     mainPage: widget,
                     firebaseStorage: FirebaseUserStorage(uid: database.uid),
                   ),
@@ -67,28 +66,22 @@ class _MyProfilePageState extends State<MyProfilePage> {
             drawer: AppDrawer(currentChildRouteName: MyProfilePage.routeName),
             body: ProfilePage(
               database: database,
-              profileImage: user.photoURL == null
+              profileImage: user.imageUrl == null
                   ? AssetImage(
-                      'assets/placeholder.jpg') // get user photoURL if it has one
-                  : NetworkImage(user.photoURL),
-              title: user.displayName,
+                      'assets/placeholder.jpg') // TODO: get user photoURL if it has one
+                  : NetworkImage(user.imageUrl),
+              title: user.name,
               rangeSliderCallBack: (values) =>
                   setState(() => sliderValues = values),
               body: Container(
                 child: ProductsGridView(
                   database: database,
                   sliderValues: sliderValues,
-                  gender: "Male",
+                  gender: user.gender,
                   productStream: database.queryUserProductsStream(
-                    age: 21,
-                    gender: "Male",
-                    interests: [
-                      "Anime",
-                      "Biking",
-                      "Sports",
-                      "Traveling",
-                      "Movie Night",
-                    ],
+                    age: user.age,
+                    gender: user.gender,
+                    interests: user.interests,
                   ),
                 ),
               ),

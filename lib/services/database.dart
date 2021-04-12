@@ -14,6 +14,7 @@ abstract class Database {
   Future<void> setPerson(Person person);
   Future<void> deleteFriend(Person person);
   Stream<List<Person>> friendsStream();
+  Stream<Person> userStream();
   Stream<List<Interest>> interestStream();
   Stream<List<Product>> productsStream();
   Stream<List<Product>> queryUserProductsStream({
@@ -121,11 +122,17 @@ class FirestoreDatabase implements Database {
   @override
   Future<void> deleteFriend(Person person) async =>
       await _service.deleteData(path: APIPath.friend(uid, person.id));
+
   @override
   Stream<List<Person>> friendsStream() => _service.collectionStream(
         path: APIPath.friends(uid),
         builder: (data, documentId) => Person.fromMap(data, documentId),
       );
+
+  @override
+  Stream<Person> userStream() => _service.documentStream(
+      path: APIPath.user(uid), builder: (data) => Person.fromMap(data, uid));
+
   @override
   Stream<List<SpecialEvent>> specialEventsStream() => _service.collectionStream(
         path: APIPath.specialEvents(uid),
