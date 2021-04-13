@@ -1,10 +1,10 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/custom_list_tile.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/favorites/favorites_page.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +53,7 @@ class AppDrawer extends StatelessWidget {
                       end: Alignment.topRight,
                     ),
                   ),
-                  child: _buildUserAvatar(auth),
+                  child: _buildUserAvatar(database),
                 ),
               ),
             ),
@@ -94,10 +94,10 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildUserAvatar(AuthBase auth) {
+  Widget _buildUserAvatar(FirestoreDatabase database) {
     return Container(
-      child: FutureBuilder<User>(
-        future: auth.currentUser(),
+      child: StreamBuilder<Person>(
+        stream: database.userStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final user = snapshot.data;
@@ -105,13 +105,13 @@ class AppDrawer extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 45,
-                  backgroundImage: user.photoURL == null
+                  backgroundImage: user.imageUrl == null || user.imageUrl == ""
                       ? AssetImage('assets/placeholder.jpg')
-                      : NetworkImage(user.photoURL),
+                      : NetworkImage(user.imageUrl),
                 ),
                 SizedBox(height: 15),
                 Text(
-                  user.displayName,
+                  "${user.name} (Me)",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,

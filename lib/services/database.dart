@@ -110,12 +110,14 @@ class FirestoreDatabase implements Database {
       );
 
   /// Sets friend or user depending on person object
-  Future<void> setPerson(Person person) async {
+  Future<Person> setPerson(Person person) async {
     if (person.id == uid) {
       await _service.setData(path: APIPath.user(uid), data: person.toMap());
+      return person;
     } else {
       await _service.setData(
           path: APIPath.friend(uid, person.id), data: person.toMap());
+      return person;
     }
   }
 

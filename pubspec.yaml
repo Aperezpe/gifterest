@@ -40,6 +40,7 @@ dependencies:
   tab_indicator_styler: ^1.0.0
   get_it: ^6.0.0
   page_transition: ^1.1.7+6
+  font_awesome_flutter: ^9.0.0
 
   flutter:
     sdk: flutter
@@ -77,6 +78,8 @@ flutter:
     - assets/placeholder.jpg
     - assets/google_logo.jpg
     - assets/apple_logo.jpg
+    - assets/monkey.png
+    - assets/thumb.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
