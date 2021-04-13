@@ -1,8 +1,8 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/screens/favorites.dart';
+import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,20 +23,40 @@ class LandingPage extends StatelessWidget {
       stream: auth.onAuthStateChanged,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          User user = snapshot.data;
-          if (snapshot.data == null) {
-            return SignInPage.create(context);
-          } else {
-            print("signing in user: ${user.uid}");
+          if (snapshot.hasData) {
+            User user = snapshot.data;
+            String locatorDisplayName = locator.get<AppUserInfo>().displayName;
+
+            if (user.displayName != locatorDisplayName)
+              locator.get<AppUserInfo>().setName(user.displayName);
+
+            final initialUser = Person(
+              id: user.uid,
+              age: null,
+              gender: "",
+              imageUrl: user.photoURL ?? "",
+              interests: [],
+              // locator provides name because displayName is shaky
+              name: user.displayName ?? locatorDisplayName,
+            );
+
             return Provider<Database>(
               create: (_) => databaseBuilder(user.uid),
-              child: MainPage(),
+              child: MainPage(initialUser: initialUser),
             );
           }
+
+          return SignInPage.create(context);
         } else {
           return LoadingScreen();
         }
       },
     );
   }
+}
+
+class AppUserInfo {
+  String displayName;
+
+  String setName(String value) => displayName = value;
 }

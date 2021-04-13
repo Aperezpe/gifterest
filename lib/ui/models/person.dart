@@ -46,4 +46,8 @@ class Person {
       'interests': interests,
     };
   }
+
+  @override
+  String toString() => '''id: $id, name: $name, age: $age, 
+      gender: $gender, imageUrl: $imageUrl, interests: $interests''';
 }

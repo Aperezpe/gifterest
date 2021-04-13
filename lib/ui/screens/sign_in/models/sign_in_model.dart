@@ -1,4 +1,6 @@
 import 'package:bonobo/services/auth.dart';
+import 'package:bonobo/services/locator.dart';
+import 'package:bonobo/ui/screens/landing/landing_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -30,24 +32,22 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   Future<void> submit() async {
     updateWith(submitted: true);
     if (!canSubmit) return;
-    updateWith(isLoading: true);
-    try {
-      if (formType == EmailSignInFormType.signIn) {
-        await auth.signInWithEmailAndPassword(
+    if (formType == EmailSignInFormType.signIn) {
+      _signIn(
+        () => auth.signInWithEmailAndPassword(
           email,
           password,
-        );
-      } else {
-        await auth.createUserWithEmailAndPassword(
+        ),
+      );
+    } else {
+      locator.get<AppUserInfo>().setName(name);
+      _signIn(
+        () => auth.createUserWithEmailAndPassword(
           name,
           email,
           password,
-        );
-      }
-    } catch (e) {
-      rethrow;
-    } finally {
-      updateWith(isLoading: false);
+        ),
+      );
     }
   }
 
