@@ -1,6 +1,8 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
+import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/empty_content.dart';
 import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
@@ -48,6 +50,16 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     }
   }
 
+  void _addNewFriend() {
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
+    SetPersonForm.create(
+      context,
+      firebaseStorage: FirebaseFriendStorage(uid: database.uid),
+      mainPage: widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
@@ -59,11 +71,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
         actions: [
           TextButton(
             child: Icon(Icons.add, color: Colors.white),
-            onPressed: () => SetPersonForm.create(
-              context,
-              firebaseStorage: FirebaseFriendStorage(uid: database.uid),
-              mainPage: widget,
-            ),
+            onPressed: _addNewFriend,
           )
         ],
       ),
@@ -86,14 +94,28 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                     builder: (context, child) {
                       final model = Provider.of<MyFriendsPageModel>(context,
                           listen: false);
-                      return ListItemsBuilder(
-                        items: model.friends,
-                        itemBuilder: (context, friend) => _buildFriendCard(
-                          context,
-                          person: friend,
-                          model: model,
-                        ),
-                      );
+                      return friends.isEmpty
+                          ? EmptyContent(
+                              assetPath: 'assets/sad_monkey.jpg',
+                              title: "Friends Not Found",
+                              message:
+                                  "Looks like you havent added any friends yet",
+                              bottomWidget: CustomButton(
+                                onPressed: _addNewFriend,
+                                text: "Add Friend",
+                                padding: EdgeInsets.fromLTRB(35, 15, 35, 15),
+                                color: Colors.blue,
+                              ),
+                            )
+                          : ListItemsBuilder(
+                              items: model.friends,
+                              itemBuilder: (context, friend) =>
+                                  _buildFriendCard(
+                                context,
+                                person: friend,
+                                model: model,
+                              ),
+                            );
                     },
                   );
                 }
