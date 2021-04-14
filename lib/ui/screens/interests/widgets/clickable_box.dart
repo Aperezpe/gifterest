@@ -38,8 +38,8 @@ class ClickableInterest extends StatelessWidget {
                   height: double.infinity,
                 ),
               ),
-              Center(
-                child: Expanded(
+              Positioned.fill(
+                child: Center(
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child: AutoSizeText(
