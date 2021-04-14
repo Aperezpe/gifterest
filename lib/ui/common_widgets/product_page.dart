@@ -1,5 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
@@ -57,7 +58,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.close, color: Colors.white),

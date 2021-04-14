@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -69,8 +70,26 @@ class _FriendPageState extends State<FriendPage>
     final database = Provider.of<Database>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.person.name)),
       body: ProfilePage(
+        dismissableAppBar: CustomAppBar(
+          isDismissable: true,
+          height: 80,
+          title: Text(
+            widget.person.name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom:
+                  Radius.elliptical(MediaQuery.of(context).size.width, 100.0),
+            ),
+          ),
+        ),
         database: database,
         title: widget.person.name,
         rangeSliderCallBack: (values) => setState(() {

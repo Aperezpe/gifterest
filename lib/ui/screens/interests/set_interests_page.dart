@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -86,7 +87,7 @@ class SetInterestsPage extends StatelessWidget {
     // Displays loading screen
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text("Interests"),
         actions: model.selectedInterests.isNotEmpty
             ? [

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
@@ -87,8 +88,7 @@ class SetSpecialEvent extends StatelessWidget {
         if (snapshot.hasData) {
           final events = snapshot.data.map((e) => e.name).toList();
           return Scaffold(
-            appBar: AppBar(
-              elevation: 2.0,
+            appBar: CustomAppBar(
               title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
               actions: _buildActions(events, context),
             ),

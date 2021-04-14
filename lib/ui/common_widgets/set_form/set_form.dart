@@ -2,6 +2,7 @@ import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
@@ -9,8 +10,6 @@ import 'package:bonobo/ui/common_widgets/set_form/set_form_model.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:bonobo/ui/common_widgets/profile_image_builder.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
@@ -184,8 +183,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 2.0,
+      appBar: CustomAppBar(
         title: Text(appBarText), // TODO: This to Edig Profile // Done
         actions: _isNewFriend
             ? []

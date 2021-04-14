@@ -1,6 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/empty_content.dart';
 import 'package:bonobo/ui/common_widgets/error_page.dart';
@@ -66,7 +67,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
         Provider.of<Database>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text("My Friends"),
         actions: [
           TextButton(

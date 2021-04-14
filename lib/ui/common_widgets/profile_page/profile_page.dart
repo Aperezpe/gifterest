@@ -9,6 +9,7 @@ class ProfilePage extends StatefulWidget {
     @required this.title,
     @required this.rangeSliderCallBack,
     @required this.profileImage,
+    this.dismissableAppBar,
     this.sliverTabs,
     this.body,
   }) : super(key: key);
@@ -19,6 +20,7 @@ class ProfilePage extends StatefulWidget {
   final ValueChanged<RangeValues> rangeSliderCallBack;
   final SliverToBoxAdapter sliverTabs;
   final Widget body;
+  final Widget dismissableAppBar;
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -56,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage>
         controller: _scrollController,
         headerSliverBuilder: (context, value) {
           return [
+            if (widget.dismissableAppBar != null) widget.dismissableAppBar,
             SliverToBoxAdapter(
               child: Container(
                 child: Column(
@@ -73,6 +76,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                       ),
                     ),
+                    SizedBox(height: 15),
                     CustomRangeSlider(onChanged: widget.rangeSliderCallBack),
                   ],
                 ),

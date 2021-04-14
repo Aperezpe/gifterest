@@ -1,5 +1,6 @@
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/empty_content.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
@@ -16,7 +17,7 @@ class FavoritesPage extends StatelessWidget {
     final database = Provider.of<Database>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text("Favorites"),
       ),
       drawer: AppDrawer(

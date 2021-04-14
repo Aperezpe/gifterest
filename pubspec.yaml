@@ -42,6 +42,7 @@ dependencies:
   page_transition: ^1.1.7+6
   font_awesome_flutter: ^9.0.0
   auto_size_text: ^2.1.0
+  sliver_fab: ^1.0.0
 
   flutter:
     sdk: flutter

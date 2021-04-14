@@ -1,6 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
+import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
@@ -34,7 +35,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
           final user = snapshot.data;
 
           return Scaffold(
-            appBar: AppBar(
+            appBar: CustomAppBar(
               title: Text('${user.name} (Me)'),
               actions: [
                 user.interests.isNotEmpty
