@@ -32,10 +32,10 @@ dependencies:
   uuid: ^3.0.2
   google_fonts: ^2.0.0
   image_cropper: ^1.4.0
-  image_picker: ^0.7.3
+  image_picker: ^0.7.4
   test: ^1.16.0
   email_validator: ^2.0.1
-  flutter_material_pickers: ^2.0.1
+  flutter_material_pickers: ^2.1.1
   url_launcher: ^6.0.2
   tab_indicator_styler: ^1.0.0
   get_it: ^6.0.0

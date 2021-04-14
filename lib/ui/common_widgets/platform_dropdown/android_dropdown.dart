@@ -35,7 +35,7 @@ class _AndroidDropdownState extends State<AndroidDropdown> {
       context: context,
       title: widget.title,
       items: widget.values,
-      selectedItem: selectedValue,
+      selectedValue: selectedValue,
       onChanged: (value) {
         setState(() {
           widget.onChanged(widget.values.indexOf(value));
