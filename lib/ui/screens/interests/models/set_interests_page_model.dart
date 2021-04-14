@@ -33,6 +33,8 @@ class SetInterestsPageModel extends ChangeNotifier {
   final int interestsAllowed = 5;
   List<String> _selectedInterests = [];
 
+  List<String> get selectedInterests => _selectedInterests;
+
   void _initializeInterests() {
     _selectedInterests =
         person.interests.map((interest) => interest.toString()).toList();
@@ -54,6 +56,11 @@ class SetInterestsPageModel extends ChangeNotifier {
     } else {
       return "Submit";
     }
+  }
+
+  void deselectAll() {
+    _selectedInterests = [];
+    notifyListeners();
   }
 
   Future<void> submit() async {

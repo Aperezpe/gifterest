@@ -9,7 +9,6 @@ import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,19 +88,17 @@ class SetInterestsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Interests"),
-        actions: model.isNewFriend
-            ? []
-            : [
-                isReadyToSubmit
-                    ? TextButton(
-                        child: Text(
-                          'Save',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                        onPressed: () => _submit(context),
-                      )
-                    : Container()
-              ],
+        actions: model.selectedInterests.isNotEmpty
+            ? [
+                TextButton(
+                  child: Text(
+                    'Deselect All',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  onPressed: model.deselectAll,
+                )
+              ]
+            : [],
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -159,8 +156,7 @@ class SetInterestsPage extends StatelessWidget {
     return ClickableInterest(
       interest: interest,
       onTap: () => model.tapInterest(interest),
-      color: model.isSelected(interest.name) ? Colors.pink : Colors.white,
-      opacity: model.isSelected(interest.name) ? .7 : .2,
+      isSelected: model.isSelected(interest.name),
     );
   }
 }
