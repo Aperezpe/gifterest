@@ -35,26 +35,28 @@ class _MyProfilePageState extends State<MyProfilePage> {
           final user = snapshot.data;
 
           return Scaffold(
-            appBar: CustomAppBar(
-              title: Text('${user.name} (Me)'),
-              actions: [
-                user.interests.isNotEmpty
-                    ? TextButton(
-                        child: Icon(Icons.edit, color: Colors.white),
-                        onPressed: () => SetPersonForm.create(
-                          context,
-                          person: user,
-                          mainPage: widget,
-                          firebaseStorage:
-                              FirebaseUserStorage(uid: database.uid),
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
             drawer: AppDrawer(currentChildRouteName: MyProfilePage.routeName),
             body: user.interests.isNotEmpty
                 ? ProfilePage(
+                    dismissableAppBar: CustomAppBar(
+                      isDismissable: true,
+                      height: 80,
+                      title: Text(
+                        '${user.name} (Me)',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.elliptical(
+                              MediaQuery.of(context).size.width, 100.0),
+                        ),
+                      ),
+                    ),
                     database: database,
                     profileImage: user.imageUrl == null
                         ? AssetImage(
