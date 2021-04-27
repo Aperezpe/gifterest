@@ -8,7 +8,6 @@ class ProfilePage extends StatefulWidget {
     @required this.database,
     @required this.title,
     @required this.rangeSliderCallBack,
-    @required this.profileImage,
     this.dismissableAppBar,
     this.sliverTabs,
     this.body,
@@ -16,7 +15,6 @@ class ProfilePage extends StatefulWidget {
 
   final FirestoreDatabase database;
   final String title;
-  final ImageProvider<Object> profileImage;
   final ValueChanged<RangeValues> rangeSliderCallBack;
   final SliverToBoxAdapter sliverTabs;
   final Widget body;
@@ -63,20 +61,7 @@ class _ProfilePageState extends State<ProfilePage>
               child: Container(
                 child: Column(
                   children: [
-                    Center(
-                      child: Container(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        child: CircleAvatar(
-                          radius: 61,
-                          backgroundColor: Colors.grey[300],
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundImage: widget.profileImage,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
                     CustomRangeSlider(onChanged: widget.rangeSliderCallBack),
                   ],
                 ),

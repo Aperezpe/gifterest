@@ -1,11 +1,9 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
-import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +56,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       ),
                     ),
                     database: database,
-                    profileImage: user.imageUrl == null
-                        ? AssetImage(
-                            'assets/placeholder.jpg') // TODO: get user photoURL if it has one
-                        : NetworkImage(user.imageUrl),
                     title: user.name,
                     rangeSliderCallBack: (values) =>
                         setState(() => sliderValues = values),

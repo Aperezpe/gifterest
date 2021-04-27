@@ -1,16 +1,11 @@
-import 'dart:io';
-
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
 import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
@@ -37,9 +32,7 @@ class SetInterestsPage extends StatelessWidget {
         friendSpecialEvents, // TODO: shape so that friendSpecialEvents is not needed if isUser
     bool isNewFriend: false,
     @required List<SpecialEvent> onDeleteSpecialEvents,
-    @required Storage firebaseStorage,
     @required Widget mainPage,
-    File selectedImage,
   }) async {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
@@ -47,13 +40,11 @@ class SetInterestsPage extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider<SetInterestsPageModel>(
           create: (context) => SetInterestsPageModel(
-            firebaseStorage: firebaseStorage,
             database: database,
             person: person,
             isNewFriend: isNewFriend,
             friendSpecialEvents: friendSpecialEvents,
             onDeleteSpecialEvents: onDeleteSpecialEvents,
-            selectedImage: selectedImage,
           ),
           child: Consumer<SetInterestsPageModel>(
             builder: (context, model, __) => SetInterestsPage(
@@ -119,38 +110,31 @@ class SetInterestsPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    if (model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: model.firebaseStorage.uploadTask.snapshotEvents,
-        builder: (context, snapshot) => LoadingScreen(),
-      );
-    } else {
-      return StreamBuilder<List<Interest>>(
-        stream: model.queryInterestsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            snapshot.data.sort((a, b) => a.name.compareTo(b.name));
-            return GridView.builder(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 120),
-              itemCount: snapshot.data.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return _buildInterestCard(context, snapshot.data[index]);
-              },
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text("An error occurred"));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      );
-    }
+    return StreamBuilder<List<Interest>>(
+      stream: model.queryInterestsStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          snapshot.data.sort((a, b) => a.name.compareTo(b.name));
+          return GridView.builder(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 120),
+            itemCount: snapshot.data.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              return _buildInterestCard(context, snapshot.data[index]);
+            },
+          );
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("An error occurred"));
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   _buildInterestCard(BuildContext context, Interest interest) {

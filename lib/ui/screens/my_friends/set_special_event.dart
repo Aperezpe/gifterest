@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
@@ -30,8 +29,6 @@ class SetSpecialEvent extends StatelessWidget {
     BuildContext context, {
     @required Person person,
     @required bool isNewFriend,
-    @required FirebaseFriendStorage firebaseFriendStorage,
-    File selectedImage,
   }) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<List<SpecialEvent>>(
@@ -46,8 +43,6 @@ class SetSpecialEvent extends StatelessWidget {
               person: person,
               allSpecialEvents: allSpecialEvents,
               isNewFriend: isNewFriend,
-              firebaseStorageService: firebaseFriendStorage,
-              selectedImage: selectedImage,
             ),
             child: Consumer<SetSpecialEventModel>(
               builder: (context, model, _) => SetSpecialEvent(
@@ -100,10 +95,7 @@ class SetSpecialEvent extends StatelessWidget {
                   text: _isNewFriend
                       ? "Add Interests 😍"
                       : 'Edit ${_person.name}\'s Interests 😍',
-                  onPressed: _model.isEmpty ||
-                          _model.firebaseStorageService?.uploadTask != null
-                      ? null
-                      : () => _model.goToInterestsPage(context),
+                  onPressed: () => _model.goToInterestsPage(context),
                   color: Colors.pink,
                   padding: EdgeInsets.fromLTRB(25, 0, 25, 50),
                   textColor: Colors.white,
@@ -140,26 +132,19 @@ class SetSpecialEvent extends StatelessWidget {
   }
 
   Widget _buildContent(List<String> events) {
-    if (_model.firebaseStorageService?.uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: _model.firebaseStorageService.uploadTask.snapshotEvents,
-        builder: (context, snapshot) => LoadingScreen(),
-      );
-    } else {
-      final specialEvents = _model.friendSpecialEvents;
-      return ListView(
-        padding: EdgeInsets.only(bottom: 120),
-        children: [
-          for (var specialEvent in specialEvents)
-            AddEventCard(
-              key: ValueKey(specialEvent.id),
-              index: _model.friendSpecialEvents.indexOf(specialEvent),
-              events: events,
-              model: _model,
-              specialEvent: specialEvent,
-            ),
-        ],
-      );
-    }
+    final specialEvents = _model.friendSpecialEvents;
+    return ListView(
+      padding: EdgeInsets.only(bottom: 120),
+      children: [
+        for (var specialEvent in specialEvents)
+          AddEventCard(
+            key: ValueKey(specialEvent.id),
+            index: _model.friendSpecialEvents.indexOf(specialEvent),
+            events: events,
+            model: _model,
+            specialEvent: specialEvent,
+          ),
+      ],
+    );
   }
 }

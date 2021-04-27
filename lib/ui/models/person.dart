@@ -7,14 +7,12 @@ class Person {
     @required this.gender,
     @required this.age,
     @required this.interests,
-    @required this.imageUrl,
   });
 
   String id;
   String name;
   String gender;
   int age;
-  String imageUrl;
   List<dynamic> interests;
 
   factory Person.fromMap(Map<String, dynamic> data, String documentId) {
@@ -24,7 +22,6 @@ class Person {
     final String name = data['name'];
     final String gender = data['gender'];
     final int age = data['age'];
-    final String imageUrl = data['image_url'];
     final List<dynamic> interests = data['interests'];
 
     return Person(
@@ -32,7 +29,6 @@ class Person {
       name: name,
       gender: gender,
       age: age,
-      imageUrl: imageUrl,
       interests: interests,
     );
   }
@@ -42,12 +38,11 @@ class Person {
       'name': name,
       'age': age,
       'gender': gender,
-      'image_url': imageUrl,
       'interests': interests,
     };
   }
 
   @override
   String toString() => '''id: $id, name: $name, age: $age, 
-      gender: $gender, imageUrl: $imageUrl, interests: $interests''';
+      gender: $gender, interests: $interests''';
 }

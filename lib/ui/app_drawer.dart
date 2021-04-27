@@ -105,9 +105,7 @@ class AppDrawer extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 45,
-                  backgroundImage: user.imageUrl == null || user.imageUrl == ""
-                      ? AssetImage('assets/placeholder.jpg')
-                      : NetworkImage(user.imageUrl),
+                  backgroundImage: AssetImage('assets/placeholder.jpg'),
                 ),
                 SizedBox(height: 15),
                 Text(

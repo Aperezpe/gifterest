@@ -1,5 +1,4 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -15,11 +14,7 @@ class GenderPage extends StatelessWidget {
   final Person user;
 
   void _onPressed(BuildContext context, String genderType) async {
-    final firebaseStorage = FirebaseUserStorage(uid: user.id);
-
     user.gender = genderType;
-    if (user.imageUrl.isEmpty)
-      user.imageUrl = await firebaseStorage.getDefaultProfileImageUrl();
 
     Navigator.of(context).push(
       MaterialPageRoute(

@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
@@ -15,16 +12,12 @@ class SetInterestsPageModel extends ChangeNotifier {
     this.friendSpecialEvents,
     this.isNewFriend: false,
     @required this.onDeleteSpecialEvents,
-    @required this.firebaseStorage,
-    this.selectedImage,
   }) : assert(person != null) {
     _initializeInterests();
   }
 
   final FirestoreDatabase database;
-  final File selectedImage;
   final bool isNewFriend;
-  final Storage firebaseStorage;
   Person person;
   List<SpecialEvent> friendSpecialEvents;
 
@@ -65,17 +58,6 @@ class SetInterestsPageModel extends ChangeNotifier {
 
   Future<void> submit() async {
     person.interests = _selectedInterests;
-    if (selectedImage != null) {
-      firebaseStorage.putProfileImage(image: selectedImage, person: person);
-      notifyListeners();
-      await firebaseStorage.uploadTask.whenComplete(
-        () async => person.imageUrl =
-            await firebaseStorage.getProfileImageURL(person: person),
-      );
-    } else {
-      person.imageUrl =
-          person.imageUrl ?? await firebaseStorage.getDefaultProfileImageUrl();
-    }
 
     await database.setPerson(person);
 

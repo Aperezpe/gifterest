@@ -1,5 +1,3 @@
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -7,7 +5,6 @@ import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AgePage extends StatefulWidget {
   const AgePage({Key key, @required this.user}) : super(key: key);
@@ -24,8 +21,6 @@ class _AgePageState extends State<AgePage> {
   int _age;
 
   void _onSubmit(BuildContext context) async {
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
     if (_validateAndSaveForm()) {
       widget.user.age = _age;
 
@@ -34,7 +29,6 @@ class _AgePageState extends State<AgePage> {
         person: widget.user,
         mainPage: MyProfilePage(),
         onDeleteSpecialEvents: [],
-        firebaseStorage: FirebaseUserStorage(uid: database.uid),
       );
     }
   }

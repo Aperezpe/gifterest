@@ -1,6 +1,5 @@
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
@@ -11,9 +10,7 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
-import 'package:bonobo/ui/common_widgets/profile_image_builder.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +30,6 @@ class SetPersonForm extends StatefulWidget {
   static Future<void> create(
     BuildContext context, {
     Person person,
-    @required Storage firebaseStorage,
     @required Widget mainPage,
   }) async {
     final database = Provider.of<Database>(context, listen: false);
@@ -52,7 +48,6 @@ class SetPersonForm extends StatefulWidget {
                   database: database,
                   isNew: person == null ? true : false,
                   person: person,
-                  firebaseStorage: firebaseStorage,
                   genders: snapshot.data,
                 ),
                 child: Consumer<SetFormModel>(
@@ -85,7 +80,6 @@ class _SetPersonFormState extends State<SetPersonForm> {
   SetFormModel get _model => widget.model;
   Person get _person => _model.person;
   bool get _isNewFriend => _model.isNew;
-  bool get _isUploadingImage => _model.firebaseStorage?.uploadTask != null;
   bool get _isUser => _model.person?.id == _model.database.uid;
 
   String _name = "";
@@ -128,7 +122,6 @@ class _SetPersonFormState extends State<SetPersonForm> {
           // friendSpecialEvents: FriendSpecialEvents.getFriendSpecialEvents(updatedPerson, allSpecialEvents),
           isNewFriend: _model.isNew,
           onDeleteSpecialEvents: [],
-          firebaseStorage: FirebaseUserStorage(uid: _model.database.uid),
         );
       } else {
         Navigator.of(context).push(
@@ -136,9 +129,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
             builder: (context) => SetSpecialEvent.show(
               context,
               person: _model.setPerson(),
-              firebaseFriendStorage: _model.firebaseStorage,
               isNewFriend: _model.isNew,
-              selectedImage: _model.selectedImage,
             ),
           ),
         );
@@ -200,9 +191,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
       body: _buildContent(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: BottomButton(
-        onPressed: _isUploadingImage
-            ? null
-            : _onNextPage, // TODO: This to go to InterestsPage // Done
+        onPressed: _onNextPage, // TODO: This to go to InterestsPage // Done
         color: _isUser ? Colors.pink : Colors.blue,
         text: floatingActionbuttonText, // TODO: This to interests // done
         textColor: Colors.white,
@@ -211,42 +200,28 @@ class _SetPersonFormState extends State<SetPersonForm> {
   }
 
   Widget _buildContent() {
-    // Display a loading screen if image is uploading
-    if (_model.firebaseStorage?.uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: _model.firebaseStorage.uploadTask.snapshotEvents,
-        builder: (context, snapshot) => LoadingScreen(),
-      );
-    } else {
-      return SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    ProfileImageBuilder(
-                      futureImage: _model
-                          .getImageOrURL(), // TODO: This should get it from UserStorage // Done
-                      onPressed: _model.pickImage,
-                      selectedImage: _model.selectedImage,
-                    ),
-                    SizedBox(height: 25),
-                    ..._buildFormFields(),
-                  ],
-                ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(height: 25),
+                  ..._buildFormFields(),
+                ],
               ),
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
 
   List<Widget> _buildFormFields() {

@@ -1,12 +1,8 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 
 class SetFormModel extends ChangeNotifier {
   SetFormModel({
@@ -14,7 +10,6 @@ class SetFormModel extends ChangeNotifier {
     @required this.database,
     @required this.person,
     @required this.uid,
-    @required this.firebaseStorage,
     this.isNew: false,
   }) {
     name = person?.name;
@@ -28,60 +23,13 @@ class SetFormModel extends ChangeNotifier {
   final Person person;
   final List<Gender> genders;
   final bool isNew;
-  final Storage firebaseStorage;
 
-  File selectedImage;
   int initialGenderValue = 0;
   List<int> ageRange;
   List<String> genderTypes;
 
   String name = "";
   int age = 0;
-
-  Future<dynamic> getImageOrURL() async {
-    if (selectedImage != null) return selectedImage;
-    if (isNew) return await firebaseStorage.getDefaultProfileImageUrl();
-    return person.imageUrl;
-  }
-
-  Future pickImage() async {
-    final picker = ImagePicker();
-
-    try {
-      final pickedFile = await picker.getImage(
-        source: ImageSource.gallery,
-        imageQuality: 70,
-        maxHeight: 500,
-        maxWidth: 500,
-      );
-
-      final cropped = await ImageCropper.cropImage(
-        sourcePath: pickedFile.path,
-        compressQuality: 50,
-        maxHeight: 350,
-        maxWidth: 350,
-        compressFormat: ImageCompressFormat.jpg,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        androidUiSettings: AndroidUiSettings(
-          toolbarColor: Colors.deepOrange,
-          toolbarTitle: 'Crop It',
-          statusBarColor: Colors.deepOrange.shade900,
-          backgroundColor: Colors.white,
-        ),
-      );
-
-      selectedImage = cropped ?? selectedImage;
-      notifyListeners();
-    } catch (e) {
-      print("Image picker error: $e");
-    }
-  }
-
-  Future<void> _uploadProfileImage() async {
-    firebaseStorage.putProfileImage(image: selectedImage, person: person);
-    notifyListeners();
-    await firebaseStorage.uploadTask.whenComplete(() => null);
-  }
 
   /// [Adding new person]: Returns a person object with the data gathered
   /// from from form + initial valules
@@ -98,12 +46,6 @@ class SetFormModel extends ChangeNotifier {
           code: "01",
           message: "User has to re-select interests",
         );
-
-      if (selectedImage != null) {
-        await _uploadProfileImage();
-        person.imageUrl =
-            await firebaseStorage.getProfileImageURL(person: person);
-      }
 
       await database.setPerson(setPerson());
     } catch (e) {
@@ -167,7 +109,6 @@ class SetFormModel extends ChangeNotifier {
       id: isNew ? documentIdFromCurrentDate() : person.id,
       name: name,
       age: age,
-      imageUrl: person?.imageUrl,
       gender: genders[initialGenderValue].type,
       interests: (isNew || ageRangeChanged() || genderChanged())
           ? []

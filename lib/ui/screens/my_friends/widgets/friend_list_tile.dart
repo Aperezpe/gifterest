@@ -8,12 +8,10 @@ class FriendListTile extends StatelessWidget {
     Key key,
     @required this.onTap,
     @required this.person,
-    @required this.backgroundImage,
     @required this.model,
   }) : super(key: key);
   final VoidCallback onTap;
   final Person person;
-  final ImageProvider<Object> backgroundImage;
   final MyFriendsPageModel model;
 
   int get remainingDays {
@@ -31,50 +29,82 @@ class FriendListTile extends StatelessWidget {
     if (remainingDays <= 14)
       return Colors.red;
     else if (remainingDays <= 30) return Color.fromRGBO(255, 204, 0, 1);
-    return Colors.grey;
+    return Colors.green;
   }
 
-  String get text1 {
+  String get daysText {
     if (remainingDays == 0) {
-      return "Today ";
+      return "Today";
     } else if (remainingDays == 1) {
-      return "$remainingDays day ";
+      return "Day";
     }
-    return "$remainingDays days ";
+    return "Days";
   }
-
-  String get text2 =>
-      remainingDays == 0 ? "is $mostRescentEvent" : "for $mostRescentEvent";
 
   @override
   Widget build(BuildContext context) {
     if (remainingDays == -1) return Container();
-    return ListTile(
-      trailing: Icon(Icons.chevron_right),
-      contentPadding: EdgeInsets.all(8),
-      leading: ClipOval(
-        child: Image(image: backgroundImage),
+    return Card(
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
       ),
-      title: Text("${person.name}", style: TextStyle(fontSize: 18)),
-      subtitle: RichText(
-        text: TextSpan(
-          text: text1,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: remainingDaysColor,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 85,
+          padding: EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${person.name}",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "$mostRescentEvent",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: Container()),
+              Container(
+                padding: EdgeInsets.only(right: 50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '$remainingDays',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: remainingDaysColor,
+                      ),
+                    ),
+                    Text(
+                      daysText,
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          children: <TextSpan>[
-            TextSpan(
-              text: text2,
-              style:
-                  TextStyle(fontWeight: FontWeight.normal, color: Colors.grey),
-            ),
-          ],
         ),
-        overflow: TextOverflow.ellipsis,
       ),
-      onTap: onTap,
     );
   }
 }

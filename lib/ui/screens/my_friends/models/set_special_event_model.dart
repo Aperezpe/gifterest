@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
@@ -9,17 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../services/storage.dart';
 
 class SetSpecialEventModel extends ChangeNotifier {
   SetSpecialEventModel({
     @required this.person,
     @required this.database,
-    // @required this.friendSpecialEvents,
     @required this.allSpecialEvents,
     @required this.isNewFriend,
-    @required this.firebaseStorageService,
-    this.selectedImage,
   }) {
     friendSpecialEvents =
         FriendSpecialEvents.getFriendSpecialEvents(person, allSpecialEvents);
@@ -40,11 +34,9 @@ class SetSpecialEventModel extends ChangeNotifier {
   final Person person;
   final FirestoreDatabase database;
   final bool isNewFriend;
-  final File selectedImage;
   final List<SpecialEvent> allSpecialEvents;
   List<SpecialEvent> friendSpecialEvents = [];
   List<SpecialEvent> onDeleteSpecialEvents;
-  final Storage firebaseStorageService;
 
   bool get isEmpty => friendSpecialEvents.isEmpty;
 
@@ -88,19 +80,6 @@ class SetSpecialEventModel extends ChangeNotifier {
           message: "User has to re-select interest",
         );
 
-      if (selectedImage != null) {
-        firebaseStorageService.putProfileImage(
-            image: selectedImage, person: person);
-        notifyListeners();
-        await firebaseStorageService.uploadTask.whenComplete(
-          () async => person.imageUrl =
-              await firebaseStorageService.getProfileImageURL(person: person),
-        );
-      } else {
-        person.imageUrl = person.imageUrl ??
-            await firebaseStorageService.getDefaultProfileImageUrl();
-      }
-
       await database.setPerson(person);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, person);
@@ -117,13 +96,11 @@ class SetSpecialEventModel extends ChangeNotifier {
     SetInterestsPage.show(
       context,
       // database: database,
-      firebaseStorage: firebaseStorageService,
       person: person,
       mainPage: MyFriendsPage(),
       friendSpecialEvents: friendSpecialEvents,
       isNewFriend: isNewFriend,
       onDeleteSpecialEvents: onDeleteSpecialEvents,
-      selectedImage: selectedImage,
     );
   }
 }

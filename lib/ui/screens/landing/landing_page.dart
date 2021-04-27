@@ -34,7 +34,6 @@ class LandingPage extends StatelessWidget {
               id: user.uid,
               age: null,
               gender: "",
-              imageUrl: user.photoURL ?? "",
               interests: [],
               // locator provides name because displayName is shaky
               name: user.displayName ?? locatorDisplayName,

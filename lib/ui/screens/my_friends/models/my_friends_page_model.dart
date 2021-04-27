@@ -1,5 +1,4 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/dates.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -23,13 +22,11 @@ class MyFriendsPageModel extends ChangeNotifier {
     });
 
     // Initliaze FriendStorage to use on each friend
-    friendStorage = FirebaseFriendStorage(uid: database.uid);
   }
 
   final FirestoreDatabase database;
   final List<SpecialEvent> allSpecialEvents;
   final List<Person> friends;
-  FirebaseFriendStorage friendStorage;
 
   /// [upcomingEvents] contains a hashmap of
   /// key = friend.id, value = sorted events by remaining days for that event
@@ -55,7 +52,6 @@ class MyFriendsPageModel extends ChangeNotifier {
   /// [deleteFriend] deletes friend, profilePic, specialEvents associated to it
   /// and updates [upcomingEvents] hashMap
   Future<void> deleteFriend(Person person) async {
-    await friendStorage.deleteProfileImage(person: person); // profilePic
     database.deleteFriend(person); // friend
     for (SpecialEvent event in allSpecialEvents) // specialEvents
     {

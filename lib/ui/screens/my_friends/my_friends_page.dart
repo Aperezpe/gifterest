@@ -1,5 +1,4 @@
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/storage.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
@@ -11,6 +10,7 @@ import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/custom_slider_action.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +52,8 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   }
 
   void _addNewFriend() {
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
     SetPersonForm.create(
       context,
-      firebaseStorage: FirebaseFriendStorage(uid: database.uid),
       mainPage: widget,
     );
   }
@@ -69,12 +66,18 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: Text("My Friends"),
-        actions: [
-          TextButton(
-            child: Icon(Icons.add, color: Colors.white),
-            onPressed: _addNewFriend,
-          )
-        ],
+      ),
+      floatingActionButton: Container(
+        padding: EdgeInsets.only(bottom: 15),
+        child: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            size: 28,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.blue,
+          onPressed: _addNewFriend,
+        ),
       ),
       body: StreamBuilder<List<SpecialEvent>>(
         stream: database.specialEventsStream(),
@@ -108,13 +111,16 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                                 color: Colors.blue,
                               ),
                             )
-                          : ListItemsBuilder(
-                              items: model.friends,
-                              itemBuilder: (context, friend) =>
-                                  _buildFriendCard(
-                                context,
-                                person: friend,
-                                model: model,
+                          : Padding(
+                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              child: ListItemsBuilder(
+                                items: model.friends,
+                                itemBuilder: (context, friend) =>
+                                    _buildFriendCard(
+                                  context,
+                                  person: friend,
+                                  model: model,
+                                ),
                               ),
                             );
                     },
@@ -147,43 +153,41 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       controller: _silableController,
       actionExtentRatio: 0.18,
       child: Builder(builder: (context) {
-        return Container(
-          child: FriendListTile(
-            backgroundImage: NetworkImage(person.imageUrl),
-            model: model,
-            person: person,
-            onTap: () async {
-              Slidable.of(context)?.open();
-              Slidable.of(context)?.close();
+        return FriendListTile(
+          model: model,
+          person: person,
+          onTap: () async {
+            Slidable.of(context)?.open();
+            Slidable.of(context)?.close();
 
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => FriendPage.create(
-                    context,
-                    person: person,
-                  ),
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => FriendPage.create(
+                  context,
+                  person: person,
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       }),
       secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'Edit',
-          color: Colors.blue,
+        CustomSliderAction(
+          text: 'Edit',
           icon: Icons.edit,
+          color: Colors.blue,
+          actionType: SliderActionType.left,
           onTap: () => SetPersonForm.create(
             context,
             person: person,
-            firebaseStorage: model.friendStorage,
             mainPage: widget,
           ),
         ),
-        IconSlideAction(
-          caption: 'Delete',
-          color: Colors.red,
+        CustomSliderAction(
+          text: 'Delete',
           icon: Icons.delete,
+          color: Colors.redAccent,
+          actionType: SliderActionType.right,
           onTap: () => _deleteFriend(context, person),
         ),
       ],

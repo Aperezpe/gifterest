@@ -95,7 +95,6 @@ class _FriendPageState extends State<FriendPage>
         rangeSliderCallBack: (values) => setState(() {
           sliderValues = values;
         }),
-        profileImage: NetworkImage(widget.person.imageUrl),
         sliverTabs: SliverToBoxAdapter(
           child: Container(
             height: 35,
