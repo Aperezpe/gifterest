@@ -32,6 +32,7 @@ class MyFriendsPage extends StatefulWidget {
 
 class _MyFriendsPageState extends State<MyFriendsPage> {
   final _silableController = SlidableController();
+  bool _isEmpty;
 
   void _deleteFriend(BuildContext context, Person friend) async {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
@@ -64,42 +65,48 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: Text("My Friends"),
-      ),
-      floatingActionButton: Container(
-        padding: EdgeInsets.only(bottom: 15),
-        child: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            size: 28,
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.blue,
-          onPressed: _addNewFriend,
-        ),
-      ),
-      body: StreamBuilder<List<SpecialEvent>>(
-        stream: database.specialEventsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final allSpecialEvents = snapshot.data;
-            return StreamBuilder<List<Person>>(
-              stream: database.friendsStream(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final friends = snapshot.data;
-                  return ChangeNotifierProvider<MyFriendsPageModel>(
-                    create: (context) => MyFriendsPageModel(
-                      database: database,
-                      allSpecialEvents: allSpecialEvents,
-                      friends: friends,
-                    ),
-                    builder: (context, child) {
-                      final model = Provider.of<MyFriendsPageModel>(context,
-                          listen: false);
-                      return friends.isEmpty
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final allSpecialEvents = snapshot.data;
+          return StreamBuilder<List<Person>>(
+            stream: database.friendsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final friends = snapshot.data;
+                _isEmpty = friends.isEmpty;
+                return ChangeNotifierProvider<MyFriendsPageModel>(
+                  create: (context) => MyFriendsPageModel(
+                    database: database,
+                    allSpecialEvents: allSpecialEvents,
+                    friends: friends,
+                  ),
+                  builder: (context, child) {
+                    final model =
+                        Provider.of<MyFriendsPageModel>(context, listen: false);
+                    return Scaffold(
+                      appBar: CustomAppBar(
+                        title: Text("My Friends"),
+                      ),
+                      drawer: AppDrawer(
+                        currentChildRouteName: MyFriendsPage.routeName,
+                      ),
+                      floatingActionButton: Container(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: _isEmpty
+                            ? Container()
+                            : FloatingActionButton(
+                                child: Icon(
+                                  Icons.add,
+                                  size: 28,
+                                  color: Colors.white,
+                                ),
+                                backgroundColor: Colors.blue,
+                                onPressed: _addNewFriend,
+                              ),
+                      ),
+                      body: friends.isEmpty
                           ? EmptyContent(
                               assetPath: 'assets/sad_monkey.jpg',
                               title: "Friends Not Found",
@@ -123,22 +130,19 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                                   model: model,
                                 ),
                               ),
-                            );
-                    },
-                  );
-                }
-                if (snapshot.hasError) ErrorPage(snapshot.error);
-                return LoadingScreen();
-              },
-            );
-          }
-          if (snapshot.hasError) ErrorPage(snapshot.error);
-          return LoadingScreen();
-        },
-      ),
-      drawer: AppDrawer(
-        currentChildRouteName: MyFriendsPage.routeName,
-      ),
+                            ),
+                    );
+                  },
+                );
+              }
+              if (snapshot.hasError) ErrorPage(snapshot.error);
+              return LoadingScreen();
+            },
+          );
+        }
+        if (snapshot.hasError) ErrorPage(snapshot.error);
+        return LoadingScreen();
+      },
     );
   }
 
