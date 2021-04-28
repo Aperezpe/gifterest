@@ -1,9 +1,5 @@
-import 'dart:async';
-
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/locator.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/profile_setup/welcome_page.dart';
@@ -56,7 +52,7 @@ class _MainPageState extends State<MainPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final user = snapshot.data;
-            return !_isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
+            return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
           }
 
           return MyFriendsPage();

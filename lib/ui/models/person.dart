@@ -7,6 +7,7 @@ class Person {
     @required this.gender,
     @required this.age,
     @required this.interests,
+    this.dob,
   });
 
   String id;
@@ -14,6 +15,7 @@ class Person {
   String gender;
   int age;
   List<dynamic> interests;
+  DateTime dob;
 
   factory Person.fromMap(Map<String, dynamic> data, String documentId) {
     if (data == null) {
@@ -23,6 +25,7 @@ class Person {
     final String gender = data['gender'];
     final int age = data['age'];
     final List<dynamic> interests = data['interests'];
+    final int dobMilliseconds = data['dob'];
 
     return Person(
       id: documentId,
@@ -30,6 +33,7 @@ class Person {
       gender: gender,
       age: age,
       interests: interests,
+      dob: DateTime.fromMicrosecondsSinceEpoch(dobMilliseconds),
     );
   }
 
@@ -39,10 +43,11 @@ class Person {
       'age': age,
       'gender': gender,
       'interests': interests,
+      'dob': dob.microsecondsSinceEpoch,
     };
   }
 
   @override
   String toString() => '''id: $id, name: $name, age: $age, 
-      gender: $gender, interests: $interests''';
+      gender: $gender, interests: $interests, dob: $dob''';
 }

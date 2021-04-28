@@ -5,24 +5,24 @@ class GradientButton extends StatelessWidget {
   GradientButton({
     this.key,
     @required this.text,
-    this.colors,
     this.textColor,
     @required this.onPressed,
     this.height: 50,
     this.width: 350,
     this.padding,
-    this.gradient,
+    @required this.gradient,
+    this.shadowColor = Colors.grey,
   }) : super(key: key);
 
   final Key key;
   final String text;
-  final List<Color> colors;
   final Color textColor;
   final VoidCallback onPressed;
   final double height;
   final double width;
   final EdgeInsets padding;
   final Gradient gradient;
+  final Color shadowColor;
 
   final double blurRadius = 8;
 
@@ -35,7 +35,7 @@ class GradientButton extends StatelessWidget {
           gradient: gradient,
           boxShadow: [
             BoxShadow(
-              color: Color(0xff001AFF).withOpacity(.38),
+              color: shadowColor,
               spreadRadius: 1,
               blurRadius: 8,
               offset: Offset(0, 3), // changes position of shadow

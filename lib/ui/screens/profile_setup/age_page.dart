@@ -1,7 +1,7 @@
-import 'package:bonobo/ui/common_widgets/custom_button.dart';
-import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
+import 'package:bonobo/ui/screens/my_friends/format.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,82 +16,168 @@ class AgePage extends StatefulWidget {
 }
 
 class _AgePageState extends State<AgePage> {
-  GlobalKey<FormState> _formKey;
+  DateTime _selectedDate;
 
-  int _age;
+  void _onNext(BuildContext context) {
+    widget.user.dob = _selectedDate;
+    widget.user.age = DateTime.now().year - _selectedDate.year;
+    SetInterestsPage.show(
+      context,
+      person: widget.user,
+      mainPage: MyProfilePage(),
+      onDeleteSpecialEvents: [],
+    );
 
-  void _onSubmit(BuildContext context) async {
-    if (_validateAndSaveForm()) {
-      widget.user.age = _age;
-
-      SetInterestsPage.show(
-        context,
-        person: widget.user,
-        mainPage: MyProfilePage(),
-        onDeleteSpecialEvents: [],
-      );
-    }
+    print(widget.user.age);
   }
 
   @override
   void initState() {
-    _formKey = GlobalKey<FormState>();
+    _selectedDate = DateTime.now();
 
     super.initState();
   }
 
-  bool _validateAndSaveForm() {
-    final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CupertinoNavigationBar(
-        backgroundColor: Colors.transparent,
-        border: Border(bottom: BorderSide.none),
-      ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(20, 25, 20, 80),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                "What is your age?",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              CustomTextField(
-                labelText: "Age",
-                onChanged: (value) => _age = int.tryParse(value) ?? 0,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.numberWithOptions(
-                  signed: false,
-                  decimal: false,
-                ),
-                errorText: "Invalid age",
-                validator: (value) {
-                  final int age = int.tryParse(value) ?? 0;
-                  final bool isDigit = age > 0 ? true : false;
-                  return (value.isNotEmpty && isDigit) ? null : "Invalid Age";
-                },
-              ),
-              Expanded(child: Container()),
-              CustomButton(
-                  text: "Set Interests 😍",
-                  onPressed: () => _onSubmit(context)),
+    return Material(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff599BF9),
+              Color(0xffBF4EF9),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.chevron_left,
+                      color: Colors.white,
+                      size: 38,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 15),
+                    child: TextButton(
+                      child: Text(
+                        "Next".toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Poppins',
+                          fontSize: 18,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        primary: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                      ),
+                      onPressed: () => _onNext(context),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 25, right: 25),
+              child: Text(
+                "What is your birthday?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 36,
+                  color: Colors.white,
+                  shadows: [
+                    BoxShadow(
+                      offset: Offset(1, 4),
+                      color: Colors.black.withOpacity(.25),
+                      blurRadius: 4,
+                    ),
+                  ],
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Montserrat',
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 25, right: 25),
+                child: PlatformDatePicker(
+                  initialDate: DateTime.now(),
+                  selectedDate: _selectedDate,
+                  selectDate: (date) => setState(() => _selectedDate = date),
+                  dropdownButton: (selectedDate) =>
+                      _buildDropdownButton(selectedDate),
+                ),
+              ),
+            ),
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownButton(DateTime selectedDate) {
+    final dateFormatted = Format.dateToMap(selectedDate);
+    return Container(
+      height: 63,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: Colors.black.withOpacity(.38),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 25, right: 25),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "${dateFormatted['month']}",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            SizedBox(width: 15),
+            Text(
+              "${dateFormatted['day']}",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            SizedBox(width: 15),
+            Text(
+              "${dateFormatted['year']}",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            Expanded(child: Container()),
+            Icon(
+              Icons.expand_more,
+              size: 36,
+              color: Colors.white,
+            )
+          ],
         ),
       ),
     );

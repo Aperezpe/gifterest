@@ -37,6 +37,7 @@ class LandingPage extends StatelessWidget {
               interests: [],
               // locator provides name because displayName is shaky
               name: user.displayName ?? locatorDisplayName,
+              dob: DateTime.now(),
             );
 
             return Provider<Database>(

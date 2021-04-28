@@ -1,7 +1,7 @@
-import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../format.dart';
+
+typedef DropdownButtonBuilder<T> = Widget Function(T selectedValue);
 
 class IOSDatePicker extends StatelessWidget {
   const IOSDatePicker({
@@ -9,11 +9,13 @@ class IOSDatePicker extends StatelessWidget {
     this.initialDate,
     @required this.selectedDate,
     this.selectDate,
+    this.dropdownButton,
   }) : super(key: key);
 
   final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
+  final DropdownButtonBuilder<DateTime> dropdownButton;
 
   void _showDatePicker(BuildContext context) {
     showModalBottomSheet(
@@ -69,9 +71,7 @@ class IOSDatePicker extends StatelessWidget {
           flex: 5,
           child: GestureDetector(
             onTap: () => _showDatePicker(context),
-            child: CustomDropdownButton(
-              selectedValue: Format.date(selectedDate),
-            ),
+            child: dropdownButton(selectedDate),
           ),
         ),
       ],

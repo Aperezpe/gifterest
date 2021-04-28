@@ -4,6 +4,7 @@ import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
+import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,18 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           color: Colors.white,
                         ),
                       ),
+                      actions: [
+                        user.interests.isNotEmpty
+                            ? TextButton(
+                                child: Icon(Icons.edit, color: Colors.white),
+                                onPressed: () => SetPersonForm.create(
+                                  context,
+                                  person: user,
+                                  mainPage: widget,
+                                ),
+                              )
+                            : Container(),
+                      ],
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           bottom: Radius.elliptical(

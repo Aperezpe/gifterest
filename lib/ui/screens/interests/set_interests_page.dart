@@ -27,9 +27,7 @@ class SetInterestsPage extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     @required Person person,
-    // @required FirestoreDatabase database,
-    List<SpecialEvent>
-        friendSpecialEvents, // TODO: shape so that friendSpecialEvents is not needed if isUser
+    List<SpecialEvent> friendSpecialEvents,
     bool isNewFriend: false,
     @required List<SpecialEvent> onDeleteSpecialEvents,
     @required Widget mainPage,

@@ -12,6 +12,16 @@ class Format {
     return DateFormat.yMMMd().format(date);
   }
 
+  static Map<String, String> dateToMap(DateTime date) {
+    final dateFormated = DateFormat('MMMM dd yyyy').format(date);
+    final dateSplitted = dateFormated.split(" ");
+    return {
+      'month': dateSplitted[0],
+      'day': dateSplitted[1],
+      'year': dateSplitted[2],
+    };
+  }
+
   static String dayOfWeek(DateTime date) {
     return DateFormat.E().format(date);
   }

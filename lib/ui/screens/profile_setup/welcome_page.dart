@@ -1,4 +1,3 @@
-import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/gradient_button.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
@@ -66,12 +65,12 @@ class WelcomePage extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => SetupPage(user: user)),
               ),
               textColor: Colors.white,
-              colors: [Colors.purple, Colors.blue],
               gradient: LinearGradient(
                 colors: <Color>[Color(0xff38BDFF), Color(0xffBA6BFF)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
+              shadowColor: Color(0xff001AFF).withOpacity(.38),
             ),
           ],
         ),

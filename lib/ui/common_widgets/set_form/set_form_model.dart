@@ -113,6 +113,7 @@ class SetFormModel extends ChangeNotifier {
       interests: (isNew || ageRangeChanged() || genderChanged())
           ? []
           : person.interests,
+      dob: person.dob,
     );
   }
 }
