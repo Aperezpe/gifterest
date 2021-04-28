@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'models/special_event.dart';
 
 // TODO: Sacar un snackbar o hacer highlight el friend que acaban de hacer update
+// TODO: Add animation to delete items https://github.com/mobiten/flutter_staggered_animations/issues/13
 class MyFriendsPage extends StatefulWidget {
   MyFriendsPage({Key key}) : super(key: key);
 

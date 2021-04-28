@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final user = snapshot.data;
-            return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
+            return !_isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
           }
 
           return MyFriendsPage();

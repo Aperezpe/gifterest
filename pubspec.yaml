@@ -80,9 +80,34 @@ flutter:
     - assets/google_logo.jpg
     - assets/apple_logo.jpg
     - assets/monkey.png
-    - assets/thumb.jpg
     - assets/sad_monkey.jpg
     - assets/sad_monkey2.png
+    - assets/congrats.png
+
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat/Montserrat-Black.ttf
+        - asset: fonts/Montserrat/Montserrat-Bold.ttf
+        - asset: fonts/Montserrat/Montserrat-ExtraBold.ttf
+        - asset: fonts/Montserrat/Montserrat-Medium.ttf
+        - asset: fonts/Montserrat/Montserrat-Regular.ttf
+        - asset: fonts/Montserrat/Montserrat-SemiBold.ttf
+        - asset: fonts/Montserrat/Montserrat-Thin.ttf
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins/Poppins-Black.ttf
+        - asset: fonts/Poppins/Poppins-Bold.ttf
+        - asset: fonts/Poppins/Poppins-ExtraBold.ttf
+        - asset: fonts/Poppins/Poppins-ExtraLight.ttf
+        - asset: fonts/Poppins/Poppins-Light.ttf
+        - asset: fonts/Poppins/Poppins-Medium.ttf
+        - asset: fonts/Poppins/Poppins-Regular.ttf
+        - asset: fonts/Poppins/Poppins-SemiBold.ttf
+        - asset: fonts/Poppins/Poppins-Thin.ttf
+    - family: Mulish
+      fonts:
+        - asset: fonts/Mulish/Mulish-VariableFont_wght.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
