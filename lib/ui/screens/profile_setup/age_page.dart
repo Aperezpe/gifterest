@@ -1,15 +1,16 @@
-import 'package:bonobo/ui/models/person.dart';
+import 'package:bonobo/ui/models/app_user.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/format.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bonobo/extensions/age_calculator.dart';
 
 class AgePage extends StatefulWidget {
   const AgePage({Key key, @required this.user}) : super(key: key);
 
-  final Person user;
+  final AppUser user;
 
   @override
   _AgePageState createState() => _AgePageState();
@@ -19,8 +20,10 @@ class _AgePageState extends State<AgePage> {
   DateTime _selectedDate;
 
   void _onNext(BuildContext context) {
-    widget.user.dob = _selectedDate;
-    widget.user.age = DateTime.now().year - _selectedDate.year;
+    DateTime dob = _selectedDate;
+    widget.user.dob = dob;
+    widget.user.age = dob.getAge(dob);
+
     SetInterestsPage.show(
       context,
       person: widget.user,

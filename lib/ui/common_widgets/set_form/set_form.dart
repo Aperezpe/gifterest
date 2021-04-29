@@ -10,6 +10,7 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
+import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,11 @@ class SetPersonForm extends StatefulWidget {
 
   static Future<void> create(
     BuildContext context, {
-    Person person,
+    dynamic person, // It could be Friend or AppUser
     @required Widget mainPage,
   }) async {
-    final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final user = await auth.currentUser();
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         fullscreenDialog: true,
@@ -44,7 +44,7 @@ class SetPersonForm extends StatefulWidget {
             if (snapshot.hasData) {
               return ChangeNotifierProvider<SetFormModel>(
                 create: (context) => SetFormModel(
-                  uid: user.uid,
+                  uid: database.uid,
                   database: database,
                   isNew: person == null ? true : false,
                   person: person,
@@ -78,9 +78,9 @@ class _SetPersonFormState extends State<SetPersonForm> {
   FocusNode _ageFocusNode;
 
   SetFormModel get _model => widget.model;
-  Person get _person => _model.person;
+  dynamic get _person => _model.person;
   bool get _isNewFriend => _model.isNew;
-  bool get _isUser => _model.person?.id == _model.database.uid;
+  bool get _isUser => _model.isUser;
 
   String _name = "";
   int _age;
@@ -237,23 +237,29 @@ class _SetPersonFormState extends State<SetPersonForm> {
         onEditingComplete: _nameEditingComplete,
       ),
       SizedBox(height: 15),
-      CustomTextField(
-        focusNode: _ageFocusNode,
-        initialValue: _age?.toString(),
-        textInputAction: TextInputAction.done,
-        labelText: "Age",
-        keyboardType: TextInputType.numberWithOptions(
-          signed: false,
-          decimal: false,
-        ),
-        validator: (value) {
-          final int age = int.tryParse(value) ?? 0;
-          final bool isDigit = age > 0 ? true : false;
-          return (value.isNotEmpty && isDigit) ? null : "Invalid Age";
-        },
-        onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
-        onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
-      ),
+      _isUser
+          ? PlatformDatePicker(
+              initialDate: _model.dob,
+              selectedDate: _model.dob,
+              selectDate: (dob) => _model.changeDob(dob),
+            )
+          : CustomTextField(
+              focusNode: _ageFocusNode,
+              initialValue: _age?.toString(),
+              textInputAction: TextInputAction.done,
+              labelText: "Age",
+              keyboardType: TextInputType.numberWithOptions(
+                signed: false,
+                decimal: false,
+              ),
+              validator: (value) {
+                final int age = int.tryParse(value) ?? 0;
+                final bool isDigit = age > 0 ? true : false;
+                return (value.isNotEmpty && isDigit) ? null : "Invalid Age";
+              },
+              onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
+              onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
+            ),
       SizedBox(height: 15.0),
       PlatformDropdown(
         initialValue: _model.genderTypes[_model.initialGenderValue],

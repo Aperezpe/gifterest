@@ -8,6 +8,7 @@ import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
+import 'package:bonobo/ui/models/friend.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/friend_page.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/custom_slider_action.dart';
@@ -70,7 +71,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final allSpecialEvents = snapshot.data;
-          return StreamBuilder<List<Person>>(
+          return StreamBuilder<List<Friend>>(
             stream: database.friendsStream(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -126,7 +127,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                                 itemBuilder: (context, friend) =>
                                     _buildFriendCard(
                                   context,
-                                  person: friend,
+                                  friend: friend,
                                   model: model,
                                 ),
                               ),
@@ -148,11 +149,11 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   Widget _buildFriendCard(
     BuildContext context, {
-    @required Person person,
+    @required Friend friend,
     @required MyFriendsPageModel model,
   }) {
     return Slidable(
-      key: Key("slidable-${person.id}"),
+      key: Key("slidable-${friend.id}"),
       closeOnScroll: true,
       actionPane: SlidableDrawerActionPane(),
       controller: _silableController,
@@ -160,7 +161,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       child: Builder(builder: (context) {
         return FriendListTile(
           model: model,
-          person: person,
+          person: friend,
           onTap: () async {
             Slidable.of(context)?.open();
             Slidable.of(context)?.close();
@@ -169,7 +170,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
               MaterialPageRoute(
                 builder: (context) => FriendPage.create(
                   context,
-                  person: person,
+                  friend: friend,
                 ),
               ),
             );
@@ -184,7 +185,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
           actionType: SliderActionType.left,
           onTap: () => SetPersonForm.create(
             context,
-            person: person,
+            person: friend,
             mainPage: widget,
           ),
         ),
@@ -193,7 +194,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
           icon: Icons.delete,
           color: Colors.redAccent,
           actionType: SliderActionType.right,
-          onTap: () => _deleteFriend(context, person),
+          onTap: () => _deleteFriend(context, friend),
         ),
       ],
     );

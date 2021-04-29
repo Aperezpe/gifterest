@@ -1,8 +1,11 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/models/app_user.dart';
+import 'package:bonobo/ui/models/friend.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bonobo/extensions/age_calculator.dart';
 
 class SetFormModel extends ChangeNotifier {
   SetFormModel({
@@ -14,22 +17,26 @@ class SetFormModel extends ChangeNotifier {
   }) {
     name = person?.name;
     age = person?.age;
+    dob = isUser ? person?.dob ?? dob : null;
     genderTypes = genders.map((gender) => gender.type).toList();
     initializeGenderDropdownValue();
     initializeAgeRange();
   }
   final String uid;
   final FirestoreDatabase database;
-  final Person person;
   final List<Gender> genders;
   final bool isNew;
 
+  dynamic person;
   int initialGenderValue = 0;
   List<int> ageRange;
   List<String> genderTypes;
 
   String name = "";
   int age = 0;
+  DateTime dob = DateTime.now();
+
+  bool get isUser => person?.id == database.uid;
 
   /// [Adding new person]: Returns a person object with the data gathered
   /// from from form + initial valules
@@ -46,7 +53,6 @@ class SetFormModel extends ChangeNotifier {
           code: "01",
           message: "User has to re-select interests",
         );
-
       await database.setPerson(setPerson());
     } catch (e) {
       rethrow;
@@ -95,25 +101,39 @@ class SetFormModel extends ChangeNotifier {
 
   void updateName(String name) => updateWith(name: name);
   void updateAge(int age) => updateWith(age: age);
+  void changeDob(DateTime _dob) {
+    updateWith(
+      dob: _dob,
+      age: _dob.getAge(_dob),
+    );
+  }
 
-  void updateWith({
-    String name,
-    int age,
-  }) {
+  void updateWith({String name, int age, DateTime dob}) {
     this.name = name ?? this.name;
     this.age = age ?? this.age;
+    this.dob = dob ?? this.dob;
+    notifyListeners();
   }
 
   Person setPerson() {
-    return Person(
-      id: isNew ? documentIdFromCurrentDate() : person.id,
-      name: name,
-      age: age,
-      gender: genders[initialGenderValue].type,
-      interests: (isNew || ageRangeChanged() || genderChanged())
-          ? []
-          : person.interests,
-      dob: person.dob,
-    );
+    return isUser
+        ? AppUser(
+            id: person.id,
+            name: name,
+            gender: genders[initialGenderValue].type,
+            age: age,
+            interests:
+                (ageRangeChanged() || genderChanged()) ? [] : person.interests,
+            dob: dob,
+          )
+        : Friend(
+            id: isNew ? documentIdFromCurrentDate() : person.id,
+            name: name,
+            age: age,
+            gender: genders[initialGenderValue].type,
+            interests: (isNew || ageRangeChanged() || genderChanged())
+                ? []
+                : person.interests,
+          );
   }
 }

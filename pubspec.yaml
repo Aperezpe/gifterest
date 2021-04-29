@@ -41,6 +41,7 @@ dependencies:
   page_transition: ^1.1.7+6
   font_awesome_flutter: ^9.0.0
   auto_size_text: ^2.1.0
+  age: ^0.0.1
 
   flutter:
     sdk: flutter

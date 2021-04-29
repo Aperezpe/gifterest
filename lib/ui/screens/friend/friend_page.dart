@@ -2,6 +2,7 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
+import 'package:bonobo/ui/models/friend.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
@@ -14,20 +15,20 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 class FriendPage extends StatefulWidget {
   FriendPage({
     Key key,
-    @required this.person,
+    @required this.friend,
     @required this.allSpecialEvents,
   }) : super(key: key);
 
-  final Person person;
+  final Friend friend;
   final List<SpecialEvent> allSpecialEvents;
 
-  static Widget create(BuildContext context, {@required Person person}) {
+  static Widget create(BuildContext context, {@required Friend friend}) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<List<SpecialEvent>>(
       stream: database.specialEventsStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return FriendPage(person: person, allSpecialEvents: snapshot.data);
+          return FriendPage(friend: friend, allSpecialEvents: snapshot.data);
         }
         return LoadingScreen();
       },
@@ -49,7 +50,7 @@ class _FriendPageState extends State<FriendPage>
     super.initState();
 
     friendSpecialEvents = FriendSpecialEvents.getFriendSpecialEvents(
-        widget.person, widget.allSpecialEvents);
+        widget.friend, widget.allSpecialEvents);
 
     friendSpecialEvents.forEach((event) {
       myTabs.add(Tab(text: event.name));
@@ -75,7 +76,7 @@ class _FriendPageState extends State<FriendPage>
           isDismissable: true,
           height: 80,
           title: Text(
-            widget.person.name,
+            widget.friend.name,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 24,
@@ -91,7 +92,7 @@ class _FriendPageState extends State<FriendPage>
           ),
         ),
         database: database,
-        title: widget.person.name,
+        title: widget.friend.name,
         rangeSliderCallBack: (values) => setState(() {
           sliderValues = values;
         }),
@@ -129,10 +130,10 @@ class _FriendPageState extends State<FriendPage>
                 ProductsGridView(
                   sliderValues: sliderValues,
                   productStream: database.queryFriendProductsStream(
-                    person: widget.person,
+                    person: widget.friend,
                     eventType: getEventType(tab.text),
                   ),
-                  gender: widget.person.gender,
+                  gender: widget.friend.gender,
                   database: database,
                 ),
             ],

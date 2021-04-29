@@ -5,6 +5,7 @@ import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
+import 'package:bonobo/ui/models/app_user.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
-    return StreamBuilder<Person>(
+    return StreamBuilder<AppUser>(
       stream: database.userStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

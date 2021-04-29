@@ -1,6 +1,8 @@
 import 'package:bonobo/services/api_path.dart';
 import 'package:bonobo/services/firestore_service.dart';
+import 'package:bonobo/ui/models/app_user.dart';
 import 'package:bonobo/ui/models/event.dart';
+import 'package:bonobo/ui/models/friend.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -126,14 +128,14 @@ class FirestoreDatabase implements Database {
       await _service.deleteData(path: APIPath.friend(uid, person.id));
 
   @override
-  Stream<List<Person>> friendsStream() => _service.collectionStream(
+  Stream<List<Friend>> friendsStream() => _service.collectionStream(
         path: APIPath.friends(uid),
-        builder: (data, documentId) => Person.fromMap(data, documentId),
+        builder: (data, documentId) => Friend.fromMap(data, documentId),
       );
 
   @override
-  Stream<Person> userStream() => _service.documentStream(
-      path: APIPath.user(uid), builder: (data) => Person.fromMap(data, uid));
+  Stream<AppUser> userStream() => _service.documentStream(
+      path: APIPath.user(uid), builder: (data) => AppUser.fromMap(data, uid));
 
   @override
   Stream<List<SpecialEvent>> specialEventsStream() => _service.collectionStream(

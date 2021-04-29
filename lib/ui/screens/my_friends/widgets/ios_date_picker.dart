@@ -1,3 +1,5 @@
+import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
+import 'package:bonobo/ui/screens/my_friends/format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +73,11 @@ class IOSDatePicker extends StatelessWidget {
           flex: 5,
           child: GestureDetector(
             onTap: () => _showDatePicker(context),
-            child: dropdownButton(selectedDate),
+            child: dropdownButton != null
+                ? dropdownButton(selectedDate)
+                : CustomDropdownButton(
+                    selectedValue: Format.date(selectedDate),
+                  ),
           ),
         ),
       ],
