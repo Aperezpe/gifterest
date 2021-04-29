@@ -100,19 +100,14 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Localizations(
-      delegates: <LocalizationsDelegate<dynamic>>[
-        DefaultWidgetsLocalizations.delegate,
-        DefaultMaterialLocalizations.delegate,
-      ],
-      locale: Locale('en', "US"),
-      child: MediaQuery(
-        data: MediaQueryData.fromWindow(ui.window),
-        child: Directionality(
-          textDirection: ui.TextDirection.ltr,
-          child: Scaffold(body: _buildContent()),
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Bonobo",
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        scaffoldBackgroundColor: Colors.white,
       ),
+      home: Scaffold(body: _buildContent()),
     );
   }
 
