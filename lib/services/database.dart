@@ -25,7 +25,7 @@ abstract class Database {
     @required String gender,
   });
   Stream<List<Product>> queryFriendProductsStream({
-    @required Person person,
+    @required Friend friend,
     EventType eventType,
   });
   Stream<List<Event>> eventsStream();
@@ -77,14 +77,14 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<Product>> queryFriendProductsStream({
-    @required Person person,
+    @required Friend friend,
     EventType eventType,
   }) =>
       _service.queryProductsStream(
         path: APIPath.products(),
-        age: person.age,
-        interests: person.interests,
-        gender: person.gender,
+        age: friend.age,
+        interests: friend.interests,
+        gender: friend.gender,
         eventType: eventType,
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );

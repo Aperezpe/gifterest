@@ -26,7 +26,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  // I can probably move all this into a mixin
   RangeValues rangeValues = RangeValues(0, 100);
 
   ScrollController _scrollController;

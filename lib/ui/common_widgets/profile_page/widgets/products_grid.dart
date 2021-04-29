@@ -1,6 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
+import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,14 @@ class ProductsGridView extends StatefulWidget {
     @required this.productStream,
     @required this.gender,
     @required this.database,
+    this.eventType,
   }) : super(key: key);
 
   final RangeValues sliderValues;
   final Stream<List<Product>> productStream;
   final String gender;
   final FirestoreDatabase database;
+  final EventType eventType;
 
   @override
   _ProductsGridViewState createState() => _ProductsGridViewState();
@@ -31,14 +34,20 @@ class _ProductsGridViewState extends State<ProductsGridView>
   int get endValue => widget.sliderValues.end.round();
 
   List<Product> queryProducts(List<Product> products) {
-    products = products
-        .where((product) {
-          if (endValue >= 100) return product.price >= startValue;
-          return product.price >= startValue && product.price <= endValue;
-        })
-        .where((product) =>
-            (product.gender == widget.gender) || (product.gender == ""))
-        .toList();
+    if (widget.eventType != EventType.anniversary)
+      products = products
+          .where((product) {
+            if (endValue >= 100) return product.price >= startValue;
+            return product.price >= startValue && product.price <= endValue;
+          })
+          .where((product) =>
+              (product.gender == widget.gender) || (product.gender == ""))
+          .toList();
+    else
+      products = products.where((product) {
+        if (endValue >= 100) return product.price >= startValue;
+        return product.price >= startValue && product.price <= endValue;
+      }).toList();
 
     return products;
   }

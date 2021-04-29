@@ -3,7 +3,6 @@ import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/models/friend.dart';
-import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -130,11 +129,12 @@ class _FriendPageState extends State<FriendPage>
                 ProductsGridView(
                   sliderValues: sliderValues,
                   productStream: database.queryFriendProductsStream(
-                    person: widget.friend,
+                    friend: widget.friend,
                     eventType: getEventType(tab.text),
                   ),
                   gender: widget.friend.gender,
                   database: database,
+                  eventType: getEventType(tab.text),
                 ),
             ],
           ),
