@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
@@ -89,11 +90,11 @@ class _ProductsGridViewState extends State<ProductsGridView>
               } else if (snapshot.hasError) {
                 Center(child: Text(snapshot.error.toString()));
               }
-              return Center(child: CircularProgressIndicator());
+              return LoadingScreen();
             },
           );
         }
-        return Center(child: CircularProgressIndicator());
+        return LoadingScreen();
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
@@ -130,7 +131,7 @@ class SetInterestsPage extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(child: Text("An error occurred"));
         }
-        return Center(child: CircularProgressIndicator());
+        return LoadingScreen();
       },
     );
   }

@@ -2,6 +2,7 @@ import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/empty_content.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class FavoritesPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             print(snapshot.error);
           }
-          return CircularProgressIndicator();
+          return LoadingScreen();
         },
       ),
     );

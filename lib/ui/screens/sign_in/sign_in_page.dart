@@ -131,30 +131,29 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Widget _buildHeader() {
-    if (model.isLoading) {
-      return Center(
-        heightFactor: 8,
-        child: CircularProgressIndicator(),
-      );
-    }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          padding: EdgeInsets.only(top: 35),
-          height: 150,
-          child: Image.asset("assets/bonobo_logo.png"),
-        ),
-        Container(
-          alignment: Alignment.center,
-          height: 80,
-          child: Text(
-            "BONOBO",
-            style: TextStyle(fontSize: 32),
-          ),
-        ),
-      ],
-    );
+    return model.isLoading
+        ? Center(
+            heightFactor: 8,
+            child: CircularProgressIndicator(),
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: EdgeInsets.only(top: 35),
+                height: 150,
+                child: Image.asset("assets/bonobo_logo.png"),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: 80,
+                child: Text(
+                  "BONOBO",
+                  style: TextStyle(fontSize: 32),
+                ),
+              ),
+            ],
+          );
   }
 
   Column _buildEmailForm() {
