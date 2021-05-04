@@ -29,7 +29,6 @@ class _MainPageState extends State<MainPage> {
 
     // If user is not created on sign up for some  reason, this will create it
     database.userStream().listen((user) async {
-      print("listening to user: ${user?.id}");
       if (user == null) await database.setPerson(widget.initialUser);
     }).onError((error) => print("UserStreamError: $error"));
 

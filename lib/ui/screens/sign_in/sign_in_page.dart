@@ -21,10 +21,18 @@ class SignInPage extends StatefulWidget {
 
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
-    return ChangeNotifierProvider<SignInModel>(
-      create: (_) => SignInModel(auth: auth),
-      child: Consumer<SignInModel>(
-        builder: (_, model, __) => SignInPage(model: model),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Bonobo",
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: ChangeNotifierProvider<SignInModel>(
+        create: (_) => SignInModel(auth: auth),
+        child: Consumer<SignInModel>(
+          builder: (_, model, __) => SignInPage(model: model),
+        ),
       ),
     );
   }
@@ -100,19 +108,11 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Bonobo",
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: Scaffold(body: _buildContent()),
-    );
+    return Scaffold(body: _buildContent());
   }
 
   Widget _buildContent() {
-    return OverflowBox(
+    return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(25.0),
         child: Column(

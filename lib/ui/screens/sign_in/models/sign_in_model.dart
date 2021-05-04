@@ -33,7 +33,7 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     updateWith(submitted: true);
     if (!canSubmit) return;
     if (formType == EmailSignInFormType.signIn) {
-      _signIn(
+      await _signIn(
         () => auth.signInWithEmailAndPassword(
           email,
           password,
@@ -41,7 +41,7 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
       );
     } else {
       locator.get<AppUserInfo>().setName(name);
-      _signIn(
+      await _signIn(
         () => auth.createUserWithEmailAndPassword(
           name,
           email,
