@@ -80,6 +80,7 @@ class SetSpecialEvent extends StatelessWidget {
         if (snapshot.hasData) {
           final events = snapshot.data.map((e) => e.name).toList();
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: CustomAppBar(
               title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
               actions: _buildActions(events, context),

@@ -87,6 +87,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                     final model =
                         Provider.of<MyFriendsPageModel>(context, listen: false);
                     return Scaffold(
+                      resizeToAvoidBottomInset: false,
                       appBar: CustomAppBar(
                         title: Text("My Friends"),
                       ),

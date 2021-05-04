@@ -164,6 +164,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
         title: Text(appBarText), // TODO: This to Edig Profile // Done
         actions: _isNewFriend
