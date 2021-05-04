@@ -114,7 +114,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget _buildContent() {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(25.0),
+        padding: EdgeInsets.fromLTRB(25, 50, 25, 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

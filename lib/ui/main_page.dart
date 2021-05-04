@@ -29,6 +29,13 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
         locator.get<GenderProvider>().setGenders(genders);
       }
     });
+
+    // If user is not created on sign up for some  reason, this will create it
+    // TODO: Para eliminar esto puedo no crear el usuario hasta que se terminen los setup screens por primera vez y ya
+    database.userStream().listen((user) async {
+      print(widget.initialUser);
+      if (user == null) await database.setPerson(widget.initialUser);
+    }).onError((error) => print("UserStreamError: $error"));
   }
 
   bool _isFirstTime;
@@ -37,16 +44,9 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
   void initState() {
     // Check if user is new to show Setup Profile Page
     final Auth auth = Provider.of<AuthBase>(context, listen: false);
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
     _isFirstTime = auth.userCredentials?.additionalUserInfo?.isNewUser ?? false;
 
     print("isFirstTime? $_isFirstTime");
-
-    // If user is not created on sign up for some  reason, this will create it
-    database.userStream().listen((user) async {
-      if (user == null) await database.setPerson(widget.initialUser);
-    }).onError((error) => print("UserStreamError: $error"));
 
     super.initState();
   }
