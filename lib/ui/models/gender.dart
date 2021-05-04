@@ -15,3 +15,12 @@ class Gender {
     );
   }
 }
+
+class GenderProvider {
+  GenderProvider() {
+    genders = [];
+  }
+  List<Gender> genders;
+
+  void setGenders(List<Gender> list) => genders = list;
+}

@@ -1,5 +1,8 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
+import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/profile_setup/welcome_page.dart';
@@ -14,7 +17,20 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with AfterLayoutMixin {
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // Load genders after it has been built to use throughout the app
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
+    database.genderStream().listen((genders) {
+      if (genders.isNotEmpty) {
+        print("genders have been loaded");
+        locator.get<GenderProvider>().setGenders(genders);
+      }
+    });
+  }
+
   bool _isFirstTime;
 
   @override

@@ -42,6 +42,7 @@ dependencies:
   font_awesome_flutter: ^9.0.0
   auto_size_text: ^2.1.0
   age: ^0.0.1
+  after_layout: ^1.1.0
 
   flutter:
     sdk: flutter

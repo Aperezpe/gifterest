@@ -1,5 +1,5 @@
-import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
@@ -7,7 +7,6 @@ import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dar
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form_model.dart';
 import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/set_special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../common_widgets/loading_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SetPersonForm extends StatefulWidget {
@@ -38,31 +36,23 @@ class SetPersonForm extends StatefulWidget {
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (context) => StreamBuilder<List<Gender>>(
-          stream: database.genderStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ChangeNotifierProvider<SetFormModel>(
-                create: (context) => SetFormModel(
-                  uid: database.uid,
-                  database: database,
-                  isNew: person == null ? true : false,
-                  person: person,
-                  genders: snapshot.data,
-                ),
-                child: Consumer<SetFormModel>(
-                  builder: (context, model, __) => SetPersonForm(
-                    model: model,
-                    mainPage: mainPage,
-                  ),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text("An error has ocurred"));
-            }
-            return LoadingScreen();
-          },
-        ),
+        builder: (context) {
+          return ChangeNotifierProvider<SetFormModel>(
+            create: (context) => SetFormModel(
+              uid: database.uid,
+              database: database,
+              isNew: person == null ? true : false,
+              person: person,
+              genders: locator.get<GenderProvider>().genders,
+            ),
+            child: Consumer<SetFormModel>(
+              builder: (context, model, __) => SetPersonForm(
+                model: model,
+                mainPage: mainPage,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
