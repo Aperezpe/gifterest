@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +23,14 @@ class CircleImageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
-      height: 60,
-      width: 60,
+      height: SizeConfig.safeBlockVertical * 6.5,
+      width: SizeConfig.safeBlockVertical * 6.5,
       child: InkWell(
         key: key,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(SizeConfig.safeBlockVertical * 2),
           child: Image.asset(
             imagePath,
             fit: BoxFit.fitHeight,
@@ -37,7 +39,7 @@ class CircleImageButton extends StatelessWidget {
         onTap: onPressed,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(SizeConfig.safeBlockVertical * 2),
         boxShadow: [
           BoxShadow(
             color: Colors.grey,

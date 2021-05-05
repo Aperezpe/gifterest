@@ -1,18 +1,21 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
+import 'package:device_simulator/device_simulator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/circle_image_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 
 import 'package:bonobo/services/auth.dart';
+
+const bool debugEnableDeviceSimulator = true;
 
 class SignInPage extends StatefulWidget {
   SignInPage({@required this.model});
@@ -25,8 +28,11 @@ class SignInPage extends StatefulWidget {
       debugShowCheckedModeBanner: false,
       title: "Bonobo",
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        brightness: Brightness.light,
+        primaryColor: Colors.pink,
+        accentColor: Colors.orange,
         scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Poppins',
       ),
       home: ChangeNotifierProvider<SignInModel>(
         create: (_) => SignInModel(auth: auth),
@@ -77,6 +83,9 @@ class _SignInPageState extends State<SignInPage> {
         exception: e,
       ).show(context);
     }
+    // on FirebaseException catch (e) {
+
+    // }
   }
 
   void _showSignInError(PlatformException exception) {
@@ -106,54 +115,85 @@ class _SignInPageState extends State<SignInPage> {
     _retypePasswordController.clear();
   }
 
+  /// TODO: Put Stack as body and create an invisible widget on top of
+  /// everything that only shows on loading
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    // return DeviceSimulator(
+    //   enable: debugEnableDeviceSimulator,
+    //   child: Scaffold(body: _buildContent()),
+    // );
     return Scaffold(body: _buildContent());
   }
 
   Widget _buildContent() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(25, 50, 25, 50),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _buildHeader(),
-            SizedBox(height: 15),
-            _buildEmailForm(),
-            SizedBox(height: 15),
-            _buildSignInServices(),
-          ],
+    return Center(
+      child: SingleChildScrollView(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Padding(
+              padding: constraints.maxWidth >= 700
+                  ? EdgeInsets.fromLTRB(
+                      SizeConfig.screenWidth / 6,
+                      50,
+                      SizeConfig.screenWidth / 6,
+                      50,
+                    )
+                  : EdgeInsets.fromLTRB(25, 50, 25, 50),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildHeader(),
+                  SizedBox(height: 15),
+                  _buildEmailForm(),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 4),
+                  _buildSignInServices(),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
   Widget _buildHeader() {
-    return model.isLoading
-        ? Center(
-            heightFactor: 8,
-            child: CircularProgressIndicator(),
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                padding: EdgeInsets.only(top: 35),
-                height: 150,
-                child: Image.asset("assets/bonobo_logo.png"),
-              ),
-              Container(
-                alignment: Alignment.center,
-                height: 80,
-                child: Text(
-                  "BONOBO",
-                  style: TextStyle(fontSize: 32),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double logoHeight = SizeConfig.safeBlockVertical * 23;
+        double textContainerHeight = SizeConfig.safeBlockVertical * 8;
+        double fontSize = SizeConfig.safeBlockVertical * 4;
+        if (constraints.maxWidth >= 700) {
+          logoHeight = SizeConfig.safeBlockVertical * 12;
+          textContainerHeight = SizeConfig.safeBlockVertical * 12;
+          fontSize = SizeConfig.safeBlockVertical * 6;
+        }
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 35),
+              height: logoHeight,
+              child: Image.asset("assets/bonobo_logo.png"),
+            ),
+            Container(
+              alignment: Alignment.center,
+              height: textContainerHeight,
+              child: Text(
+                "Gifterest",
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black.withOpacity(.6),
                 ),
               ),
-            ],
-          );
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Column _buildEmailForm() {
@@ -252,18 +292,20 @@ class _SignInPageState extends State<SignInPage> {
           textColor: Colors.white,
           onPressed: model.isLoading ? null : _submit,
         ),
-        SizedBox(height: 15),
+        SizedBox(height: SizeConfig.safeBlockVertical * 1.5),
         TextButton(
           key: Key("toggle-form"),
           child: Text(
             model.secondaryText,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: SizeConfig.screenWidth >= 700
+                  ? SizeConfig.safeBlockVertical * 2
+                  : SizeConfig.safeBlockVertical * 2.3,
               color: Colors.blue.shade700,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'Poppins',
             ),
           ),
-          style: TextButton.styleFrom(primary: Colors.white),
           onPressed: model.isLoading ? null : _toogleFormType,
         ),
       ],
@@ -276,10 +318,15 @@ class _SignInPageState extends State<SignInPage> {
         Center(
           child: Text(
             model.socialMediaText,
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(
+              fontFamily: 'Monsterrat',
+              fontSize: SizeConfig.screenWidth >= 700
+                  ? SizeConfig.safeBlockVertical * 2
+                  : SizeConfig.safeBlockVertical * 2.3,
+            ),
           ),
         ),
-        SizedBox(height: 25),
+        SizedBox(height: SizeConfig.safeBlockVertical * 2),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -290,13 +337,13 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: model.isLoading ? null : _signInWithGoogle,
               imagePath: 'assets/google_logo.jpg',
             ),
-            CircleImageButton(
-              key: Key("apple-signin"),
-              color: Colors.grey[400],
-              textColor: Colors.white,
-              onPressed: null,
-              imagePath: 'assets/apple_logo.jpg',
-            ),
+            // CircleImageButton(
+            //   key: Key("apple-signin"),
+            //   color: Colors.grey[400],
+            //   textColor: Colors.white,
+            //   onPressed: null,
+            //   imagePath: 'assets/apple_logo.jpg',
+            // ),
           ],
         ),
         SizedBox(height: 25),

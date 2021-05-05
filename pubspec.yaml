@@ -43,6 +43,8 @@ dependencies:
   auto_size_text: ^2.1.0
   age: ^0.0.1
   after_layout: ^1.1.0
+  device_simulator: ^0.9.6
+  custom_navigator: ^0.3.0
 
   flutter:
     sdk: flutter
@@ -106,6 +108,15 @@ flutter:
         - asset: fonts/Poppins/Poppins-Regular.ttf
         - asset: fonts/Poppins/Poppins-SemiBold.ttf
         - asset: fonts/Poppins/Poppins-Thin.ttf
+    - family: Nunito-Sans
+      fonts:
+        - asset: fonts/Nunito_Sans/NunitoSans-Black.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-Bold.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-ExtraBold.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-ExtraLight.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-Light.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-Regular.ttf
+        - asset: fonts/Nunito_Sans/NunitoSans-SemiBold.ttf
     - family: Mulish
       fonts:
         - asset: fonts/Mulish/Mulish-VariableFont_wght.ttf

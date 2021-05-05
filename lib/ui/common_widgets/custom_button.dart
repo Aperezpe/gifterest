@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,14 +27,25 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
+    double textSize = SizeConfig.safeBlockHorizontal * 5;
+    double letterSpacing = SizeConfig.safeBlockHorizontal / 5;
+    String fontFamily = 'Poppins';
+    if (SizeConfig.screenWidth >= 700) {
+      textSize = SizeConfig.safeBlockVertical * 2.2;
+    }
+
     return ElevatedButton(
       onPressed: onPressed,
       child: Text(
-        text,
+        text.toUpperCase(),
         style: TextStyle(
-          fontSize: 20.0,
+          fontSize: textSize,
+          letterSpacing: letterSpacing,
           color: textColor,
-          fontWeight: FontWeight.w500,
+          fontFamily: fontFamily,
+          fontWeight: FontWeight.w600,
         ),
       ),
       style: ButtonStyle(
@@ -47,7 +59,9 @@ class CustomButton extends StatelessWidget {
           },
         ),
         padding: MaterialStateProperty.resolveWith<EdgeInsets>(
-          (states) => padding != null ? padding : EdgeInsets.all(15),
+          (states) => padding != null
+              ? padding
+              : EdgeInsets.all(SizeConfig.blockSizeVertical * 1.7),
         ),
         shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) => RoundedRectangleBorder(
