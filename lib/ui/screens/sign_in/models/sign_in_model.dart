@@ -16,7 +16,7 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     this.password = '',
     this.retypePassword = '',
     this.formType = EmailSignInFormType.signIn,
-    this.isLoading = false,
+    this.isLoading = true,
     this.submitted = false,
   });
 

@@ -45,6 +45,7 @@ dependencies:
   after_layout: ^1.1.0
   device_simulator: ^0.9.6
   custom_navigator: ^0.3.0
+  loading_animations: ^2.2.0
 
   flutter:
     sdk: flutter

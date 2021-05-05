@@ -5,6 +5,7 @@ import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
 import 'package:device_simulator/device_simulator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:loading_animations/loading_animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,6 +62,13 @@ class _SignInPageState extends State<SignInPage> {
   SignInModel get model => widget.model;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => model.updateWith(isLoading: false));
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -82,6 +90,11 @@ class _SignInPageState extends State<SignInPage> {
         title: "Sign in failed",
         exception: e,
       ).show(context);
+    } on FirebaseException catch (e) {
+      FirebaseAuthExceptionAlertDialog(
+        title: "Sign in failed",
+        exception: e,
+      );
     }
     // on FirebaseException catch (e) {
 
@@ -124,7 +137,22 @@ class _SignInPageState extends State<SignInPage> {
     //   enable: debugEnableDeviceSimulator,
     //   child: Scaffold(body: _buildContent()),
     // );
-    return Scaffold(body: _buildContent());
+    return Scaffold(
+      body: Stack(
+        children: [
+          _buildContent(),
+          Visibility(
+            visible: model.isLoading,
+            child: Container(
+              color: Colors.black.withOpacity(.5),
+              child: Center(
+                child: LoadingBouncingGrid.circle(backgroundColor: Colors.pink),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildContent() {
