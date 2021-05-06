@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/custom_list_tile.dart';
@@ -7,6 +8,7 @@ import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:line_icons/line_icons.dart';
 
 class AppDrawer extends StatelessWidget {
   AppDrawer({@required this.currentChildRouteName});
@@ -30,101 +32,160 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return Consumer2<AuthBase, Database>(
-      builder: (_, auth, database, __) => Drawer(
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () => _openRoute(
-                context,
-                routeName: MyProfilePage.routeName,
-                child: MyProfilePage(),
-              ),
-              child: Container(
-                width: double.infinity,
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: <Color>[
-                        Colors.pink,
-                        Colors.orange,
-                      ],
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
+      builder: (_, auth, database, __) => Container(
+        width: is700Wide
+            ? SizeConfig.blockSizeHorizontal * 50
+            : SizeConfig.blockSizeHorizontal * 70,
+        child: Drawer(
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () => _openRoute(
+                  context,
+                  routeName: MyProfilePage.routeName,
+                  child: MyProfilePage(),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  height: is700Wide
+                      ? SizeConfig.safeBlockVertical * 22
+                      : SizeConfig.safeBlockVertical * 29,
+                  child: DrawerHeader(
+                    margin: EdgeInsets.only(bottom: 0),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
                     ),
+                    // Uncomment for radial gradient
+                    // decoration: BoxDecoration(
+                    //   gradient: RadialGradient(
+                    //     colors: <Color>[
+                    //       Color(0xffffcc00).withOpacity(.8),
+                    //       Colors.red,
+                    //       // Color(0xfffb997f),
+                    //       // Color(0xfff47199),
+                    //     ],
+                    //     center: Alignment(0, -1),
+                    //     radius: 1.4,
+
+                    //     // stops: [0, .8],
+                    //     // begin: Alignment(.5, 0),
+                    //     // end: Alignment(.7, 1),
+                    //   ),
+                    // ),
+                    child: _buildUserAvatar(database),
                   ),
-                  child: _buildUserAvatar(database),
                 ),
               ),
-            ),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                children: [
-                  CustomListTile(
-                    title: "My Friends",
-                    icon: Icons.people,
-                    onTap: () => _openRoute(
-                      context,
-                      routeName: MyFriendsPage.routeName,
-                      child: MyFriendsPage(),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: [
+                    CustomListTile(
+                      title: "My Friends",
+                      icon: LineIcons.gift,
+                      onTap: () => _openRoute(
+                        context,
+                        routeName: MyFriendsPage.routeName,
+                        child: MyFriendsPage(),
+                      ),
                     ),
-                  ),
-                  CustomListTile(
-                    title: "Favorites",
-                    icon: Icons.favorite,
-                    onTap: () => _openRoute(
-                      context,
-                      routeName: FavoritesPage.routeName,
-                      child: FavoritesPage(),
+                    CustomListTile(
+                      title: "Favorites",
+                      icon: LineIcons.heart,
+                      onTap: () => _openRoute(
+                        context,
+                        routeName: FavoritesPage.routeName,
+                        child: FavoritesPage(),
+                      ),
                     ),
-                  ),
-                  CustomListTile(
-                    title: "Sign Out",
-                    icon: Icons.power_settings_new,
-                    onTap: () => auth.signOut(),
-                  ),
-                ],
+                    CustomListTile(
+                      title: "Sign Out",
+                      icon: LineIcons.alternateSignOut,
+                      onTap: () => auth.signOut(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildUserAvatar(FirestoreDatabase database) {
-    return Container(
-      child: StreamBuilder<Person>(
-        stream: database.userStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final user = snapshot.data;
-            return Column(
-              children: [
-                CircleAvatar(
-                  radius: 45,
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
+    final avatarRadius = is700Wide
+        ? SizeConfig.safeBlockVertical * 5
+        : SizeConfig.safeBlockVertical * 6.5;
+    return StreamBuilder<Person>(
+      stream: database.userStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final user = snapshot.data;
+          return Column(
+            children: [
+              // TODO: Poner un changuito o algo envez de un placeholder
+              Expanded(
+                flex: 3,
+                child: CircleAvatar(
+                  radius: avatarRadius,
                   backgroundImage: AssetImage('assets/placeholder.jpg'),
                 ),
-                SizedBox(height: 15),
-                Text(
-                  "${user.name} (Me)",
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  "${user.name}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.25),
+                        offset: Offset(1, 4),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                    fontSize: is700Wide
+                        ? SizeConfig.safeBlockVertical * 2.3
+                        : SizeConfig.safeBlockVertical * 2.8,
                   ),
                 ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            print("Drawer error: ${snapshot.error}");
-          }
-          return CircleAvatar(
-            radius: 45,
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  "See your profile",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w400,
+                    fontSize: is700Wide
+                        ? SizeConfig.safeBlockVertical * 1.5
+                        : SizeConfig.safeBlockVertical * 1.8,
+                  ),
+                ),
+              ),
+            ],
           );
-        },
-      ),
+        } else if (snapshot.hasError) {
+          print("Drawer error: ${snapshot.error}");
+        }
+        return CircleAvatar(
+          radius: avatarRadius,
+        );
+      },
     );
   }
 }

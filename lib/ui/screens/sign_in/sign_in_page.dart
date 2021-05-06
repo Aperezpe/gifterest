@@ -3,7 +3,6 @@ import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
-import 'package:device_simulator/device_simulator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +14,6 @@ import '../../common_widgets/circle_image_button.dart';
 import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 
 import 'package:bonobo/services/auth.dart';
-
-const bool debugEnableDeviceSimulator = true;
 
 class SignInPage extends StatefulWidget {
   SignInPage({@required this.model});
@@ -133,10 +130,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    // return DeviceSimulator(
-    //   enable: debugEnableDeviceSimulator,
-    //   child: Scaffold(body: _buildContent()),
-    // );
+
     return Scaffold(
       body: Stack(
         children: [

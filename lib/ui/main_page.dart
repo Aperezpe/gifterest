@@ -6,8 +6,11 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/profile_setup/welcome_page.dart';
+import 'package:device_simulator/device_simulator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+const bool debugEnableDeviceSimulator = true;
 
 class MainPage extends StatefulWidget {
   MainPage({Key key, @required this.initialUser}) : super(key: key);
@@ -61,12 +64,35 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Nunito-Sans',
+        primaryTextTheme: TextTheme(
+          // appbars
+          headline6: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        textTheme: TextTheme(
+          // Text inside columns, and appbar in profile/friend page
+          bodyText2: TextStyle(
+            color: Colors.black87,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
       ),
       home: StreamBuilder<Person>(
         stream: database.userStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final user = snapshot.data;
+
+            if (false)
+              return DeviceSimulator(
+                enable: debugEnableDeviceSimulator,
+                child: _isFirstTime ? WelcomePage(user: user) : MyFriendsPage(),
+              );
             return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
           }
 
