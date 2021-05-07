@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/common_widgets/gradient_button.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
@@ -9,74 +10,110 @@ class WelcomePage extends StatelessWidget {
   final Person user;
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
+    final is800Hight = SizeConfig.screenHeight >= 800;
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.grey[400], Colors.white],
-              stops: [0, .5],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.grey[400], Colors.white],
+            stops: [0, .5],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: SizeConfig.safeBlockHorizontal * 8,
+                    right: SizeConfig.safeBlockHorizontal * 8,
+                  ),
+                  child: Text(
+                    "Awesome ${user.name}!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: SizeConfig.safeBlockVertical * 5,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Montserrat',
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-          padding: EdgeInsets.fromLTRB(20, 80, 20, 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Text(
-                      "Awesome ${user.name}!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
-                      ),
+            Expanded(flex: 1, child: SizedBox()),
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Image.asset(
+                  'assets/congrats.png',
+                  width: SizeConfig.screenWidth / 2,
+                ),
+              ),
+            ),
+            Expanded(flex: 1, child: SizedBox()),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: SizeConfig.safeBlockHorizontal * 8,
+                    right: SizeConfig.safeBlockHorizontal * 8,
+                  ),
+                  child: Text(
+                    "You have successfully created your account!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontSize: SizeConfig.safeBlockVertical * 2.5,
+                      fontFamily: 'Mulish',
                     ),
                   ),
-                  SizedBox(height: 50),
-                  Image.asset(
-                    'assets/congrats.png',
-                    width: MediaQuery.of(context).size.width / 2,
-                  ),
-                  SizedBox(height: 50),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Text(
-                      "You have successfully created your account!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 18,
-                        fontFamily: 'Mulish',
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 50),
-                ],
-              ),
-              GradientButton(
-                text: "Continue",
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => SetupPage(user: user)),
                 ),
-                textColor: Colors.white,
-                gradient: LinearGradient(
-                  colors: <Color>[Color(0xff38BDFF), Color(0xffBA6BFF)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                shadowColor: Color(0xff001AFF).withOpacity(.38),
               ),
-            ],
-          ),
+            ),
+            Expanded(flex: 1, child: SizedBox()),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: SizeConfig.blockSizeHorizontal * 5,
+                  right: SizeConfig.blockSizeHorizontal * 5,
+                  top: is800Hight
+                      ? SizeConfig.safeBlockVertical * 3
+                      : SizeConfig.blockSizeVertical * 2.2,
+                  bottom: is800Hight
+                      ? SizeConfig.safeBlockVertical * 2.5
+                      : SizeConfig.blockSizeVertical * 1.2,
+                ),
+                child: GradientButton(
+                  text: "Continue",
+                  textSize: is700Wide
+                      ? SizeConfig.safeBlockVertical * 2.5
+                      : SizeConfig.safeBlockVertical * 2.8,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => SetupPage(user: user)),
+                  ),
+                  textColor: Colors.white,
+                  gradient: LinearGradient(
+                    colors: <Color>[Color(0xff38BDFF), Color(0xffBA6BFF)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  shadowColor: Color(0xff001AFF).withOpacity(.38),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

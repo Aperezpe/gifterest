@@ -88,10 +88,11 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
           if (snapshot.hasData) {
             final user = snapshot.data;
 
-            if (false)
+            if (true)
               return DeviceSimulator(
                 enable: debugEnableDeviceSimulator,
-                child: _isFirstTime ? WelcomePage(user: user) : MyFriendsPage(),
+                child:
+                    !_isFirstTime ? WelcomePage(user: user) : MyFriendsPage(),
               );
             return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
           }
