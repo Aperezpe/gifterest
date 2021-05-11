@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
 import 'package:bonobo/ui/screens/my_friends/format.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,32 +24,34 @@ class IOSDatePicker extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
+        SizeConfig().init(context);
+        final is800Hight = SizeConfig.screenHeight >= 800;
+        final is700Wide = SizeConfig.screenWidth >= 700;
+
         return Container(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Flexible(
+              Align(
+                alignment: Alignment.centerRight,
                 child: Container(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Spacer(flex: 4),
-                      Flexible(
-                        flex: 1,
-                        child: CupertinoDialogAction(
-                          child: Text("Done"),
-                          isDefaultAction: true,
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                    ],
+                  width: is700Wide
+                      ? SizeConfig.safeBlockHorizontal * 12
+                      : SizeConfig.safeBlockHorizontal * 18,
+                  child: CupertinoDialogAction(
+                    textStyle: TextStyle(
+                      fontSize: is800Hight
+                          ? SizeConfig.safeBlockVertical * 2.3
+                          : SizeConfig.safeBlockVertical * 3.2,
+                    ),
+                    child: Text("Done"),
+                    isDefaultAction: true,
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ),
-              Flexible(
+              Container(
+                height: SizeConfig.safeBlockVertical * 30,
                 child: CupertinoDatePicker(
                   initialDateTime: initialDate,
                   minimumYear: 1800,

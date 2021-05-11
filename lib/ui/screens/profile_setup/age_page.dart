@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/models/app_user.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
 import 'package:bonobo/ui/screens/my_friends/format.dart';
@@ -43,6 +44,9 @@ class _AgePageState extends State<AgePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is800Hight = SizeConfig.screenHeight >= 800;
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return Material(
       child: Container(
         decoration: BoxDecoration(
@@ -58,29 +62,36 @@ class _AgePageState extends State<AgePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(
+              height: is700Wide
+                  ? SizeConfig.safeBlockVertical * 4
+                  : SizeConfig.safeBlockVertical * 5,
+            ),
             Container(
-              height: 90,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                // crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  IconButton(
-                    icon: Icon(
+                  TextButton(
+                    child: Icon(
                       Icons.chevron_left,
                       color: Colors.white,
-                      size: 38,
+                      size: SizeConfig.safeBlockVertical * 5,
                     ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 15),
+                    padding: EdgeInsets.only(
+                        right: SizeConfig.safeBlockHorizontal * 3),
                     child: TextButton(
                       child: Text(
                         "Next".toUpperCase(),
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Poppins',
-                          fontSize: 18,
+                          fontSize: is700Wide
+                              ? SizeConfig.safeBlockVertical * 2.5
+                              : SizeConfig.safeBlockVertical * 3,
                         ),
                       ),
                       style: TextButton.styleFrom(
@@ -94,12 +105,15 @@ class _AgePageState extends State<AgePage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 25, right: 25),
+              padding: EdgeInsets.only(
+                left: SizeConfig.safeBlockHorizontal * 8,
+                right: SizeConfig.safeBlockHorizontal * 8,
+              ),
               child: Text(
                 "What is your birthday?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: SizeConfig.safeBlockVertical * 5,
                   color: Colors.white,
                   shadows: [
                     BoxShadow(
@@ -113,10 +127,13 @@ class _AgePageState extends State<AgePage> {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: SizeConfig.safeBlockVertical * 3),
             Flexible(
               child: Padding(
-                padding: EdgeInsets.only(left: 25, right: 25),
+                padding: EdgeInsets.only(
+                  left: SizeConfig.safeBlockHorizontal * 8,
+                  right: SizeConfig.safeBlockHorizontal * 8,
+                ),
                 child: PlatformDatePicker(
                   initialDate: DateTime.now(),
                   selectedDate: _selectedDate,
@@ -135,15 +152,21 @@ class _AgePageState extends State<AgePage> {
 
   Widget _buildDropdownButton(DateTime selectedDate) {
     final dateFormatted = Format.dateToMap(selectedDate);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return Container(
-      height: 63,
+      height: is700Wide
+          ? SizeConfig.safeBlockVertical * 9
+          : SizeConfig.safeBlockVertical * 10,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(100),
         color: Colors.black.withOpacity(.38),
         border: Border.all(color: Colors.white, width: 2),
       ),
       child: Padding(
-        padding: EdgeInsets.only(left: 25, right: 25),
+        padding: EdgeInsets.only(
+          left: SizeConfig.safeBlockHorizontal * 5,
+          right: SizeConfig.safeBlockHorizontal * 5,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,32 +175,38 @@ class _AgePageState extends State<AgePage> {
               "${dateFormatted['month']}",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: is700Wide
+                    ? SizeConfig.safeBlockVertical * 2.5
+                    : SizeConfig.safeBlockVertical * 3,
                 fontFamily: 'Poppins',
               ),
             ),
-            SizedBox(width: 15),
+            SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
             Text(
               "${dateFormatted['day']}",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: is700Wide
+                    ? SizeConfig.safeBlockVertical * 2.5
+                    : SizeConfig.safeBlockVertical * 3,
                 fontFamily: 'Poppins',
               ),
             ),
-            SizedBox(width: 15),
+            SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
             Text(
               "${dateFormatted['year']}",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: is700Wide
+                    ? SizeConfig.safeBlockVertical * 2.5
+                    : SizeConfig.safeBlockVertical * 3,
                 fontFamily: 'Poppins',
               ),
             ),
             Expanded(child: Container()),
             Icon(
               Icons.expand_more,
-              size: 36,
+              size: SizeConfig.safeBlockVertical * 4.5,
               color: Colors.white,
             )
           ],

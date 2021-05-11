@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/gender.dart';
@@ -24,6 +25,7 @@ class GenderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return StreamBuilder<List<Gender>>(
       stream: Provider.of<Database>(context, listen: false).genderStream(),
       builder: (context, snapshot) {
@@ -44,30 +46,17 @@ class GenderPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    height: 90,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.chevron_left,
-                            color: Colors.white,
-                            size: 38,
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                  ),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 8),
                   Padding(
-                    padding: EdgeInsets.only(left: 25, right: 25),
+                    padding: EdgeInsets.only(
+                      left: SizeConfig.safeBlockHorizontal * 8,
+                      right: SizeConfig.safeBlockHorizontal * 8,
+                    ),
                     child: Text(
                       "What is your gender?",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: SizeConfig.safeBlockVertical * 5,
                         color: Colors.white,
                         shadows: [
                           BoxShadow(
@@ -81,13 +70,11 @@ class GenderPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
                   for (String gender in genders)
-                    Flexible(
-                      child: GenderButton(
-                        onPressed: () => _onPressed(context, gender),
-                        text: gender,
-                      ),
+                    GenderButton(
+                      onPressed: () => _onPressed(context, gender),
+                      text: gender,
                     ),
                   Expanded(child: Container()),
                 ],
@@ -113,13 +100,22 @@ class GenderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return Container(
-      height: 90,
-      padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
+      height: is700Wide
+          ? SizeConfig.safeBlockVertical * 12
+          : SizeConfig.safeBlockVertical * 14,
+      padding: EdgeInsets.fromLTRB(
+        SizeConfig.safeBlockHorizontal * 5,
+        SizeConfig.safeBlockVertical * 2,
+        SizeConfig.safeBlockHorizontal * 5,
+        SizeConfig.safeBlockVertical,
+      ),
       child: ElevatedButton(
         onPressed: onPressed,
         child: Padding(
-          padding: EdgeInsets.only(left: 15),
+          padding: EdgeInsets.only(left: SizeConfig.safeBlockHorizontal * 4),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,11 +124,16 @@ class GenderButton extends StatelessWidget {
                 text.toUpperCase(),
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: is700Wide
+                      ? SizeConfig.safeBlockVertical * 2.5
+                      : SizeConfig.safeBlockVertical * 3,
                   fontFamily: 'Poppins',
                 ),
               ),
-              Icon(Icons.chevron_right, size: 36)
+              Icon(
+                Icons.chevron_right,
+                size: SizeConfig.safeBlockVertical * 4.5,
+              )
             ],
           ),
         ),
@@ -141,7 +142,7 @@ class GenderButton extends StatelessWidget {
           alignment: Alignment.centerLeft,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(100),
             side: BorderSide(width: 2, color: Colors.white),
           ),
         ),

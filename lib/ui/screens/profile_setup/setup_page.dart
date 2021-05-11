@@ -57,7 +57,7 @@ class SetupPage extends StatelessWidget {
             ),
             Expanded(flex: 1, child: SizedBox()),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Padding(
                 padding: EdgeInsets.only(
                   left: SizeConfig.safeBlockHorizontal * 8,
