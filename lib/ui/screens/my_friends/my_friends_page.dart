@@ -89,7 +89,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                     return Scaffold(
                       resizeToAvoidBottomInset: false,
                       appBar: CustomAppBar(
-                        title: Text("My Friends"),
+                        title: "My Friends",
                       ),
                       drawer: AppDrawer(
                         currentChildRouteName: MyFriendsPage.routeName,

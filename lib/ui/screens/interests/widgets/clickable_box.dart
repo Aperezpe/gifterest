@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/models/interest.dart';
 import 'package:flutter/material.dart';
 
@@ -15,22 +16,31 @@ class ClickableInterest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return InkWell(
       onTap: onTap,
       child: Container(
         decoration: isSelected
             ? BoxDecoration(
-                border: Border.all(width: 5, color: Colors.orange),
-                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(
+                  width: SizeConfig.safeBlockVertical - 2,
+                  color: Colors.orange,
+                ),
+                borderRadius: BorderRadius.circular(
+                  SizeConfig.safeBlockVertical * 2.5,
+                ),
               )
             : BoxDecoration(),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(
+            SizeConfig.safeBlockVertical * 1.5,
+          ),
           child: Stack(
             children: <Widget>[
               Center(
                 child: Image.network(
                   interest.imageUrl,
+                  fit: BoxFit.fitHeight,
                   color: isSelected
                       ? Colors.black.withOpacity(.7)
                       : Colors.black.withOpacity(.2),
@@ -45,15 +55,15 @@ class ClickableInterest extends StatelessWidget {
                     child: AutoSizeText(
                       "${interest.name}",
                       textAlign: TextAlign.center,
-                      minFontSize: 8,
+                      // minFontSize: SizeConfig.safeBlockVertical * 1.5,
                       wrapWords: false,
                       overflow: TextOverflow.clip,
-                      stepGranularity: 1,
+                      stepGranularity: 4,
                       maxLines: 2,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
-                        fontSize: 18,
+                        fontSize: SizeConfig.safeBlockVertical * 2.5,
                       ),
                     ),
                   ),

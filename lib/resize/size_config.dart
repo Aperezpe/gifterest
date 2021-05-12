@@ -11,6 +11,7 @@ class SizeConfig {
   static double _safeAreaVertical;
   static double safeBlockHorizontal;
   static double safeBlockVertical;
+  static double appBarHeight;
 
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
@@ -25,5 +26,8 @@ class SizeConfig {
         _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
+    appBarHeight = screenWidth >= 700
+        ? SizeConfig.safeBlockVertical * 6
+        : SizeConfig.safeBlockVertical * 8;
   }
 }

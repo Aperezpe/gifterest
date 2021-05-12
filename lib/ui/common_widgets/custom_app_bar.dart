@@ -1,4 +1,6 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   CustomAppBar({
@@ -15,7 +17,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   final Size preferredSize;
   final double height;
-  final Widget title;
+  final String title;
   final List<Widget> actions;
   final Widget leading;
   final ShapeBorder shape;
@@ -23,6 +25,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     if (isDismissable) {
       return SliverAppBar(
         expandedHeight: height,
@@ -58,7 +63,15 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(bottom: 15.0),
-              child: title,
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ),
         ),
@@ -70,7 +83,18 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       );
     } else {
       return AppBar(
-        leading: leading,
+        leading: leading ??
+            TextButton(
+              child: Icon(
+                LineIcons.angleLeft,
+                color: Colors.white,
+                size: is700Wide
+                    ? SizeConfig.safeBlockVertical * 3
+                    : SizeConfig.safeBlockVertical * 3.5,
+              ),
+              style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -87,7 +111,16 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 : BorderRadius.zero,
           ),
         ),
-        title: title,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: is700Wide
+                ? SizeConfig.safeBlockVertical * 3
+                : SizeConfig.safeBlockVertical * 3.5,
+            fontFamily: 'Nunito-Sans',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: actions,
         shape: shape,
         shadowColor: Colors.pink,

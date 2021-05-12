@@ -19,7 +19,7 @@ class FavoritesPage extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text("Favorites"),
+        title: "Favorites",
       ),
       drawer: AppDrawer(
         currentChildRouteName: routeName,

@@ -74,15 +74,7 @@ class _FriendPageState extends State<FriendPage>
         dismissableAppBar: CustomAppBar(
           isDismissable: true,
           height: 80,
-          title: Text(
-            widget.friend.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          title: widget.friend.name,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom:

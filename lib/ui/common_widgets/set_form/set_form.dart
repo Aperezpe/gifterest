@@ -166,7 +166,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
-        title: Text(appBarText), // TODO: This to Edig Profile // Done
+        title: appBarText, // TODO: This to Edig Profile // Done
         actions: _isNewFriend
             ? []
             : [

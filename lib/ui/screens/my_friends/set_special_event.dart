@@ -82,7 +82,7 @@ class SetSpecialEvent extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBar(
-              title: Text(_isNewFriend ? "New Friend" : 'Edit Friend'),
+              title: _isNewFriend ? "New Friend" : 'Edit Friend',
               actions: _buildActions(events, context),
             ),
             body: Stack(

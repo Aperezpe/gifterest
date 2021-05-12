@@ -41,15 +41,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     dismissableAppBar: CustomAppBar(
                       isDismissable: true,
                       height: 80,
-                      title: Text(
-                        '${user.name} (Me)',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
+                      title: user.name,
                       actions: [
                         user.interests.isNotEmpty
                             ? TextButton(

@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
@@ -76,15 +77,25 @@ class SetInterestsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Displays loading screen
 
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text("Interests"),
+        title: "Interests",
+        height: SizeConfig.appBarHeight,
         actions: model.selectedInterests.isNotEmpty
             ? [
                 TextButton(
                   child: Text(
-                    'Deselect All',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    'RESTART',
+                    style: TextStyle(
+                      fontSize: is700Wide
+                          ? SizeConfig.safeBlockVertical * 2.3
+                          : SizeConfig.safeBlockVertical * 2.7,
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                    ),
                   ),
                   onPressed: model.deselectAll,
                 )
@@ -98,10 +109,15 @@ class SetInterestsPage extends StatelessWidget {
           BottomButton(
             text: model.submitButtonText,
             onPressed: isReadyToSubmit ? () => _submit(context) : null,
-            color: Colors.orange[600],
+            color: Color(0xffFF9E0A),
             disableColor: Colors.grey,
-            padding: EdgeInsets.fromLTRB(25, 0, 25, 50),
-            textColor: isReadyToSubmit ? Colors.black : Colors.white,
+            padding: EdgeInsets.fromLTRB(
+              SizeConfig.safeBlockHorizontal * 5,
+              0,
+              SizeConfig.safeBlockHorizontal * 5,
+              SizeConfig.safeBlockVertical * 3.5,
+            ),
+            textColor: isReadyToSubmit ? Colors.white : Colors.white70,
           ),
         ],
       ),
@@ -114,19 +130,28 @@ class SetInterestsPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           snapshot.data.sort((a, b) => a.name.compareTo(b.name));
-          return GridView.builder(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 120),
-            itemCount: snapshot.data.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            itemBuilder: (context, index) {
-              return _buildInterestCard(context, snapshot.data[index]);
-            },
-          );
+          return LayoutBuilder(builder: (context, constraints) {
+            final maxWidth = constraints.maxWidth;
+            final maxHeight = constraints.maxHeight;
+            return GridView.builder(
+              padding: EdgeInsets.fromLTRB(
+                maxWidth / 40,
+                maxWidth / 40,
+                maxWidth / 40,
+                maxHeight / 6,
+              ),
+              itemCount: snapshot.data.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1,
+                mainAxisSpacing: maxWidth / 40,
+                crossAxisSpacing: maxWidth / 40,
+              ),
+              itemBuilder: (context, index) {
+                return _buildInterestCard(context, snapshot.data[index]);
+              },
+            );
+          });
         }
         if (snapshot.hasError) {
           return Center(child: Text("An error occurred"));

@@ -65,7 +65,7 @@ class _ProductPageState extends State<ProductPage> {
             onPressed: () => Navigator.pop(context),
           ),
         ),
-        title: Text(widget.product.name),
+        title: widget.product.name,
       ),
       body: Container(
         margin: EdgeInsets.all(25),
