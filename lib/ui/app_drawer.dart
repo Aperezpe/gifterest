@@ -41,6 +41,7 @@ class AppDrawer extends StatelessWidget {
             ? SizeConfig.blockSizeHorizontal * 50
             : SizeConfig.blockSizeHorizontal * 70,
         child: Drawer(
+          
           child: Column(
             children: [
               InkWell(

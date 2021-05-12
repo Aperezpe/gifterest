@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/product.dart';
@@ -56,6 +57,9 @@ class _ProductsGridViewState extends State<ProductsGridView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return StreamBuilder<List<Product>>(
       stream: widget.productStream,
       builder: (context, snapshot) {
@@ -74,7 +78,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
                   padding: EdgeInsets.all(8.0),
                   itemCount: products.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: is700Wide ? 3 : 2,
                     childAspectRatio: .9,
                     crossAxisSpacing: 5,
                     mainAxisSpacing: 5,

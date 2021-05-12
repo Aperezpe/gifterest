@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
@@ -67,15 +68,21 @@ class _ClickableProductState extends State<ClickableProduct> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return GestureDetector(
       onTap: _showProductDetails,
       child: Stack(
         alignment: Alignment.topRight,
         children: [
           Card(
-            elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: SizeConfig.blockSizeHorizontal,
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(SizeConfig.blockSizeVertical * 2),
+            ),
             child: Column(
               children: [
                 Expanded(
@@ -97,7 +104,12 @@ class _ClickableProductState extends State<ClickableProduct> {
                         widget.product.name,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: is700Wide
+                              ? SizeConfig.safeBlockVertical * 2.5
+                              : SizeConfig.safeBlockVertical * 2.7,
+                          fontFamily: 'Nunito-Sans',
+                          fontWeight: FontWeight.w700,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),
@@ -105,9 +117,12 @@ class _ClickableProductState extends State<ClickableProduct> {
                         "\$${widget.product.price}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: is700Wide
+                              ? SizeConfig.safeBlockVertical * 2.3
+                              : SizeConfig.safeBlockVertical * 2.6,
+                          fontFamily: 'Poppins',
                           color: Colors.red,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ],
@@ -117,10 +132,13 @@ class _ClickableProductState extends State<ClickableProduct> {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(top: 12, right: 12),
+            padding: EdgeInsets.only(
+              top: SizeConfig.safeBlockVertical * 1.3,
+              right: SizeConfig.safeBlockVertical * 1.3,
+            ),
             child: FavoriteButton(
               valueChanged: _toggleFavorite,
-              iconSize: 45,
+              iconSize: SizeConfig.safeBlockVertical * 5.7,
               isFavorite: isFavorite,
               iconColor: isFavorite ? Colors.red : Colors.grey[300],
             ),
