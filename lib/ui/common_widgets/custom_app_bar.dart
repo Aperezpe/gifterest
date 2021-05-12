@@ -83,18 +83,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       );
     } else {
       return AppBar(
-        leading: leading ??
-            TextButton(
-              child: Icon(
-                LineIcons.angleLeft,
-                color: Colors.white,
-                size: is700Wide
-                    ? SizeConfig.safeBlockVertical * 3
-                    : SizeConfig.safeBlockVertical * 3.5,
-              ),
-              style: TextButton.styleFrom(alignment: Alignment.centerLeft),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+        leading: leading,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

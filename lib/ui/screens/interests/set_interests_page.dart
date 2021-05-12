@@ -10,6 +10,7 @@ import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -84,6 +85,17 @@ class SetInterestsPage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Interests",
         height: SizeConfig.appBarHeight,
+        leading: TextButton(
+          child: Icon(
+            LineIcons.angleLeft,
+            color: Colors.white,
+            size: is700Wide
+                ? SizeConfig.safeBlockVertical * 3
+                : SizeConfig.safeBlockVertical * 3.5,
+          ),
+          style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: model.selectedInterests.isNotEmpty
             ? [
                 TextButton(
