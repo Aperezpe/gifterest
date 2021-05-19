@@ -1,7 +1,9 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/drawer_button_builder.dart';
 import 'package:bonobo/ui/common_widgets/empty_content.dart';
 import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
@@ -61,10 +63,23 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     );
   }
 
+  void _openFriendPage(Friend friend) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FriendPage.create(
+          context,
+          friend: friend,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
+
+    SizeConfig().init(context);
 
     return StreamBuilder<List<SpecialEvent>>(
       stream: database.specialEventsStream(),
@@ -86,54 +101,8 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                   builder: (context, child) {
                     final model =
                         Provider.of<MyFriendsPageModel>(context, listen: false);
-                    return Scaffold(
-                      resizeToAvoidBottomInset: false,
-                      appBar: CustomAppBar(
-                        title: "My Friends",
-                      ),
-                      drawer: AppDrawer(
-                        currentChildRouteName: MyFriendsPage.routeName,
-                      ),
-                      floatingActionButton: Container(
-                        padding: EdgeInsets.only(bottom: 15),
-                        child: _isEmpty
-                            ? Container()
-                            : FloatingActionButton(
-                                child: Icon(
-                                  Icons.add,
-                                  size: 28,
-                                  color: Colors.white,
-                                ),
-                                backgroundColor: Colors.blue,
-                                onPressed: _addNewFriend,
-                              ),
-                      ),
-                      body: friends.isEmpty
-                          ? EmptyContent(
-                              assetPath: 'assets/sad_monkey.jpg',
-                              title: "Friends Not Found",
-                              message:
-                                  "Looks like you havent added any friends yet",
-                              bottomWidget: CustomButton(
-                                onPressed: _addNewFriend,
-                                text: "Add Friend",
-                                padding: EdgeInsets.fromLTRB(35, 15, 35, 15),
-                                color: Colors.blue,
-                              ),
-                            )
-                          : Padding(
-                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                              child: ListItemsBuilder(
-                                items: model.friends,
-                                itemBuilder: (context, friend) =>
-                                    _buildFriendCard(
-                                  context,
-                                  friend: friend,
-                                  model: model,
-                                ),
-                              ),
-                            ),
-                    );
+
+                    return _buildContent(friends, model);
                   },
                 );
               }
@@ -145,6 +114,86 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
         if (snapshot.hasError) ErrorPage(snapshot.error);
         return LoadingScreen();
       },
+    );
+  }
+
+  Scaffold _buildContent(List<Friend> friends, MyFriendsPageModel model) {
+    final is700Wide = SizeConfig.screenWidth >= 700;
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(
+        title: "My Friends",
+        leading: DrawerButtonBuilder(),
+      ),
+      drawer: AppDrawer(
+        currentChildRouteName: MyFriendsPage.routeName,
+      ),
+      floatingActionButton: Container(
+        padding: EdgeInsets.only(bottom: 15),
+        child: _isEmpty
+            ? Container()
+            : Container(
+                height: SizeConfig.safeBlockVertical * 7,
+                width: SizeConfig.safeBlockVertical * 7,
+                child: FloatingActionButton(
+                  child: Icon(
+                    Icons.add,
+                    size: SizeConfig.safeBlockVertical * 4,
+                    color: Colors.white,
+                  ),
+                  backgroundColor: Colors.blue,
+                  onPressed: _addNewFriend,
+                ),
+              ),
+      ),
+      body: friends.isEmpty
+          ? EmptyContent(
+              assetPath: 'assets/sad_monkey.jpg',
+              title: "Friends Not Found",
+              message: "Looks like you havent added any friends yet",
+              bottomWidget: CustomButton(
+                onPressed: _addNewFriend,
+                text: "Add Friend",
+                padding: EdgeInsets.fromLTRB(35, 15, 35, 15),
+                color: Colors.blue,
+              ),
+            )
+          : Padding(
+              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+              child: is700Wide
+                  ? GridView.builder(
+                      padding: EdgeInsets.all(8.0),
+                      itemCount: friends.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: is700Wide ? 3 : 2,
+                        childAspectRatio: .9,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 5,
+                      ),
+                      itemBuilder: (context, index) {
+                        final friend = friends[index];
+                        return FriendListTile(
+                          onTap: () => _openFriendPage(friend),
+                          person: friend,
+                          editAction: () => SetPersonForm.create(
+                            context,
+                            person: friend,
+                            mainPage: widget,
+                          ),
+                          deleteAction: () => _deleteFriend(context, friend),
+                          model: model,
+                        );
+                      },
+                    )
+                  : ListItemsBuilder(
+                      items: model.friends,
+                      itemBuilder: (context, friend) => _buildFriendCard(
+                        context,
+                        friend: friend,
+                        model: model,
+                      ),
+                    ),
+            ),
     );
   }
 
@@ -166,15 +215,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
           onTap: () async {
             Slidable.of(context)?.open();
             Slidable.of(context)?.close();
-
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => FriendPage.create(
-                  context,
-                  friend: friend,
-                ),
-              ),
-            );
+            _openFriendPage(friend);
           },
         );
       }),
