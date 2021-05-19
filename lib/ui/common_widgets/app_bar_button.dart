@@ -1,8 +1,8 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
 
-class LeadingButton extends StatelessWidget {
-  LeadingButton({Key key, this.onTap, this.icon}) : super(key: key);
+class AppBarButton extends StatelessWidget {
+  AppBarButton({Key key, this.onTap, this.icon}) : super(key: key);
 
   final IconData icon;
   final VoidCallback onTap;

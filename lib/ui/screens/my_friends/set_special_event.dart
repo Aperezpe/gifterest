@@ -1,6 +1,6 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/app_bar_leading.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
@@ -89,7 +89,7 @@ class SetSpecialEvent extends StatelessWidget {
               height: SizeConfig.appBarHeight,
               title: _isNewFriend ? "New Friend" : 'Edit Friend',
               actions: _buildActions(events, context),
-              leading: LeadingButton(
+              leading: AppBarButton(
                 icon: LineIcons.angleLeft,
                 onTap: () => Navigator.of(context).pop(),
               ),
@@ -125,14 +125,16 @@ class SetSpecialEvent extends StatelessWidget {
       TextButton(
         child: Text(
           'Save',
-          style: TextStyle(fontSize: 18, color: Colors.white),
+          style: TextStyle(
+              fontSize: SizeConfig.safeBlockVertical * 2.5,
+              color: Colors.white),
         ),
         onPressed: () => _onSave(context),
       ),
-      TextButton(
-        child: Icon(Icons.add, color: Colors.white),
-        onPressed: () => _model.addSpecialEvent(events),
-      ),
+      AppBarButton(
+        icon: LineIcons.plus,
+        onTap: () => _model.addSpecialEvent(events),
+      )
     ];
 
     return _isNewFriend ? [actions[1]] : actions;

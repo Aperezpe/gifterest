@@ -1,7 +1,7 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
-import 'package:bonobo/ui/common_widgets/app_bar_leading.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
@@ -172,7 +172,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
       appBar: CustomAppBar(
         height: SizeConfig.appBarHeight,
         title: appBarText, // TODO: This to Edig Profile // Done
-        leading: LeadingButton(
+        leading: AppBarButton(
           icon: LineIcons.times,
           onTap: () => Navigator.of(context).pop(),
         ),
@@ -182,7 +182,10 @@ class _SetPersonFormState extends State<SetPersonForm> {
                 TextButton(
                   child: Text(
                     'Save',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: SizeConfig.safeBlockVertical * 2.5,
+                      color: Colors.white,
+                    ),
                   ),
                   onPressed: _onSave,
                 ),

@@ -27,6 +27,17 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     SizeConfig().init(context);
     final is700Wide = SizeConfig.screenWidth >= 700;
 
+    final _actions = actions != null
+        ? actions
+            .map(
+              (action) => Padding(
+                  child: action,
+                  padding:
+                      EdgeInsets.only(right: SizeConfig.safeBlockVertical)),
+            )
+            .toList()
+        : null;
+
     if (isDismissable) {
       return SliverAppBar(
         expandedHeight: height,
@@ -75,7 +86,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             ),
           ),
         ),
-        actions: actions,
+        actions: _actions,
         shape: shape,
         shadowColor: Colors.pink,
         brightness: Brightness.dark,
@@ -116,7 +127,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: actions,
+        actions: _actions,
         shape: shape,
         shadowColor: Colors.pink,
         brightness: Brightness.dark,

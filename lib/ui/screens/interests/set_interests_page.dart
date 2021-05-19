@@ -1,6 +1,6 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/app_bar_leading.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
@@ -86,7 +86,7 @@ class SetInterestsPage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Interests",
         height: SizeConfig.appBarHeight,
-        leading: LeadingButton(
+        leading: AppBarButton(
           icon: LineIcons.angleLeft,
           onTap: () => Navigator.of(context).pop(),
         ),
