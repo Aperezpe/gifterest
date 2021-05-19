@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -35,24 +36,38 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return TextFormField(
       key: key,
       focusNode: focusNode,
       initialValue: initialValue,
       decoration: new InputDecoration(
         labelText: labelText,
+        errorStyle: TextStyle(
+          color: Colors.red,
+          fontSize: SizeConfig.safeBlockVertical * 2,
+        ),
         fillColor: Colors.white,
         border: new OutlineInputBorder(
-          borderRadius: new BorderRadius.circular(8.0),
+          borderRadius: new BorderRadius.circular(SizeConfig.safeBlockVertical),
           borderSide: new BorderSide(),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.safeBlockVertical * 2,
+          vertical: SizeConfig.safeBlockVertical * 2,
+        ),
       ),
       validator: validator,
       obscureText: obscureText,
       autocorrect: false,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
+      style: TextStyle(
+        fontSize: is700Wide
+            ? SizeConfig.safeBlockVertical * 2.3
+            : SizeConfig.safeBlockVertical * 2,
+      ),
       onChanged: onChanged,
       onEditingComplete: onEditingComplete,
     );

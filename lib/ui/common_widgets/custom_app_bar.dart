@@ -1,6 +1,5 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   CustomAppBar({
@@ -31,6 +30,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     if (isDismissable) {
       return SliverAppBar(
         expandedHeight: height,
+        toolbarHeight: height,
         pinned: false,
         snap: false,
         floating: false,
@@ -83,9 +83,14 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       );
     } else {
       return AppBar(
-        leading: leading,
+        toolbarHeight: height,
+        leading: Padding(
+          padding: EdgeInsets.only(left: SizeConfig.safeBlockVertical),
+          child: leading,
+        ),
         flexibleSpace: Container(
-          padding: EdgeInsets.only(top: 50),
+          height: height,
+          padding: EdgeInsets.only(top: 500),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.orange, Colors.pink],

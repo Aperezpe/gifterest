@@ -1,4 +1,6 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_leading.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
@@ -11,6 +13,7 @@ import 'package:bonobo/ui/screens/my_friends/widgets/add_event_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -74,6 +77,7 @@ class SetSpecialEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return StreamBuilder<List<Event>>(
       stream: _model.database.eventsStream(),
       builder: (context, snapshot) {
@@ -82,8 +86,13 @@ class SetSpecialEvent extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBar(
+              height: SizeConfig.appBarHeight,
               title: _isNewFriend ? "New Friend" : 'Edit Friend',
               actions: _buildActions(events, context),
+              leading: LeadingButton(
+                icon: LineIcons.angleLeft,
+                onTap: () => Navigator.of(context).pop(),
+              ),
             ),
             body: Stack(
               alignment: Alignment.bottomCenter,

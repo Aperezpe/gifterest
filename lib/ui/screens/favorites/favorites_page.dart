@@ -26,6 +26,7 @@ class FavoritesPage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Favorites",
         leading: DrawerButtonBuilder(),
+        height: SizeConfig.appBarHeight,
       ),
       drawer: AppDrawer(
         currentChildRouteName: routeName,

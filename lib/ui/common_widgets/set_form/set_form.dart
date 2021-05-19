@@ -1,5 +1,7 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_leading.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
@@ -14,6 +16,7 @@ import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -33,7 +36,7 @@ class SetPersonForm extends StatefulWidget {
   }) async {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
-    await Navigator.of(context, rootNavigator: true).push(
+    await Navigator.of(context).push(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (context) {
@@ -163,10 +166,16 @@ class _SetPersonFormState extends State<SetPersonForm> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
+        height: SizeConfig.appBarHeight,
         title: appBarText, // TODO: This to Edig Profile // Done
+        leading: LeadingButton(
+          icon: LineIcons.times,
+          onTap: () => Navigator.of(context).pop(),
+        ),
         actions: _isNewFriend
             ? []
             : [
@@ -191,14 +200,19 @@ class _SetPersonFormState extends State<SetPersonForm> {
   }
 
   Widget _buildContent() {
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.0),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(16.0),
+            padding: is700Wide
+                ? EdgeInsets.fromLTRB(
+                    SizeConfig.safeBlockHorizontal * 8,
+                    SizeConfig.safeBlockVertical * 3,
+                    SizeConfig.safeBlockHorizontal * 8,
+                    0,
+                  )
+                : EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -227,7 +241,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
         onChanged: (value) => _model.updateName(value),
         onEditingComplete: _nameEditingComplete,
       ),
-      SizedBox(height: 15),
+      SizedBox(height: SizeConfig.safeBlockVertical * 2),
       _isUser
           ? PlatformDatePicker(
               initialDate: _model.dob,
@@ -251,7 +265,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
               onSaved: (value) => _model.updateAge(int.tryParse(value) ?? 0),
               onChanged: (value) => _model.updateAge(int.tryParse(value) ?? 0),
             ),
-      SizedBox(height: 15.0),
+      SizedBox(height: SizeConfig.safeBlockVertical * 2),
       PlatformDropdown(
         initialValue: _model.genderTypes[_model.initialGenderValue],
         values: _model.genderTypes,

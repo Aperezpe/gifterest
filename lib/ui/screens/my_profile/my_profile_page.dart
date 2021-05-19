@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
@@ -28,6 +29,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
+    SizeConfig().init(context);
+
     return StreamBuilder<AppUser>(
       stream: database.userStream(),
       builder: (context, snapshot) {
@@ -40,7 +43,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ? ProfilePage(
                     dismissableAppBar: CustomAppBar(
                       isDismissable: true,
-                      height: 80,
+                      height: SizeConfig.appBarHeight,
                       title: user.name,
                       actions: [
                         user.interests.isNotEmpty

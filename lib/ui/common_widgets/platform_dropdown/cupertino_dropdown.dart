@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +52,7 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
   }
 
   void _showPicker() {
+    final is700Wide = SizeConfig.screenWidth >= 700;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -62,15 +64,22 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
             children: [
               Flexible(
                 child: Container(
-                  height: 40,
+                  height: SizeConfig.safeBlockVertical * 5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Spacer(flex: 4),
+                      Spacer(flex: 6),
                       Flexible(
                         flex: 1,
                         child: CupertinoDialogAction(
-                          child: Text("Done"),
+                          child: Text(
+                            "Done",
+                            style: TextStyle(
+                              fontSize: is700Wide
+                                  ? SizeConfig.safeBlockVertical * 2.3
+                                  : SizeConfig.safeBlockVertical * 2.8,
+                            ),
+                          ),
                           isDefaultAction: true,
                           onPressed: _onDone,
                         ),
@@ -80,14 +89,28 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
                 ),
               ),
               Flexible(
-                child: CupertinoPicker(
-                  backgroundColor: Colors.white,
-                  onSelectedItemChanged: _onChanged,
-                  scrollController: _scrollController,
-                  itemExtent: 35.0,
-                  children: [
-                    for (String v in widget.values) Center(child: Text(v)),
-                  ],
+                child: CupertinoTheme(
+                  data: CupertinoThemeData(
+                    textTheme: CupertinoTextThemeData(
+                      pickerTextStyle: TextStyle(
+                        color: Colors.black38,
+                        fontSize: is700Wide
+                            ? SizeConfig.safeBlockVertical * 2.5
+                            : SizeConfig.safeBlockVertical * 2.8,
+                      ),
+                    ),
+                  ),
+                  child: CupertinoPicker(
+                    backgroundColor: Colors.white,
+                    onSelectedItemChanged: _onChanged,
+                    scrollController: _scrollController,
+                    itemExtent: is700Wide
+                        ? SizeConfig.safeBlockVertical * 4.5
+                        : SizeConfig.safeBlockVertical * 4.8,
+                    children: [
+                      for (String v in widget.values) Center(child: Text(v)),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -99,6 +122,7 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return GestureDetector(
       onTap: _showPicker,
       child: CustomDropdownButton(selectedValue: selectedValue),

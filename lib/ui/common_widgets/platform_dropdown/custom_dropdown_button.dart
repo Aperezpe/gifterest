@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropdownButton extends StatelessWidget {
@@ -6,9 +7,12 @@ class CustomDropdownButton extends StatelessWidget {
   const CustomDropdownButton({Key key, this.selectedValue}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(SizeConfig.safeBlockVertical),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
@@ -18,15 +22,26 @@ class CustomDropdownButton extends StatelessWidget {
               offset: Offset(1, 2),
             ),
           ]),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(
+        horizontal: SizeConfig.safeBlockVertical * 2,
+        vertical: SizeConfig.safeBlockVertical * 2,
+      ),
       child: Row(
         children: [
           Text(
             selectedValue,
-            style: TextStyle(color: Colors.black, fontSize: 18),
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: is700Wide
+                  ? SizeConfig.safeBlockVertical * 2.2
+                  : SizeConfig.safeBlockVertical * 2,
+            ),
           ),
           Spacer(),
-          Icon(Icons.expand_more),
+          Icon(
+            Icons.expand_more,
+            size: SizeConfig.safeBlockVertical * 2.5,
+          ),
         ],
       ),
     );

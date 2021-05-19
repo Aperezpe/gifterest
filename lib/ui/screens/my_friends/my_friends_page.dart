@@ -124,21 +124,29 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       appBar: CustomAppBar(
         title: "My Friends",
         leading: DrawerButtonBuilder(),
+        height: SizeConfig.appBarHeight,
       ),
       drawer: AppDrawer(
         currentChildRouteName: MyFriendsPage.routeName,
       ),
       floatingActionButton: Container(
-        padding: EdgeInsets.only(bottom: 15),
+        padding: EdgeInsets.only(
+          bottom: is700Wide
+              ? SizeConfig.safeBlockVertical
+              : SizeConfig.safeBlockHorizontal,
+          right: is700Wide
+              ? SizeConfig.safeBlockVertical
+              : SizeConfig.safeBlockHorizontal,
+        ),
         child: _isEmpty
             ? Container()
             : Container(
-                height: SizeConfig.safeBlockVertical * 7,
-                width: SizeConfig.safeBlockVertical * 7,
+                height: SizeConfig.safeBlockVertical * 8,
+                width: SizeConfig.safeBlockVertical * 8,
                 child: FloatingActionButton(
                   child: Icon(
                     Icons.add,
-                    size: SizeConfig.safeBlockVertical * 4,
+                    size: SizeConfig.safeBlockVertical * 4.5,
                     color: Colors.white,
                   ),
                   backgroundColor: Colors.blue,

@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
@@ -85,6 +86,9 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
       home: StreamBuilder<Person>(
         stream: database.userStream(),
         builder: (context, snapshot) {
+          SizeConfig().init(context);
+          final is700Wide = SizeConfig.screenWidth >= 700;
+
           if (snapshot.hasData) {
             final user = snapshot.data;
 

@@ -26,8 +26,6 @@ class SizeConfig {
         _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
-    appBarHeight = screenWidth >= 700
-        ? SizeConfig.safeBlockVertical * 6
-        : SizeConfig.safeBlockVertical * 8;
+    appBarHeight = SizeConfig.safeBlockVertical * 8;
   }
 }
