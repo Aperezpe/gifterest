@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:bonobo/resize/layout_info.dart';
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/auth.dart';
 import 'package:bonobo/services/database.dart';
@@ -83,24 +84,34 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
           ),
         ),
       ),
-      home: StreamBuilder<Person>(
-        stream: database.userStream(),
-        builder: (context, snapshot) {
-          SizeConfig().init(context);
-          final is700Wide = SizeConfig.screenWidth >= 700;
+      home: LayoutBuilder(
+        builder: (context, constraints) {
+          // Sets AppBarHeight for global use
+          locator
+              .get<LayoutInfo>()
+              .setAppBarHeight(constraints.maxHeight / 12.5);
+          return StreamBuilder<Person>(
+            stream: database.userStream(),
+            builder: (context, snapshot) {
+              SizeConfig().init(context);
+              final is700Wide = SizeConfig.screenWidth >= 700;
 
-          if (snapshot.hasData) {
-            final user = snapshot.data;
+              if (snapshot.hasData) {
+                final user = snapshot.data;
 
-            if (false)
-              return DeviceSimulator(
-                enable: debugEnableDeviceSimulator,
-                child: _isFirstTime ? WelcomePage(user: user) : MyFriendsPage(),
-              );
-            return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
-          }
+                if (false)
+                  return DeviceSimulator(
+                    enable: debugEnableDeviceSimulator,
+                    child: _isFirstTime
+                        ? WelcomePage(user: user)
+                        : MyFriendsPage(),
+                  );
+                return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
+              }
 
-          return MyFriendsPage();
+              return MyFriendsPage();
+            },
+          );
         },
       ),
     );

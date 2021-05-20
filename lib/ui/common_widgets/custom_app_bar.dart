@@ -1,4 +1,6 @@
+import 'package:bonobo/resize/layout_info.dart';
 import 'package:bonobo/resize/size_config.dart';
+import 'package:bonobo/services/locator.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -8,9 +10,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     this.actions,
     this.leading,
     this.shape,
-    this.height = 60,
+    this.height,
     this.isDismissable: false,
-  })  : preferredSize = Size.fromHeight(height),
+  })  : preferredSize = Size.fromHeight(locator.get<LayoutInfo>().appBarHeight),
         super(key: key);
 
   @override
@@ -40,8 +42,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
     if (isDismissable) {
       return SliverAppBar(
-        expandedHeight: height,
-        toolbarHeight: height,
+        expandedHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
+        toolbarHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
         pinned: false,
         snap: false,
         floating: false,
@@ -94,13 +96,13 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       );
     } else {
       return AppBar(
-        toolbarHeight: height,
+        toolbarHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
         leading: Padding(
           padding: EdgeInsets.only(left: SizeConfig.safeBlockVertical),
           child: leading,
         ),
         flexibleSpace: Container(
-          height: height,
+          height: height ?? locator.get<LayoutInfo>().appBarHeight,
           padding: EdgeInsets.only(top: 500),
           decoration: BoxDecoration(
             gradient: LinearGradient(

@@ -124,7 +124,6 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       appBar: CustomAppBar(
         title: "My Friends",
         leading: DrawerButtonBuilder(),
-        height: SizeConfig.appBarHeight,
       ),
       drawer: AppDrawer(
         currentChildRouteName: MyFriendsPage.routeName,

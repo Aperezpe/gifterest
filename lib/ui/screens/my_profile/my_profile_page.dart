@@ -7,7 +7,6 @@ import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/app_user.dart';
-import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -43,7 +42,6 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ? ProfilePage(
                     dismissableAppBar: CustomAppBar(
                       isDismissable: true,
-                      height: SizeConfig.appBarHeight,
                       title: user.name,
                       actions: [
                         user.interests.isNotEmpty

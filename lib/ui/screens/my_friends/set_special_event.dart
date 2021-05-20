@@ -86,7 +86,6 @@ class SetSpecialEvent extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBar(
-              height: SizeConfig.appBarHeight,
               title: _isNewFriend ? "New Friend" : 'Edit Friend',
               actions: _buildActions(events, context),
               leading: AppBarButton(

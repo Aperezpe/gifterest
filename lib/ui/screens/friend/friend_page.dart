@@ -73,7 +73,6 @@ class _FriendPageState extends State<FriendPage>
       body: ProfilePage(
         dismissableAppBar: CustomAppBar(
           isDismissable: true,
-          height: 80,
           title: widget.friend.name,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(

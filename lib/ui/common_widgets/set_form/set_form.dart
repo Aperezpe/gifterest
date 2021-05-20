@@ -170,7 +170,6 @@ class _SetPersonFormState extends State<SetPersonForm> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
-        height: SizeConfig.appBarHeight,
         title: appBarText, // TODO: This to Edig Profile // Done
         leading: AppBarButton(
           icon: LineIcons.times,

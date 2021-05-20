@@ -85,7 +85,6 @@ class SetInterestsPage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         title: "Interests",
-        height: SizeConfig.appBarHeight,
         leading: AppBarButton(
           icon: LineIcons.angleLeft,
           onTap: () => Navigator.of(context).pop(),

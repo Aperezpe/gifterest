@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/layout_info.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:bonobo/ui/screens/landing/landing_page.dart';
@@ -9,4 +10,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => FavoritesController());
   locator.registerLazySingleton(() => AppUserInfo());
   locator.registerLazySingleton(() => GenderProvider());
+  locator.registerLazySingleton(() => LayoutInfo());
 }
