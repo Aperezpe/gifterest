@@ -165,49 +165,39 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                 color: Colors.blue,
               ),
             )
-          : Padding(
-              padding: EdgeInsets.fromLTRB(
-                SizeConfig.safeBlockHorizontal * 2,
-                0,
-                SizeConfig.safeBlockHorizontal * 2,
-                0,
-              ),
-              child: is700Wide
-                  ? GridView.builder(
-                      padding: EdgeInsets.only(
-                        top: SizeConfig.safeBlockHorizontal * 2,
-                      ),
-                      itemCount: friends.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: is700Wide ? 3 : 2,
-                        childAspectRatio: .9,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                      ),
-                      itemBuilder: (context, index) {
-                        final friend = friends[index];
-                        return FriendListTile(
-                          onTap: () => _openFriendPage(friend),
-                          person: friend,
-                          editAction: () => SetPersonForm.create(
-                            context,
-                            person: friend,
-                            mainPage: widget,
-                          ),
-                          deleteAction: () => _deleteFriend(context, friend),
-                          model: model,
-                        );
-                      },
-                    )
-                  : ListItemsBuilder(
-                      items: model.friends,
-                      itemBuilder: (context, friend) => _buildFriendCard(
+          : is700Wide
+              ? GridView.builder(
+                  padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 2),
+                  itemCount: friends.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: is700Wide ? 3 : 2,
+                    childAspectRatio: .9,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                  ),
+                  itemBuilder: (context, index) {
+                    final friend = friends[index];
+                    return FriendListTile(
+                      onTap: () => _openFriendPage(friend),
+                      person: friend,
+                      editAction: () => SetPersonForm.create(
                         context,
-                        friend: friend,
-                        model: model,
+                        person: friend,
+                        mainPage: widget,
                       ),
-                    ),
-            ),
+                      deleteAction: () => _deleteFriend(context, friend),
+                      model: model,
+                    );
+                  },
+                )
+              : ListItemsBuilder(
+                  items: model.friends,
+                  itemBuilder: (context, friend) => _buildFriendCard(
+                    context,
+                    friend: friend,
+                    model: model,
+                  ),
+                ),
     );
   }
 
