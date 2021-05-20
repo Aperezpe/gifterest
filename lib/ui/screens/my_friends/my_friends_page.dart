@@ -167,10 +167,17 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
               ),
             )
           : Padding(
-              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+              padding: EdgeInsets.fromLTRB(
+                SizeConfig.safeBlockHorizontal * 2,
+                0,
+                SizeConfig.safeBlockHorizontal * 2,
+                0,
+              ),
               child: is700Wide
                   ? GridView.builder(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.only(
+                        top: SizeConfig.safeBlockHorizontal * 2,
+                      ),
                       itemCount: friends.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: is700Wide ? 3 : 2,
