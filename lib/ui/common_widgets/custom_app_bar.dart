@@ -29,22 +29,33 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     SizeConfig().init(context);
     final is700Wide = SizeConfig.screenWidth >= 700;
 
+    // Add some RIGHT padding to given actions
     final _actions = actions != null
         ? actions
             .map(
               (action) => Padding(
-                  child: action,
-                  padding:
-                      EdgeInsets.only(right: SizeConfig.safeBlockVertical)),
+                child: action,
+                padding: EdgeInsets.only(
+                  right: is700Wide ? SizeConfig.safeBlockVertical : 0,
+                ),
+              ),
             )
             .toList()
         : null;
 
     if (isDismissable) {
       return SliverAppBar(
-        toolbarHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
+        toolbarHeight: is700Wide
+            ? locator.get<LayoutInfo>().appBarHeight * 1.2
+            : locator.get<LayoutInfo>().appBarHeight * 1.5,
         pinned: false,
         snap: false,
+        leading: Padding(
+          padding: EdgeInsets.only(
+            left: is700Wide ? SizeConfig.safeBlockVertical : 0,
+          ),
+          child: leading,
+        ),
         floating: false,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -79,7 +90,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: is700Wide
+                      ? SizeConfig.safeBlockVertical * 2.8
+                      : SizeConfig.safeBlockVertical * 3.3,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),

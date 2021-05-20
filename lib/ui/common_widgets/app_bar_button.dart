@@ -10,10 +10,13 @@ class AppBarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return GestureDetector(
       child: Icon(
         icon,
-        size: SizeConfig.safeBlockVertical * 2.8,
+        size: is700Wide
+            ? SizeConfig.safeBlockVertical * 2.8
+            : SizeConfig.safeBlockVertical * 3.3,
       ),
       onTap: onTap,
     );

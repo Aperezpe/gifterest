@@ -3,12 +3,14 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
+import 'package:bonobo/ui/common_widgets/drawer_button_builder.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/app_user.dart';
 import 'package:bonobo/ui/screens/profile_setup/setup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +32,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         Provider.of<Database>(context, listen: false);
     SizeConfig().init(context);
 
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return StreamBuilder<AppUser>(
       stream: database.userStream(),
       builder: (context, snapshot) {
@@ -43,10 +46,17 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     dismissableAppBar: CustomAppBar(
                       isDismissable: true,
                       title: user.name,
+                      leading: DrawerButtonBuilder(),
                       actions: [
                         user.interests.isNotEmpty
                             ? TextButton(
-                                child: Icon(Icons.edit, color: Colors.white),
+                                child: Icon(
+                                  LineIcons.userEdit,
+                                  color: Colors.white,
+                                  size: is700Wide
+                                      ? SizeConfig.safeBlockVertical * 3.2
+                                      : SizeConfig.safeBlockVertical * 3.8,
+                                ),
                                 onPressed: () => SetPersonForm.create(
                                   context,
                                   person: user,

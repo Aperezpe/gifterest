@@ -1,4 +1,5 @@
 import 'package:bonobo/services/database.dart';
+import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
@@ -8,6 +9,7 @@ import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -72,6 +74,10 @@ class _FriendPageState extends State<FriendPage>
     return Scaffold(
       body: ProfilePage(
         dismissableAppBar: CustomAppBar(
+          leading: AppBarButton(
+            icon: LineIcons.angleLeft,
+            onTap: () => Navigator.of(context).pop(),
+          ),
           isDismissable: true,
           title: widget.friend.name,
           shape: RoundedRectangleBorder(
