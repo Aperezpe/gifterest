@@ -42,7 +42,6 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
     if (isDismissable) {
       return SliverAppBar(
-        expandedHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
         toolbarHeight: height ?? locator.get<LayoutInfo>().appBarHeight,
         pinned: false,
         snap: false,
@@ -102,7 +101,6 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
           child: leading,
         ),
         flexibleSpace: Container(
-          height: height ?? locator.get<LayoutInfo>().appBarHeight,
           padding: EdgeInsets.only(top: 500),
           decoration: BoxDecoration(
             gradient: LinearGradient(
