@@ -43,7 +43,12 @@ class FavoritesPage extends StatelessWidget {
                     message: "",
                   )
                 : GridView.builder(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.fromLTRB(
+                      SizeConfig.safeBlockHorizontal * 2,
+                      SizeConfig.safeBlockVertical * 2,
+                      SizeConfig.safeBlockHorizontal * 2,
+                      SizeConfig.safeBlockVertical * 2,
+                    ),
                     itemCount: favorites.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: is700Wide ? 3 : 2,
