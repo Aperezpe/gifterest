@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
@@ -69,6 +70,8 @@ class _FriendPageState extends State<FriendPage>
   TabController _tabController;
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     final database = Provider.of<Database>(context, listen: false);
 
     return Scaffold(
@@ -94,18 +97,31 @@ class _FriendPageState extends State<FriendPage>
         }),
         sliverTabs: SliverToBoxAdapter(
           child: Container(
-            height: 35,
-            padding: EdgeInsets.only(left: 10, right: 10),
+            height: SizeConfig.safeBlockVertical * 5.5,
+            margin: EdgeInsets.only(
+              left: SizeConfig.safeBlockHorizontal * 2.5,
+              right: SizeConfig.safeBlockHorizontal * 2.5,
+              bottom: SizeConfig.safeBlockVertical,
+            ),
             child: TabBar(
               isScrollable: true,
               controller: _tabController,
               tabs: [
-                for (var event in friendSpecialEvents)
-                  Container(width: 100, child: Tab(text: event.name)),
+                for (var event in friendSpecialEvents) Tab(text: event.name),
               ],
+              labelPadding: EdgeInsets.only(
+                left: SizeConfig.safeBlockHorizontal * 4,
+                right: SizeConfig.safeBlockHorizontal * 4,
+              ),
               labelColor: Colors.white,
               unselectedLabelColor: Colors.black,
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+              labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nunito-Sans',
+                fontSize: is700Wide
+                    ? SizeConfig.safeBlockVertical * 2
+                    : SizeConfig.safeBlockVertical * 2.3,
+              ),
               unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
               indicator: RectangularIndicator(
                 topLeftRadius: 100,
@@ -113,7 +129,6 @@ class _FriendPageState extends State<FriendPage>
                 bottomLeftRadius: 100,
                 bottomRightRadius: 100,
                 color: Colors.deepPurpleAccent,
-                strokeWidth: 2,
               ),
             ),
           ),
