@@ -75,7 +75,12 @@ class _ProductsGridViewState extends State<ProductsGridView>
                 final favorites = snapshot.data;
 
                 return GridView.builder(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.fromLTRB(
+                    SizeConfig.safeBlockHorizontal * 2,
+                    SizeConfig.safeBlockVertical,
+                    SizeConfig.safeBlockHorizontal * 2,
+                    SizeConfig.safeBlockVertical * 0,
+                  ),
                   itemCount: products.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: is700Wide ? 3 : 2,
