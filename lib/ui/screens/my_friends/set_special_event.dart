@@ -103,7 +103,12 @@ class SetSpecialEvent extends StatelessWidget {
                       : 'Edit ${_person.name}\'s Interests 😍',
                   onPressed: () => _model.goToInterestsPage(context),
                   color: Colors.pink,
-                  padding: EdgeInsets.fromLTRB(25, 0, 25, 50),
+                  padding: EdgeInsets.fromLTRB(
+                    SizeConfig.safeBlockHorizontal * 5,
+                    0,
+                    SizeConfig.safeBlockHorizontal * 5,
+                    SizeConfig.safeBlockVertical * 4,
+                  ),
                   textColor: Colors.white,
                 ),
               ],
@@ -125,8 +130,9 @@ class SetSpecialEvent extends StatelessWidget {
         child: Text(
           'Save',
           style: TextStyle(
-              fontSize: SizeConfig.safeBlockVertical * 2.5,
-              color: Colors.white),
+            fontSize: SizeConfig.safeBlockVertical * 2.5,
+            color: Colors.white,
+          ),
         ),
         onPressed: () => _onSave(context),
       ),
@@ -142,7 +148,7 @@ class SetSpecialEvent extends StatelessWidget {
   Widget _buildContent(List<String> events) {
     final specialEvents = _model.friendSpecialEvents;
     return ListView(
-      padding: EdgeInsets.only(bottom: 120),
+      padding: EdgeInsets.only(bottom: SizeConfig.safeBlockVertical * 18),
       children: [
         for (var specialEvent in specialEvents)
           AddEventCard(
