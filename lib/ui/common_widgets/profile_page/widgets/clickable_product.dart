@@ -3,7 +3,7 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/favorite_button.dart';
 import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/common_widgets/product_page.dart';
+import 'package:bonobo/ui/common_widgets/profile_page/product_page.dart';
 import 'package:bonobo/ui/screens/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
