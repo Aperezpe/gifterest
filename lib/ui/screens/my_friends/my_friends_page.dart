@@ -1,6 +1,8 @@
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/app_drawer.dart';
+import 'package:bonobo/ui/common_widgets/custom_alert_dialog/custom_alert_dialog.dart';
+import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/drawer_button_builder.dart';
@@ -8,7 +10,6 @@ import 'package:bonobo/ui/common_widgets/empty_content.dart';
 import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/list_item_builder.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/common_widgets/platform_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
 import 'package:bonobo/ui/models/friend.dart';
 import 'package:bonobo/ui/models/person.dart';
@@ -18,7 +19,9 @@ import 'package:bonobo/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:bonobo/extensions/base_colors.dart';
 
 import 'models/special_event.dart';
 
@@ -40,18 +43,19 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   void _deleteFriend(BuildContext context, Person friend) async {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
     try {
-      final yes = await PlatformAlertDialog(
+      final yes = await WarningDialog(
         title: "Delete?",
         content: "Are you sure want to delete ${friend.name}?",
-        defaultAtionText: "Yes",
-        cancelActionText: "Cancel",
+        yesButtonText: 'Yes',
+        noButtonText: 'Cancel',
       ).show(context);
+
       if (yes) await model.deleteFriend(friend);
     } catch (e) {
-      await PlatformAlertDialog(
+      await ErrorDialog(
         title: "Error",
         content: "Something went wrong",
-        defaultAtionText: "Ok",
+        yesButtonText: 'Ok',
       ).show(context);
     }
   }

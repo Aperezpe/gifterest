@@ -99,7 +99,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
               if (snapshot.hasData) {
                 final user = snapshot.data;
 
-                if (is700Wide)
+                if (false)
                   return DeviceSimulator(
                     enable: debugEnableDeviceSimulator,
                     child: _isFirstTime

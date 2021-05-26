@@ -2,9 +2,9 @@ import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/models/event.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
@@ -68,7 +68,7 @@ class SetSpecialEvent extends StatelessWidget {
         child: MyFriendsPage(),
       ));
     } on PlatformException catch (e) {
-      PlatformExceptionAlertDialog(
+      PlatformExceptionCustomDialog(
         title: 'Operation failed',
         exception: e,
       ).show(context);

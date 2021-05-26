@@ -3,10 +3,10 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/services/locator.dart';
 import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
 import 'package:bonobo/ui/common_widgets/bottom_button.dart';
+import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_text_field.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
-import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form_model.dart';
 import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
@@ -139,7 +139,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
           child: widget.mainPage, // TODO: go back to mainPage // done
         ));
       } on PlatformException catch (e) {
-        PlatformExceptionAlertDialog(
+        PlatformExceptionCustomDialog(
           title: 'Operation failed',
           exception: e,
         ).show(context);

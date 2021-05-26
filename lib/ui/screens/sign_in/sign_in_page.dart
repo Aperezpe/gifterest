@@ -1,6 +1,6 @@
 import 'package:bonobo/resize/size_config.dart';
+import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
-import 'package:bonobo/ui/common_widgets/firebase_exception_alert_dialog.dart';
 import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/circle_image_button.dart';
-import 'package:bonobo/ui/common_widgets/platform_exception_alert_dialog.dart';
 
 import 'package:bonobo/services/auth.dart';
 
@@ -78,28 +77,25 @@ class _SignInPageState extends State<SignInPage> {
     try {
       await model.submit();
     } on PlatformException catch (e) {
-      PlatformExceptionAlertDialog(
+      PlatformExceptionCustomDialog(
         title: 'Sign in failed',
         exception: e,
       ).show(context);
     } on FirebaseAuthException catch (e) {
-      FirebaseAuthExceptionAlertDialog(
+      FirebaseAuthExceptionCustomDialog(
         title: "Sign in failed",
         exception: e,
       ).show(context);
     } on FirebaseException catch (e) {
-      FirebaseAuthExceptionAlertDialog(
+      FirebaseAuthExceptionCustomDialog(
         title: "Sign in failed",
         exception: e,
       );
     }
-    // on FirebaseException catch (e) {
-
-    // }
   }
 
   void _showSignInError(PlatformException exception) {
-    PlatformExceptionAlertDialog(
+    PlatformExceptionCustomDialog(
       title: 'Sign in failed',
       exception: exception,
     ).show(context);
