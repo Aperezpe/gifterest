@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,12 @@ class CustomButton extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text(
+      child: AutoSizeText(
         text.toUpperCase(),
+        stepGranularity: 1,
+        maxLines: 1,
+        // maxFontSize: textSize,
+        // minFontSize: 8,
         style: TextStyle(
           fontSize: textSize,
           letterSpacing: letterSpacing,
