@@ -79,7 +79,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
                     SizeConfig.safeBlockHorizontal * 2,
                     SizeConfig.safeBlockVertical,
                     SizeConfig.safeBlockHorizontal * 2,
-                    SizeConfig.safeBlockVertical * 0,
+                    SizeConfig.safeBlockVertical * 5,
                   ),
                   itemCount: products.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
