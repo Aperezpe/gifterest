@@ -43,8 +43,6 @@ class CustomButton extends StatelessWidget {
         text.toUpperCase(),
         stepGranularity: 1,
         maxLines: 1,
-        // maxFontSize: textSize,
-        // minFontSize: 8,
         style: TextStyle(
           fontSize: textSize,
           letterSpacing: letterSpacing,
