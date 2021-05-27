@@ -46,6 +46,7 @@ dependencies:
   device_simulator: ^0.9.6
   custom_navigator: ^0.3.0
   loading_animations: ^2.2.0
+  top_snackbar_flutter: ^1.0.0
   line_icons: ^2.0.1
 
   flutter:

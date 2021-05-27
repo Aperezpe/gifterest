@@ -17,6 +17,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:bonobo/extensions/string_truncator.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'models/set_special_event_model.dart';
 
@@ -74,6 +76,44 @@ class SetSpecialEvent extends StatelessWidget {
         exception: e,
       ).show(context);
     }
+  }
+
+  void _addSpecialEvents(BuildContext context, List<String> events) {
+    _model.addSpecialEvent(events);
+    final newEventNumber = model.friendSpecialEvents.length;
+
+    // Use this code to show a dark snackbar
+    // CustomSnackBar.success(
+    //   message: "Event $newEventNumber added at the bottom!",
+    //   textStyle: TextStyle(
+    //     fontSize: SizeConfig.safeBlockVertical * 2.3,
+    //     fontWeight: FontWeight.w600,
+    //     color: Colors.white,
+    //   ),
+    //   backgroundColor: Colors.black54,
+    //   icon: Icon(
+    //     LineIcons.calendar,
+    //     color: Colors.transparent,
+    //   ),
+    // );
+
+    showTopSnackBar(
+      context,
+      CustomSnackBar.success(
+        message: "Event $newEventNumber added at the bottom!",
+        textStyle: TextStyle(
+          fontSize: SizeConfig.safeBlockVertical * 2.3,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+        backgroundColor: Colors.white.withOpacity(.9),
+        icon: Icon(
+          LineIcons.calendarCheck,
+          color: Colors.transparent,
+        ),
+      ),
+      displayDuration: Duration(seconds: 2),
+    );
   }
 
   @override
@@ -139,7 +179,7 @@ class SetSpecialEvent extends StatelessWidget {
       ),
       AppBarButton(
         icon: LineIcons.plus,
-        onTap: () => _model.addSpecialEvent(events),
+        onTap: () => _addSpecialEvents(context, events),
         padding: EdgeInsets.only(right: SizeConfig.safeBlockHorizontal * 2),
       )
     ];
