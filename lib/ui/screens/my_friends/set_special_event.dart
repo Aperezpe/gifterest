@@ -140,6 +140,7 @@ class SetSpecialEvent extends StatelessWidget {
       AppBarButton(
         icon: LineIcons.plus,
         onTap: () => _model.addSpecialEvent(events),
+        padding: EdgeInsets.only(right: SizeConfig.safeBlockHorizontal * 2),
       )
     ];
 

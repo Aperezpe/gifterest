@@ -160,7 +160,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
 
   String get floatingActionbuttonText {
     if (_isUser) return "Choose Interests";
-    final String name = _person.name;
+    final String name = _person?.name;
     return _isNewFriend
         ? "Add Events"
         : 'Edit ${name.truncateWithEllipsis(10)}\'s Events'; // TODO: This to interests
