@@ -92,16 +92,19 @@ class _FriendListTileState extends State<FriendListTile> {
                     icon: Icon(LineIcons.horizontalEllipsis),
                     underline: Container(),
                     items: <String>['Edit', 'Delete']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        child: Text(
-                          value,
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockVertical * 1.5),
-                        ),
-                        value: value,
-                      );
-                    }).toList(),
+                        .map<DropdownMenuItem<String>>(
+                      (String value) {
+                        return DropdownMenuItem<String>(
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              fontSize: SizeConfig.safeBlockVertical * 1.5,
+                            ),
+                          ),
+                          value: value,
+                        );
+                      },
+                    ).toList(),
                   ),
                 ),
               ],
@@ -122,8 +125,9 @@ class _FriendListTileState extends State<FriendListTile> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Container(
+          width: SizeConfig.safeBlockHorizontal * 60,
           padding: EdgeInsets.only(left: SizeConfig.safeBlockHorizontal * 4),
-          child: mainTextWidget(textAlign: TextAlign.left),
+          child: mainTextWidget(alignment: Alignment.centerLeft),
         ),
         Expanded(child: Container()),
         VerticalDivider(),
@@ -143,7 +147,12 @@ class _FriendListTileState extends State<FriendListTile> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: Container()),
-        mainTextWidget(textAlign: TextAlign.center),
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.safeBlockHorizontal * 2,
+          ),
+          child: mainTextWidget(alignment: Alignment.center),
+        ),
         Expanded(child: Container()),
         Divider(),
         Expanded(child: Container()),
@@ -153,33 +162,43 @@ class _FriendListTileState extends State<FriendListTile> {
     );
   }
 
-  Widget mainTextWidget({TextAlign textAlign}) {
+  Widget mainTextWidget({Alignment alignment}) {
     final is700Wide = SizeConfig.screenWidth >= 700;
 
-    return Container(
-      child: RichText(
-        textAlign: textAlign,
-        text: TextSpan(
-          text: '${widget.person.name}\n',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: SizeConfig.blockSizeVertical * 3,
-          ),
-          children: [
-            TextSpan(
-              text: "Upcoming: $mostRescentEvent",
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Nunito-Sans',
-                fontWeight: FontWeight.w300,
-                fontSize: is700Wide
-                    ? SizeConfig.safeBlockVertical * 1.8
-                    : SizeConfig.safeBlockVertical * 2,
-              ),
+    return Align(
+      alignment: alignment,
+      child: Column(
+        crossAxisAlignment: alignment == Alignment.center
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '${widget.person.name}',
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: SizeConfig.blockSizeVertical * 3,
             ),
-          ],
-        ),
+          ),
+          Text(
+            "Upcoming: $mostRescentEvent",
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Nunito-Sans',
+              fontWeight: FontWeight.w300,
+              fontSize: is700Wide
+                  ? SizeConfig.safeBlockVertical * 1.8
+                  : SizeConfig.safeBlockVertical * 2,
+            ),
+          ),
+        ],
       ),
     );
   }
