@@ -44,7 +44,7 @@ class FriendPage extends StatefulWidget {
 class _FriendPageState extends State<FriendPage>
     with SingleTickerProviderStateMixin {
   RangeValues sliderValues = RangeValues(0, 100);
-  List<Tab> myTabs = [];
+  List<Tab> myTabs = [Tab(text: "General")];
   List<SpecialEvent> friendSpecialEvents = [];
 
   @override
@@ -52,10 +52,13 @@ class _FriendPageState extends State<FriendPage>
     super.initState();
 
     friendSpecialEvents = FriendSpecialEvents.getFriendSpecialEvents(
-        widget.friend, widget.allSpecialEvents);
+      widget.friend,
+      widget.allSpecialEvents,
+    );
 
     friendSpecialEvents.forEach((event) {
-      myTabs.add(Tab(text: event.name));
+      if (event.name == "Anniversary" || event.name == "Babyshower")
+        myTabs.add(Tab(text: event.name));
     });
 
     _tabController = TabController(vsync: this, length: myTabs.length);
@@ -92,9 +95,7 @@ class _FriendPageState extends State<FriendPage>
         ),
         database: database,
         title: widget.friend.name,
-        rangeSliderCallBack: (values) => setState(() {
-          sliderValues = values;
-        }),
+        rangeSliderCallBack: (values) => setState(() => sliderValues = values),
         sliverTabs: SliverToBoxAdapter(
           child: Container(
             height: SizeConfig.safeBlockVertical * 5.5,
@@ -107,7 +108,7 @@ class _FriendPageState extends State<FriendPage>
               isScrollable: true,
               controller: _tabController,
               tabs: [
-                for (var event in friendSpecialEvents) Tab(text: event.name),
+                for (var tab in myTabs) Tab(text: tab.text),
               ],
               labelPadding: EdgeInsets.only(
                 left: SizeConfig.safeBlockHorizontal * 4,
