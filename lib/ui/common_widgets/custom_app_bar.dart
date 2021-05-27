@@ -85,11 +85,17 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
           child: Container(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding:
-                  EdgeInsets.only(bottom: SizeConfig.safeBlockVertical * 2.5),
+              padding: EdgeInsets.only(
+                bottom: SizeConfig.safeBlockVertical * 2.5,
+                left: SizeConfig.safeBlockHorizontal * 18,
+                right: SizeConfig.safeBlockHorizontal * 18,
+              ),
               child: Text(
                 title,
                 textAlign: TextAlign.center,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
                 style: TextStyle(
                   fontSize: is700Wide
                       ? SizeConfig.safeBlockVertical * 3
