@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    double textSize = SizeConfig.safeBlockHorizontal * 5;
+    double textSize = SizeConfig.h3Size;
     double letterSpacing = SizeConfig.safeBlockHorizontal / 5;
     String fontFamily = 'Poppins';
     if (SizeConfig.screenWidth >= 700) {

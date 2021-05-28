@@ -104,25 +104,27 @@ class _ClickableProductState extends State<ClickableProduct> {
                         widget.product.name,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: is700Wide
-                              ? SizeConfig.safeBlockVertical * 2.5
-                              : SizeConfig.safeBlockVertical * 2.7,
+                          fontSize: SizeConfig.h4Size,
                           fontFamily: 'Nunito-Sans',
                           fontWeight: FontWeight.w700,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),
-                      Text(
-                        "\$${widget.product.price}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: is700Wide
-                              ? SizeConfig.safeBlockVertical * 2.3
-                              : SizeConfig.safeBlockVertical * 2.6,
-                          fontFamily: 'Poppins',
-                          color: Colors.red,
-                          fontWeight: FontWeight.w400,
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 2,
+                          right: SizeConfig.blockSizeHorizontal * 2,
+                        ),
+                        child: Text(
+                          "\$${widget.product.price}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: SizeConfig.subtitleSize,
+                            fontFamily: 'Poppins',
+                            color: Colors.red,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ],

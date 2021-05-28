@@ -46,7 +46,7 @@ class CustomTextField extends StatelessWidget {
         labelText: labelText,
         errorStyle: TextStyle(
           color: Colors.red,
-          fontSize: SizeConfig.safeBlockVertical * 2,
+          fontSize: SizeConfig.subtitleSize,
         ),
         fillColor: Colors.white,
         border: new OutlineInputBorder(
@@ -54,8 +54,8 @@ class CustomTextField extends StatelessWidget {
           borderSide: new BorderSide(),
         ),
         contentPadding: EdgeInsets.symmetric(
-          horizontal: SizeConfig.safeBlockVertical * 2,
-          vertical: SizeConfig.safeBlockVertical * 2,
+          horizontal: SizeConfig.safeBlockVertical * 2.5,
+          vertical: SizeConfig.safeBlockVertical * 2.5,
         ),
       ),
       validator: validator,
@@ -64,9 +64,7 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       style: TextStyle(
-        fontSize: is700Wide
-            ? SizeConfig.safeBlockVertical * 2.3
-            : SizeConfig.safeBlockVertical * 2,
+        fontSize: SizeConfig.subtitleSize,
       ),
       onChanged: onChanged,
       onEditingComplete: onEditingComplete,

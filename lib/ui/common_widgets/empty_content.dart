@@ -1,3 +1,4 @@
+import 'package:bonobo/resize/size_config.dart';
 import 'package:flutter/material.dart';
 
 class EmptyContent extends StatelessWidget {
@@ -18,6 +19,8 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +36,7 @@ class EmptyContent extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 32.0,
+              fontSize: SizeConfig.titleSize,
               color: Colors.black54,
               fontWeight: FontWeight.bold,
             ),
@@ -41,7 +44,10 @@ class EmptyContent extends StatelessWidget {
           SizedBox(height: 15),
           Text(
             message,
-            style: TextStyle(fontSize: 16.0, color: Colors.black45),
+            style: TextStyle(
+              fontSize: SizeConfig.subtitleSize,
+              color: Colors.black45,
+            ),
           ),
           if (bottomWidget != null) SizedBox(height: 25),
           bottomWidget ?? Container(),

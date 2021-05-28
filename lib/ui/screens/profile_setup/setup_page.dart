@@ -29,7 +29,7 @@ class SetupPage extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              flex: 6,
+              flex: 5,
               child: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 child: Image.asset('assets/carita.png'),
@@ -42,7 +42,7 @@ class SetupPage extends StatelessWidget {
                 "Setup your profile",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: SizeConfig.safeBlockVertical * 5,
+                    fontSize: SizeConfig.titleSize * 1.2,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Montserrat',
                     color: Colors.white,
@@ -68,7 +68,7 @@ class SetupPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: SizeConfig.safeBlockVertical * 2.5,
+                    fontSize: SizeConfig.subtitleSize * 1.2,
                     fontFamily: 'Mulish',
                   ),
                 ),
@@ -90,9 +90,7 @@ class SetupPage extends StatelessWidget {
                 ),
                 child: GradientButton(
                   text: "Let's Start",
-                  textSize: is700Wide
-                      ? SizeConfig.safeBlockVertical * 2.5
-                      : SizeConfig.safeBlockVertical * 2.8,
+                  textSize: SizeConfig.h4Size,
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => GenderPage(user: user),

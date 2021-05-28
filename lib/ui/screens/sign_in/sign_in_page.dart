@@ -323,9 +323,7 @@ class _SignInPageState extends State<SignInPage> {
           child: Text(
             model.secondaryText,
             style: TextStyle(
-              fontSize: SizeConfig.screenWidth >= 700
-                  ? SizeConfig.safeBlockVertical * 2
-                  : SizeConfig.safeBlockVertical * 2.3,
+              fontSize: SizeConfig.subtitleSize,
               color: Colors.blue.shade700,
               fontWeight: FontWeight.w500,
               fontFamily: 'Poppins',
@@ -345,9 +343,7 @@ class _SignInPageState extends State<SignInPage> {
             model.socialMediaText,
             style: TextStyle(
               fontFamily: 'Monsterrat',
-              fontSize: SizeConfig.screenWidth >= 700
-                  ? SizeConfig.safeBlockVertical * 2
-                  : SizeConfig.safeBlockVertical * 2.3,
+              fontSize: SizeConfig.h3Size,
             ),
           ),
         ),

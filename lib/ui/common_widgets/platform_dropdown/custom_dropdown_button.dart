@@ -23,8 +23,8 @@ class CustomDropdownButton extends StatelessWidget {
             ),
           ]),
       padding: EdgeInsets.symmetric(
-        horizontal: SizeConfig.safeBlockVertical * 2,
-        vertical: SizeConfig.safeBlockVertical * 2,
+        horizontal: SizeConfig.safeBlockVertical * 2.5,
+        vertical: SizeConfig.safeBlockVertical * 2.5,
       ),
       child: Row(
         children: [
@@ -32,15 +32,13 @@ class CustomDropdownButton extends StatelessWidget {
             selectedValue,
             style: TextStyle(
               color: Colors.black,
-              fontSize: is700Wide
-                  ? SizeConfig.safeBlockVertical * 2.2
-                  : SizeConfig.safeBlockVertical * 2,
+              fontSize: SizeConfig.subtitleSize,
             ),
           ),
           Spacer(),
           Icon(
             Icons.expand_more,
-            size: SizeConfig.safeBlockVertical * 2.5,
+            size: SizeConfig.safeBlockVertical * 3,
           ),
         ],
       ),

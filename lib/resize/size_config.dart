@@ -15,7 +15,6 @@ class SizeConfig {
   static double appBarTitle;
   static double titleSize;
   static double subtitleSize;
-  static double paragraphSize;
   static double h1Size;
   static double h2Size;
   static double h3Size;
@@ -38,6 +37,11 @@ class SizeConfig {
     final is700Wide = screenWidth >= 700;
 
     titleSize = is700Wide ? safeBlockVertical * 3 : safeBlockVertical * 3.5;
-    subtitleSize = safeBlockVertical * 2.5;
+    subtitleSize = is700Wide ? safeBlockVertical * 2 : safeBlockVertical * 2.5;
+    h1Size = is700Wide ? safeBlockVertical * 3.7 : safeBlockVertical * 4.3;
+    h2Size = is700Wide ? safeBlockVertical * 3.3 : safeBlockVertical * 3.7;
+    h3Size = is700Wide ? safeBlockVertical * 2.8 : safeBlockVertical * 3.1;
+    h4Size = is700Wide ? safeBlockVertical * 2.5 : safeBlockVertical * 2.8;
+    appBarTitle = titleSize * 1.2;
   }
 }

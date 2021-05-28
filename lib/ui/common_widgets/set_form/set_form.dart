@@ -182,7 +182,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
                     child: Text(
                       'Save',
                       style: TextStyle(
-                        fontSize: SizeConfig.safeBlockVertical * 2.5,
+                        fontSize: SizeConfig.h4Size,
                         color: Colors.white,
                       ),
                     ),

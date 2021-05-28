@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/style/fontStyle.dart';
 import 'package:flutter/material.dart';
 
 class CustomRangeSlider extends StatefulWidget {
@@ -77,9 +76,7 @@ class _CustomRangeSliderState extends State<CustomRangeSlider> {
                   style: TextStyle(
                     fontFamily: 'Mulish',
                     fontWeight: FontWeight.w600,
-                    fontSize: is700Wide
-                        ? SizeConfig.safeBlockVertical * 3
-                        : SizeConfig.safeBlockVertical * 3.2,
+                    fontSize: SizeConfig.titleSize,
                   ),
                 ),
               ),
@@ -97,7 +94,7 @@ class _CustomRangeSliderState extends State<CustomRangeSlider> {
                         stepGranularity: .1,
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: SizeConfig.safeBlockVertical * 2,
+                          fontSize: SizeConfig.subtitleSize,
                         ),
                       ),
                     ),
@@ -139,7 +136,7 @@ class _CustomRangeSliderState extends State<CustomRangeSlider> {
                         stepGranularity: .1,
                         maxLines: 1,
                         style: TextStyle(
-                          fontSize: SizeConfig.safeBlockVertical * 2,
+                          fontSize: SizeConfig.subtitleSize,
                         ),
                       ),
                     ),

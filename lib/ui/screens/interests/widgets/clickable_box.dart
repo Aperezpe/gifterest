@@ -55,15 +55,14 @@ class ClickableInterest extends StatelessWidget {
                     child: AutoSizeText(
                       "${interest.name}",
                       textAlign: TextAlign.center,
-                      // minFontSize: SizeConfig.safeBlockVertical * 1.5,
                       wrapWords: false,
                       overflow: TextOverflow.clip,
-                      stepGranularity: 4,
+                      stepGranularity: 1,
                       maxLines: 2,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
-                        fontSize: SizeConfig.safeBlockVertical * 2.5,
+                        fontSize: SizeConfig.h4Size,
                       ),
                     ),
                   ),

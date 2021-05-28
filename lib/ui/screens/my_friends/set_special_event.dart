@@ -102,7 +102,7 @@ class SetSpecialEvent extends StatelessWidget {
       CustomSnackBar.success(
         message: "Event $newEventNumber added at the bottom!",
         textStyle: TextStyle(
-          fontSize: SizeConfig.safeBlockVertical * 2.3,
+          fontSize: SizeConfig.subtitleSize,
           fontWeight: FontWeight.w600,
           color: Colors.black87,
         ),
@@ -171,7 +171,7 @@ class SetSpecialEvent extends StatelessWidget {
         child: Text(
           'Save',
           style: TextStyle(
-            fontSize: SizeConfig.safeBlockVertical * 2.5,
+            fontSize: SizeConfig.h4Size,
             color: Colors.white,
           ),
         ),

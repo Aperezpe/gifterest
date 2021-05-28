@@ -25,9 +25,7 @@ class CustomListTile extends StatelessWidget {
         ? SizeConfig.safeBlockHorizontal * 4
         : SizeConfig.safeBlockHorizontal * 7;
 
-    final textSize = is700Wide
-        ? SizeConfig.safeBlockHorizontal * 3
-        : SizeConfig.safeBlockHorizontal * 5;
+    final textSize = SizeConfig.h3Size;
 
     return Container(
       decoration: BoxDecoration(

@@ -53,6 +53,8 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
 
   void _showPicker() {
     final is700Wide = SizeConfig.screenWidth >= 700;
+    final is800Hight = SizeConfig.screenHeight >= 800;
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -62,41 +64,37 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Flexible(
+              Align(
+                alignment: Alignment.centerRight,
                 child: Container(
-                  height: SizeConfig.safeBlockVertical * 5,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Spacer(flex: 6),
-                      Flexible(
-                        flex: 1,
-                        child: CupertinoDialogAction(
-                          child: Text(
-                            "Done",
-                            style: TextStyle(
-                              fontSize: is700Wide
-                                  ? SizeConfig.safeBlockVertical * 2.3
-                                  : SizeConfig.safeBlockVertical * 2.8,
-                            ),
-                          ),
-                          isDefaultAction: true,
-                          onPressed: _onDone,
-                        ),
+                  width: is700Wide
+                      ? SizeConfig.safeBlockHorizontal * 12
+                      : SizeConfig.safeBlockHorizontal * 18,
+                  child: CupertinoDialogAction(
+                    textStyle: TextStyle(
+                      fontSize: is800Hight
+                          ? SizeConfig.safeBlockVertical * 2.3
+                          : SizeConfig.safeBlockVertical * 3.2,
+                    ),
+                    child: Text(
+                      "Done",
+                      style: TextStyle(
+                        fontSize: SizeConfig.h4Size,
                       ),
-                    ],
+                    ),
+                    isDefaultAction: true,
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ),
-              Flexible(
+              Container(
+                height: SizeConfig.safeBlockVertical * 30,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
                       pickerTextStyle: TextStyle(
-                        color: Colors.black38,
-                        fontSize: is700Wide
-                            ? SizeConfig.safeBlockVertical * 2.5
-                            : SizeConfig.safeBlockVertical * 2.8,
+                        color: Colors.black87,
+                        fontSize: SizeConfig.h3Size,
                       ),
                     ),
                   ),
@@ -105,8 +103,8 @@ class _CupertinoDropdownState extends State<CupertinoDropdown> {
                     onSelectedItemChanged: _onChanged,
                     scrollController: _scrollController,
                     itemExtent: is700Wide
-                        ? SizeConfig.safeBlockVertical * 4.5
-                        : SizeConfig.safeBlockVertical * 4.8,
+                        ? SizeConfig.safeBlockVertical * 4.7
+                        : SizeConfig.safeBlockVertical * 5,
                     children: [
                       for (String v in widget.values) Center(child: Text(v)),
                     ],

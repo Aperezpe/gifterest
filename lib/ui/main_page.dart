@@ -71,7 +71,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
           // appbars
           headline6: TextStyle(
             color: Colors.white,
-            fontSize: 22,
+            fontSize: SizeConfig.titleSize,
             fontWeight: FontWeight.w500,
           ),
         ),

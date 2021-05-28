@@ -35,7 +35,7 @@ class SignInTextField extends StatelessWidget {
     SizeConfig().init(context);
 
     double iconSize = SizeConfig.safeBlockVertical * 4.3;
-    double textSize = SizeConfig.safeBlockHorizontal * 4.5;
+    double textSize = SizeConfig.subtitleSize;
     String fontFamily = 'Mulish';
     if (SizeConfig.screenWidth >= 700) {
       iconSize = SizeConfig.safeBlockVertical * 3.2;

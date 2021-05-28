@@ -41,7 +41,6 @@ class AppDrawer extends StatelessWidget {
             ? SizeConfig.blockSizeHorizontal * 50
             : SizeConfig.blockSizeHorizontal * 70,
         child: Drawer(
-          
           child: Column(
             children: [
               InkWell(
@@ -158,9 +157,7 @@ class AppDrawer extends StatelessWidget {
                         spreadRadius: 0,
                       ),
                     ],
-                    fontSize: is700Wide
-                        ? SizeConfig.safeBlockVertical * 2.3
-                        : SizeConfig.safeBlockVertical * 2.8,
+                    fontSize: SizeConfig.titleSize,
                   ),
                 ),
               ),
@@ -172,9 +169,7 @@ class AppDrawer extends StatelessWidget {
                     color: Colors.white,
                     fontFamily: 'Montserrat',
                     fontWeight: FontWeight.w400,
-                    fontSize: is700Wide
-                        ? SizeConfig.safeBlockVertical * 1.5
-                        : SizeConfig.safeBlockVertical * 1.8,
+                    fontSize: SizeConfig.subtitleSize,
                   ),
                 ),
               ),

@@ -89,9 +89,7 @@ class _AgePageState extends State<AgePage> {
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Poppins',
-                          fontSize: is700Wide
-                              ? SizeConfig.safeBlockVertical * 2.5
-                              : SizeConfig.safeBlockVertical * 3,
+                          fontSize: SizeConfig.h4Size,
                         ),
                       ),
                       style: TextButton.styleFrom(

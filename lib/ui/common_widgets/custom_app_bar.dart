@@ -97,9 +97,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 style: TextStyle(
-                  fontSize: is700Wide
-                      ? SizeConfig.safeBlockVertical * 3
-                      : SizeConfig.safeBlockVertical * 3.5,
+                  fontSize: SizeConfig.appBarTitle,
                   fontFamily: 'Nunito-Sans',
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -141,9 +139,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         title: Text(
           title,
           style: TextStyle(
-            fontSize: is700Wide
-                ? SizeConfig.safeBlockVertical * 3
-                : SizeConfig.safeBlockVertical * 3.5,
+            fontSize: SizeConfig.appBarTitle,
             fontFamily: 'Nunito-Sans',
             fontWeight: FontWeight.bold,
           ),

@@ -119,9 +119,7 @@ class _FriendPageState extends State<FriendPage>
               labelStyle: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Nunito-Sans',
-                fontSize: is700Wide
-                    ? SizeConfig.safeBlockVertical * 2
-                    : SizeConfig.safeBlockVertical * 2.3,
+                fontSize: SizeConfig.subtitleSize,
               ),
               unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
               indicator: RectangularIndicator(

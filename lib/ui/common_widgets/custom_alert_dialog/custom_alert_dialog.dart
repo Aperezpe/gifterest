@@ -32,7 +32,6 @@ class CustomAlertDialog extends StatelessWidget {
     SizeConfig().init(context);
     final is700Wide = SizeConfig.screenWidth >= 700;
 
-    final double titleFontSize = SizeConfig.safeBlockVertical * 2.7;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(SizeConfig.safeBlockVertical * 2),
@@ -77,7 +76,7 @@ class CustomAlertDialog extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: titleFontSize,
+                  fontSize: SizeConfig.h3Size,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -90,7 +89,7 @@ class CustomAlertDialog extends StatelessWidget {
               child: Text(
                 content,
                 style: TextStyle(
-                  fontSize: titleFontSize / 1.6,
+                  fontSize: SizeConfig.subtitleSize,
                   color: Colors.black54,
                 ),
                 textAlign: TextAlign.center,
@@ -106,7 +105,7 @@ class CustomAlertDialog extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    final double buttonFontSize = SizeConfig.safeBlockVertical * 1.9;
+    final double buttonFontSize = SizeConfig.subtitleSize;
 
     if (noButtonText != null)
       return Row(

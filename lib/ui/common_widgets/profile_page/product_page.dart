@@ -132,7 +132,7 @@ class _ProductPageState extends State<ProductPage> {
                   "Product Rating",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: SizeConfig.safeBlockVertical * 2.3,
+                    fontSize: SizeConfig.subtitleSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

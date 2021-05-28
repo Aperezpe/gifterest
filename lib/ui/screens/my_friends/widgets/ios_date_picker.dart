@@ -44,7 +44,12 @@ class IOSDatePicker extends StatelessWidget {
                           ? SizeConfig.safeBlockVertical * 2.3
                           : SizeConfig.safeBlockVertical * 3.2,
                     ),
-                    child: Text("Done"),
+                    child: Text(
+                      "Done",
+                      style: TextStyle(
+                        fontSize: SizeConfig.h4Size,
+                      ),
+                    ),
                     isDefaultAction: true,
                     onPressed: () => Navigator.pop(context),
                   ),

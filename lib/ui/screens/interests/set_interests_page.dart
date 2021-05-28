@@ -95,9 +95,7 @@ class SetInterestsPage extends StatelessWidget {
                   child: Text(
                     'RESTART',
                     style: TextStyle(
-                      fontSize: is700Wide
-                          ? SizeConfig.safeBlockVertical * 2.3
-                          : SizeConfig.safeBlockVertical * 2.7,
+                      fontSize: SizeConfig.h4Size,
                       fontFamily: 'Poppins',
                       color: Colors.white,
                     ),

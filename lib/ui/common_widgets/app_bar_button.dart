@@ -23,8 +23,8 @@ class AppBarButton extends StatelessWidget {
         child: Icon(
           icon,
           size: is700Wide
-              ? SizeConfig.safeBlockVertical * 2.8
-              : SizeConfig.safeBlockVertical * 3.3,
+              ? SizeConfig.safeBlockVertical * 3
+              : SizeConfig.safeBlockVertical * 3.5,
         ),
         onTap: onTap,
       ),

@@ -24,9 +24,14 @@ class CircleImageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
     return Container(
-      height: SizeConfig.safeBlockVertical * 6.5,
-      width: SizeConfig.safeBlockVertical * 6.5,
+      height: is700Wide
+          ? SizeConfig.safeBlockVertical * 7
+          : SizeConfig.safeBlockVertical * 9,
+      width: is700Wide
+          ? SizeConfig.safeBlockVertical * 7
+          : SizeConfig.safeBlockVertical * 9,
       child: InkWell(
         key: key,
         child: ClipRRect(

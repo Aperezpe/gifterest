@@ -41,7 +41,7 @@ class WelcomePage extends StatelessWidget {
                     "Awesome ${user.name}!",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: SizeConfig.safeBlockVertical * 5,
+                      fontSize: SizeConfig.h1Size * 1.2,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat',
                     ),
@@ -73,7 +73,7 @@ class WelcomePage extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black45,
-                      fontSize: SizeConfig.safeBlockVertical * 2.5,
+                      fontSize: SizeConfig.subtitleSize * 1.2,
                       fontFamily: 'Mulish',
                     ),
                   ),
@@ -96,9 +96,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 child: GradientButton(
                   text: "Continue",
-                  textSize: is700Wide
-                      ? SizeConfig.safeBlockVertical * 2.5
-                      : SizeConfig.safeBlockVertical * 2.8,
+                  textSize: SizeConfig.h4Size,
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (context) => SetupPage(user: user)),

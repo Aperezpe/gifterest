@@ -1,4 +1,5 @@
 // import 'package:bonobo/resize/size_config.dart';
+import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
 import 'package:bonobo/ui/common_widgets/platform_switch.dart';
 import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
@@ -110,9 +111,7 @@ class _AddEventCardState extends State<AddEventCard> {
                                   "Concurrent",
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: is700Wide
-                                        ? screenWidth * .025
-                                        : screenWidth * .04,
+                                    fontSize: SizeConfig.subtitleSize,
                                   ),
                                 ),
                               ),
@@ -172,7 +171,7 @@ class _AddEventCardState extends State<AddEventCard> {
             "Event $eventNumber",
             style: TextStyle(
               color: Colors.black,
-              fontSize: is700Wide ? screenWidth * .03 : screenWidth * .045,
+              fontSize: SizeConfig.h4Size,
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w600,
             ),
