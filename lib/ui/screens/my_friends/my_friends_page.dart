@@ -134,12 +134,8 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       ),
       floatingActionButton: Container(
         padding: EdgeInsets.only(
-          bottom: is700Wide
-              ? SizeConfig.safeBlockVertical
-              : SizeConfig.safeBlockHorizontal,
-          right: is700Wide
-              ? SizeConfig.safeBlockVertical
-              : SizeConfig.safeBlockHorizontal,
+          bottom: SizeConfig.safeBlockVertical,
+          right: SizeConfig.safeBlockVertical,
         ),
         child: _isEmpty
             ? Container()

@@ -112,7 +112,7 @@ class _FriendListTileState extends State<FriendListTile> {
           : InkWell(
               onTap: widget.onTap,
               child: Container(
-                height: SizeConfig.safeBlockVertical * 12,
+                height: SizeConfig.safeBlockVertical * 13,
                 padding: EdgeInsets.all(8),
                 child: _buildPhoneContent(),
               ),
@@ -163,8 +163,6 @@ class _FriendListTileState extends State<FriendListTile> {
   }
 
   Widget mainTextWidget({Alignment alignment}) {
-    final is700Wide = SizeConfig.screenWidth >= 700;
-
     return Align(
       alignment: alignment,
       child: Column(
@@ -181,7 +179,7 @@ class _FriendListTileState extends State<FriendListTile> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w500,
-              fontSize: SizeConfig.blockSizeVertical * 3,
+              fontSize: SizeConfig.titleSize,
             ),
           ),
           Text(
@@ -193,9 +191,7 @@ class _FriendListTileState extends State<FriendListTile> {
               color: Colors.black,
               fontFamily: 'Nunito-Sans',
               fontWeight: FontWeight.w300,
-              fontSize: is700Wide
-                  ? SizeConfig.safeBlockVertical * 1.8
-                  : SizeConfig.safeBlockVertical * 2,
+              fontSize: SizeConfig.subtitleSize,
             ),
           ),
         ],
@@ -211,14 +207,14 @@ class _FriendListTileState extends State<FriendListTile> {
             text: '$remainingDays\n',
             style: TextStyle(
               color: remainingDaysColor,
-              fontSize: SizeConfig.blockSizeVertical * 3,
+              fontSize: SizeConfig.titleSize,
             ),
             children: [
               TextSpan(
                 text: daysText,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: SizeConfig.safeBlockVertical * 2,
+                  fontSize: SizeConfig.subtitleSize,
                 ),
               ),
             ],
