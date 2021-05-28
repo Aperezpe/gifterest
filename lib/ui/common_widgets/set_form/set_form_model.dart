@@ -15,7 +15,7 @@ class SetFormModel extends ChangeNotifier {
     @required this.uid,
     this.isNew: false,
   }) {
-    name = person?.name;
+    name = person?.name ?? "";
     age = person?.age;
     dob = isUser ? person?.dob ?? dob : null;
     genderTypes = genders.map((gender) => gender.type).toList();

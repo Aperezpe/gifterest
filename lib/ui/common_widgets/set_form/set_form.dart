@@ -76,17 +76,12 @@ class _SetPersonFormState extends State<SetPersonForm> {
   bool get _isNewFriend => _model.isNew;
   bool get _isUser => _model.isUser;
 
-  String _name = "";
-  int _age;
-
   @override
   void initState() {
     super.initState();
     _formKey = GlobalKey<FormState>();
     _nameFocusNode = FocusNode();
     _ageFocusNode = FocusNode();
-    _name = _person?.name;
-    _age = _person?.age;
   }
 
   @override
@@ -112,8 +107,6 @@ class _SetPersonFormState extends State<SetPersonForm> {
           context,
           person: _model.setPerson(),
           mainPage: MyProfilePage(),
-          // database: database,
-          // friendSpecialEvents: FriendSpecialEvents.getFriendSpecialEvents(updatedPerson, allSpecialEvents),
           isNewFriend: _model.isNew,
           onDeleteSpecialEvents: [],
         );
@@ -137,7 +130,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
         await _model.onSave();
         Navigator.of(context).push(PageTransition(
           type: PageTransitionType.fade,
-          child: widget.mainPage, // TODO: go back to mainPage // done
+          child: widget.mainPage,
         ));
       } on PlatformException catch (e) {
         PlatformExceptionCustomDialog(
@@ -149,7 +142,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
   }
 
   void _nameEditingComplete() {
-    final newFocus = _name.isNotEmpty ? _ageFocusNode : _nameFocusNode;
+    final newFocus = _model.name.isNotEmpty ? _ageFocusNode : _nameFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
@@ -163,42 +156,48 @@ class _SetPersonFormState extends State<SetPersonForm> {
     final String name = _person?.name;
     return _isNewFriend
         ? "Add Events"
-        : 'Edit ${name.truncateWithEllipsis(10)}\'s Events'; // TODO: This to interests
+        : 'Edit ${name.truncateWithEllipsis(10)}\'s Events';
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(
-        title: appBarText, // TODO: This to Edig Profile // Done
-        leading: AppBarButton(
-          icon: LineIcons.times,
-          onTap: () => Navigator.of(context).pop(),
-        ),
-        actions: _isNewFriend
-            ? []
-            : [
-                TextButton(
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: SizeConfig.safeBlockVertical * 2.5,
-                      color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        final currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: CustomAppBar(
+          title: appBarText,
+          leading: AppBarButton(
+            icon: LineIcons.times,
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          actions: _isNewFriend
+              ? []
+              : [
+                  TextButton(
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: SizeConfig.safeBlockVertical * 2.5,
+                        color: Colors.white,
+                      ),
                     ),
+                    onPressed: _onSave,
                   ),
-                  onPressed: _onSave,
-                ),
-              ],
-      ),
-      body: _buildContent(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: BottomButton(
-        onPressed: _onNextPage, // TODO: This to go to InterestsPage // Done
-        color: _isUser ? Colors.pink : Colors.blue,
-        text: floatingActionbuttonText, // TODO: This to interests // done
-        textColor: Colors.white,
+                ],
+        ),
+        body: _buildContent(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: BottomButton(
+          onPressed: _onNextPage,
+          color: _isUser ? Colors.pink : Colors.blue,
+          text: floatingActionbuttonText,
+          textColor: Colors.white,
+        ),
       ),
     );
   }
@@ -238,7 +237,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
       CustomTextField(
         focusNode: _nameFocusNode,
         textInputAction: TextInputAction.next,
-        initialValue: _name,
+        initialValue: _person?.name ?? "",
         labelText: "Name",
         validator: (value) => value.isNotEmpty ? null : "Name can't be empty",
         onSaved: (value) => _model.updateName(value),
@@ -254,13 +253,10 @@ class _SetPersonFormState extends State<SetPersonForm> {
             )
           : CustomTextField(
               focusNode: _ageFocusNode,
-              initialValue: _age?.toString(),
+              initialValue: _model?.age != null ? '${_model.age}' : "",
               textInputAction: TextInputAction.done,
               labelText: "Age",
-              keyboardType: TextInputType.numberWithOptions(
-                signed: false,
-                decimal: false,
-              ),
+              keyboardType: TextInputType.numberWithOptions(),
               validator: (value) {
                 final int age = int.tryParse(value) ?? 0;
                 final bool isDigit = age > 0 ? true : false;

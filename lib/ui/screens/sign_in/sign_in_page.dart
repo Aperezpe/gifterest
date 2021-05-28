@@ -127,20 +127,27 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          _buildContent(),
-          Visibility(
-            visible: model.isLoading,
-            child: Container(
-              color: Colors.black.withOpacity(.5),
-              child: Center(
-                child: LoadingBouncingGrid.circle(backgroundColor: Colors.pink),
+    return GestureDetector(
+      onTap: () {
+        final currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            _buildContent(),
+            Visibility(
+              visible: model.isLoading,
+              child: Container(
+                color: Colors.black.withOpacity(.5),
+                child: Center(
+                  child:
+                      LoadingBouncingGrid.circle(backgroundColor: Colors.pink),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
