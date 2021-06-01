@@ -43,7 +43,7 @@ dependencies:
   auto_size_text: ^2.1.0
   age: ^0.0.1
   after_layout: ^1.1.0
-  device_simulator: ^0.9.6
+  # device_simulator: ^0.9.6
   custom_navigator: ^0.3.0
   loading_animations: ^2.2.0
   top_snackbar_flutter: ^1.0.0

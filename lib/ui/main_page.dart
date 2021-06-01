@@ -8,7 +8,7 @@ import 'package:bonobo/ui/models/gender.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:bonobo/ui/screens/profile_setup/welcome_page.dart';
-import 'package:device_simulator/device_simulator.dart';
+// import 'package:device_simulator/device_simulator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,13 +99,13 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
               if (snapshot.hasData) {
                 final user = snapshot.data;
 
-                if (false)
-                  return DeviceSimulator(
-                    enable: debugEnableDeviceSimulator,
-                    child: _isFirstTime
-                        ? WelcomePage(user: user)
-                        : MyFriendsPage(),
-                  );
+                // if (false)
+                //   return DeviceSimulator(
+                //     enable: debugEnableDeviceSimulator,
+                //     child: _isFirstTime
+                //         ? WelcomePage(user: user)
+                //         : MyFriendsPage(),
+                //   );
                 return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
               }
 
