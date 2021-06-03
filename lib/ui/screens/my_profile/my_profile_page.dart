@@ -4,6 +4,7 @@ import 'package:bonobo/ui/app_drawer.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/custom_button.dart';
 import 'package:bonobo/ui/common_widgets/drawer_button_builder.dart';
+import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
 import 'package:bonobo/ui/common_widgets/set_form/set_form.dart';
@@ -118,11 +119,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                   ),
           );
         }
-        return Material(
-          child: Center(
-            child: Text("Generating recommendations..."),
-          ),
-        );
+        return LoadingScreen();
       },
     );
   }
