@@ -4,6 +4,7 @@ import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
 import 'package:bonobo/ui/common_widgets/drawer_button_builder.dart';
 import 'package:bonobo/ui/common_widgets/empty_content.dart';
+import 'package:bonobo/ui/common_widgets/error_page.dart';
 import 'package:bonobo/ui/common_widgets/loading_screen.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
@@ -33,7 +34,9 @@ class FavoritesPage extends StatelessWidget {
       body: StreamBuilder<List<Product>>(
         stream: database.favoritesStream(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingScreen();
+          } else if (snapshot.hasData) {
             final favorites = snapshot.data;
             return favorites.isEmpty
                 ? EmptyContent(
@@ -64,10 +67,8 @@ class FavoritesPage extends StatelessWidget {
                       );
                     },
                   );
-          } else if (snapshot.hasError) {
-            print(snapshot.error);
           }
-          return LoadingScreen();
+          return ErrorPage(snapshot.error);
         },
       ),
     );

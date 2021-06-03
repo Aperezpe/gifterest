@@ -6,13 +6,13 @@ class SpecialEvent {
     this.id,
     this.name,
     this.date,
-    this.isConcurrent: false,
+    this.oneTimeEvent: false,
     this.personId,
   });
   String id;
   String name;
   DateTime date;
-  bool isConcurrent;
+  bool oneTimeEvent;
   String personId;
 
   factory SpecialEvent.fromMap(Map<String, dynamic> data, String documentId) {
@@ -24,14 +24,14 @@ class SpecialEvent {
     final String name = data['name'];
     final DateTime date =
         DateTime.fromMillisecondsSinceEpoch(startMilliseconds);
-    final bool isConcurrent = data['is_concurrent'];
+    final bool oneTimeEvent = data['one_time_event'];
     final String personId = data['person_id'];
 
     return SpecialEvent(
       id: documentId,
       name: name,
       date: date,
-      isConcurrent: isConcurrent,
+      oneTimeEvent: oneTimeEvent,
       personId: personId,
     );
   }
@@ -40,7 +40,7 @@ class SpecialEvent {
     return {
       'name': name,
       'date': date.millisecondsSinceEpoch,
-      'is_concurrent': isConcurrent,
+      'one_time_event': oneTimeEvent,
       'person_id': _personId,
     };
   }

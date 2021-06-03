@@ -54,13 +54,13 @@ class SetSpecialEventModel extends ChangeNotifier {
     int index, {
     String name,
     DateTime date,
-    bool isConcurrent,
+    bool oneTimeEvent,
   }) {
     friendSpecialEvents[index] = SpecialEvent(
         id: friendSpecialEvents[index].id,
         name: name ?? friendSpecialEvents[index].name,
         date: date ?? friendSpecialEvents[index].date,
-        isConcurrent: isConcurrent ?? friendSpecialEvents[index].isConcurrent);
+        oneTimeEvent: oneTimeEvent ?? friendSpecialEvents[index].oneTimeEvent);
 
     notifyListeners();
   }

@@ -28,7 +28,7 @@ class AddEventCard extends StatefulWidget {
 
 class _AddEventCardState extends State<AddEventCard> {
   DateTime _specialDate;
-  bool _isConcurrent;
+  bool _oneTimeEvent;
   List<String> specialEventValues;
 
   int get eventNumber => widget.index + 1;
@@ -37,7 +37,7 @@ class _AddEventCardState extends State<AddEventCard> {
   void initState() {
     _specialDate = widget.specialEvent.date ?? DateTime.now();
 
-    _isConcurrent = widget.specialEvent.isConcurrent ?? false;
+    _oneTimeEvent = widget.specialEvent.oneTimeEvent ?? false;
     super.initState();
   }
 
@@ -108,7 +108,7 @@ class _AddEventCardState extends State<AddEventCard> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Concurrent",
+                                  "One Time Event",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: SizeConfig.subtitleSize,
@@ -121,12 +121,12 @@ class _AddEventCardState extends State<AddEventCard> {
                                 child: Transform.scale(
                                   scale: is700Wide ? 1.2 : .8,
                                   child: PlatformSwitch(
-                                    value: _isConcurrent ?? false,
+                                    value: _oneTimeEvent ?? false,
                                     onChanged: (value) => {
-                                      setState(() => _isConcurrent = value),
+                                      setState(() => _oneTimeEvent = value),
                                       widget.model.updateSpecialEvent(
                                         widget.index,
-                                        isConcurrent: _isConcurrent,
+                                        oneTimeEvent: _oneTimeEvent,
                                       ),
                                     },
                                   ),
