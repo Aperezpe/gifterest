@@ -57,6 +57,7 @@ class MyFriendsPageModel extends ChangeNotifier {
     {
       if (event.personId == person.id) {
         database.deleteSpecialEvent(event);
+        database.deleteRootSpecialEvent(event);
       }
     }
     upcomingEvents.remove(person.id); // updates upcomingEvents

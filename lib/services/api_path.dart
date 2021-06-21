@@ -31,4 +31,7 @@ class APIPath {
 
   static String specialEvent(String uid, String specialEventId) =>
       'users/$uid/special_events/$specialEventId';
+
+  static String rootSpecialEvent(String specialEventId) =>
+      'root_special_events/$specialEventId';
 }

@@ -8,11 +8,14 @@ import 'package:bonobo/ui/models/interest.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/models/product.dart';
 import 'package:bonobo/ui/screens/friend/event_type.dart';
+import 'package:bonobo/ui/screens/my_friends/models/root_special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class Database {
+  Future<void> saveUserToken(String token);
   Future<void> setPerson(Person person);
   Future<void> deleteFriend(Person person);
   Stream<List<Person>> friendsStream();
@@ -35,6 +38,13 @@ abstract class Database {
 
   Stream<List<SpecialEvent>> specialEventsStream();
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Person person);
+  Future<void> setRootSpecialEvent(
+    RootSpecialEvent rootSpecialEvent,
+    SpecialEvent specialEvent,
+    Friend friend,
+  );
+
+  Future<void> deleteRootSpecialEvent(SpecialEvent specialEvent);
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent);
   Future<void> setFavorite(Product product);
   Future<void> deleteFavorite(Product product);
@@ -47,6 +57,13 @@ class FirestoreDatabase implements Database {
   FirestoreDatabase({@required this.uid}) : assert(uid != null);
   final String uid;
   final _service = FirestoreService.instance;
+
+  @override
+  Future<void> saveUserToken(String token) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'tokens': FieldValue.arrayUnion([token])
+    });
+  }
 
   @override
   Stream<List<Interest>> interestStream() => _service.collectionStream(
@@ -150,6 +167,23 @@ class FirestoreDatabase implements Database {
       data: specialEvent.toMap(person.id),
     );
   }
+
+  @override
+  Future<void> setRootSpecialEvent(
+    RootSpecialEvent rootSpecialEvent,
+    SpecialEvent specialEvent,
+    Friend friend,
+  ) async {
+    await _service.setData(
+      path: APIPath.rootSpecialEvent(specialEvent.id),
+      data: rootSpecialEvent.toMap(uid: uid, friendName: friend.name),
+    );
+  }
+
+  @override
+  Future<void> deleteRootSpecialEvent(SpecialEvent specialEvent) async =>
+      await _service.deleteData(
+          path: APIPath.rootSpecialEvent(specialEvent.id));
 
   @override
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent) async =>

@@ -1,5 +1,6 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/person.dart';
+import 'package:bonobo/ui/screens/my_friends/models/root_special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
 
@@ -61,8 +62,19 @@ class SetInterestsPageModel extends ChangeNotifier {
 
     await database.setPerson(person);
 
-    friendSpecialEvents?.forEach(
-        (event) async => await database.setSpecialEvent(event, person));
+    friendSpecialEvents?.forEach((event) async {
+      await database.setSpecialEvent(event, person);
+      await database.setRootSpecialEvent(
+        RootSpecialEvent(
+          date: event.date,
+          eventName: event.name,
+          friendName: person.name,
+          oneTimeEvent: event.oneTimeEvent,
+        ),
+        event,
+        person,
+      );
+    });
 
     onDeleteSpecialEvents
         ?.forEach((event) async => await database.deleteSpecialEvent(event));

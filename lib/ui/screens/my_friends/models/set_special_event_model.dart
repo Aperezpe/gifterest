@@ -1,6 +1,7 @@
 import 'package:bonobo/services/database.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
+import 'package:bonobo/ui/screens/my_friends/models/root_special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
 import 'package:bonobo/ui/screens/my_friends/my_friends_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,6 +84,16 @@ class SetSpecialEventModel extends ChangeNotifier {
       await database.setPerson(person);
       for (SpecialEvent event in friendSpecialEvents) {
         await database.setSpecialEvent(event, person);
+        await database.setRootSpecialEvent(
+          RootSpecialEvent(
+            date: event.date,
+            eventName: event.name,
+            friendName: person.name,
+            oneTimeEvent: event.oneTimeEvent,
+          ),
+          event,
+          person,
+        );
       }
       for (SpecialEvent event in onDeleteSpecialEvents) {
         await database.deleteSpecialEvent(event);
