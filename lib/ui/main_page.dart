@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:bonobo/flutter_notifications.dart';
 import 'package:bonobo/resize/layout_info.dart';
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/services/auth.dart';
@@ -23,11 +24,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin {
+  FirebaseNotifications _firebaseNotifications = FirebaseNotifications();
+
   @override
   void afterFirstLayout(BuildContext context) {
     // Load genders after it has been built to use throughout the app
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
+
     database.genderStream().listen((genders) {
       if (genders.isNotEmpty) {
         print("genders have been loaded");
@@ -45,13 +49,26 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
 
   bool _isFirstTime;
 
+  void _saveToken() async {
+    await _firebaseNotifications.initialize();
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
+    String token = await _firebaseNotifications.getToken();
+    await database
+        .saveUserToken(token)
+        .whenComplete(() => print("Tokens have been saved to dabase"));
+  }
+
   @override
   void initState() {
     // Check if user is new to show Setup Profile Page
     final Auth auth = Provider.of<AuthBase>(context, listen: false);
-    _isFirstTime = auth.userCredentials?.additionalUserInfo?.isNewUser ?? false;
 
+    _isFirstTime = auth.userCredentials?.additionalUserInfo?.isNewUser ?? false;
     print("isFirstTime? $_isFirstTime");
+
+    _saveToken();
+    _firebaseNotifications.getInitialMessage();
 
     super.initState();
   }

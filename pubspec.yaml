@@ -48,6 +48,8 @@ dependencies:
   loading_animations: ^2.2.0
   top_snackbar_flutter: ^1.0.0
   line_icons: ^2.0.1
+  firebase_messaging: ^10.0.1
+  flutter_local_notifications: ^6.0.0
 
   flutter:
     sdk: flutter
