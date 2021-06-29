@@ -98,6 +98,7 @@ class SetSpecialEventModel extends ChangeNotifier {
       }
       for (SpecialEvent event in onDeleteSpecialEvents) {
         await database.deleteSpecialEvent(event);
+        await database.deleteRootSpecialEvent(event);
       }
     } catch (e) {
       rethrow;

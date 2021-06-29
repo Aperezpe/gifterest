@@ -76,8 +76,10 @@ class SetInterestsPageModel extends ChangeNotifier {
       );
     });
 
-    onDeleteSpecialEvents
-        ?.forEach((event) async => await database.deleteSpecialEvent(event));
+    onDeleteSpecialEvents?.forEach((event) async {
+      await database.deleteSpecialEvent(event);
+      await database.deleteRootSpecialEvent(event);
+    });
   }
 
   bool isSelected(String interestName) =>
