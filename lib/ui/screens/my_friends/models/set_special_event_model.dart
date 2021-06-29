@@ -20,12 +20,13 @@ class SetSpecialEventModel extends ChangeNotifier {
         FriendSpecialEvents.getFriendSpecialEvents(person, allSpecialEvents);
 
     /// Create a Birthday event by default to increase friend setup speed
+    final now = DateTime.now();
     if (friendSpecialEvents.isEmpty && isNewFriend)
       friendSpecialEvents = [
         SpecialEvent(
           id: documentUUID(),
           name: "Birthday",
-          date: DateTime.now(),
+          date: DateTime(now.year, now.month, now.day),
           personId: person.id,
         ),
       ];

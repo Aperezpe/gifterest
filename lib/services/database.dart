@@ -60,9 +60,25 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> saveUserToken(String token) async {
-    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+    await _service.updateData(path: APIPath.user(uid), data: {
       'tokens': FieldValue.arrayUnion([token])
     });
+  }
+
+  @override
+  Future<void> setRootSpecialEvent(
+    RootSpecialEvent rootSpecialEvent,
+    SpecialEvent specialEvent,
+    Friend friend,
+  ) async {
+    await _service.updateData(
+      path: APIPath.rootSpecialEvent(specialEvent.id),
+      data: rootSpecialEvent.toMap(
+        uid: uid,
+        friendName: friend.name,
+        gender: friend.gender,
+      ),
+    );
   }
 
   @override
@@ -165,18 +181,6 @@ class FirestoreDatabase implements Database {
     await _service.setData(
       path: APIPath.specialEvent(uid, specialEvent.id),
       data: specialEvent.toMap(person.id),
-    );
-  }
-
-  @override
-  Future<void> setRootSpecialEvent(
-    RootSpecialEvent rootSpecialEvent,
-    SpecialEvent specialEvent,
-    Friend friend,
-  ) async {
-    await _service.setData(
-      path: APIPath.rootSpecialEvent(specialEvent.id),
-      data: rootSpecialEvent.toMap(uid: uid, friendName: friend.name),
     );
   }
 

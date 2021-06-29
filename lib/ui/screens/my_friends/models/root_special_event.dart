@@ -7,12 +7,14 @@ class RootSpecialEvent {
     this.oneTimeEvent: false,
     this.eventName,
     this.friendName,
+    this.gender,
     this.uid,
   });
   String id;
   DateTime date;
   bool oneTimeEvent;
   String eventName;
+  String gender;
   String friendName;
   String uid;
 
@@ -29,6 +31,7 @@ class RootSpecialEvent {
         DateTime.fromMillisecondsSinceEpoch(startMilliseconds);
     final bool oneTimeEvent = data['one_time_event'];
     final String eventName = data['event_name'];
+    final String gender = data['gender'];
     final String friendName = data['friend_name'];
     final String uid = data['uid'];
 
@@ -37,6 +40,7 @@ class RootSpecialEvent {
       date: date,
       oneTimeEvent: oneTimeEvent,
       eventName: eventName,
+      gender: gender,
       friendName: friendName,
       uid: uid,
     );
@@ -45,11 +49,13 @@ class RootSpecialEvent {
   Map<String, dynamic> toMap({
     @required String uid,
     @required String friendName,
+    @required String gender,
   }) {
     return {
       'date': date.microsecondsSinceEpoch,
       'one_time_event': oneTimeEvent,
       'event_name': eventName,
+      'gender': gender,
       'friend_name': friendName,
       'uid': uid,
     };
