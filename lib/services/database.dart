@@ -71,7 +71,7 @@ class FirestoreDatabase implements Database {
     SpecialEvent specialEvent,
     Friend friend,
   ) async {
-    await _service.updateData(
+    await _service.setOrUpdateData(
       path: APIPath.rootSpecialEvent(specialEvent.id),
       data: rootSpecialEvent.toMap(
         uid: uid,

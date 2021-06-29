@@ -13,6 +13,11 @@ class FirestoreService {
     await reference.set(data);
   }
 
+  Future<void> setOrUpdateData({String path, Map<String, dynamic> data}) async {
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.set(data, SetOptions(merge: true));
+  }
+
   Future<void> updateData({String path, Map<String, dynamic> data}) async {
     final reference = FirebaseFirestore.instance.doc(path);
     await reference.update(data);

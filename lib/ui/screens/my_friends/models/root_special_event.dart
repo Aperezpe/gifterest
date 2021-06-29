@@ -53,6 +53,8 @@ class RootSpecialEvent {
   }) {
     return {
       'date': date.microsecondsSinceEpoch,
+      'month': date.month,
+      'day': date.day,
       'one_time_event': oneTimeEvent,
       'event_name': eventName,
       'gender': gender,
