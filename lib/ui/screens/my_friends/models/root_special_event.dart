@@ -18,6 +18,7 @@ class RootSpecialEvent {
   String friendName;
   String uid;
 
+  //TODO: Delete this factory constructor. Not needed
   factory RootSpecialEvent.fromMap(
     Map<String, dynamic> data,
     String documentId,

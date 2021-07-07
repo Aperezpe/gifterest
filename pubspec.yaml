@@ -99,6 +99,7 @@ flutter:
     - assets/sad_monkey.jpg
     - assets/sad_monkey2.png
     - assets/congrats.png
+    - assets/fantasmita.png
 
   fonts:
     - family: Montserrat

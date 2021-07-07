@@ -155,9 +155,9 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       ),
       body: friends.isEmpty
           ? EmptyContent(
-              assetPath: 'assets/sad_monkey.jpg',
+              assetPath: 'assets/fantasmita.png',
               title: "Friends Not Found",
-              message: "Looks like you havent added any friends yet",
+              message: "Add a new friend to get started",
               bottomWidget: CustomButton(
                 onPressed: _addNewFriend,
                 text: "Add Friend",

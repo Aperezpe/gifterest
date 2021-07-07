@@ -52,3 +52,6 @@ app.*.map.json
 
 # Keystore files
 *.jks
+
+# the notifications directory
+/notifications
