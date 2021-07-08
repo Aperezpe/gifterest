@@ -24,7 +24,8 @@ class SetInterestsPageModel extends ChangeNotifier {
 
   /// [onDeleteSpecialEvents] Are the events that are on wait to be deleted on submit
   List<SpecialEvent> onDeleteSpecialEvents;
-  final int interestsAllowed = 5;
+  final int minInterestsAllowed = 4;
+  final int maxInterestsAllowed = 10;
   List<String> _selectedInterests = [];
 
   List<String> get selectedInterests => _selectedInterests;
@@ -39,10 +40,10 @@ class SetInterestsPageModel extends ChangeNotifier {
       database.queryInterestsStream(person);
 
   bool get isReadyToSubmit =>
-      _selectedInterests.length == interestsAllowed ? true : false;
+      _selectedInterests.length >= minInterestsAllowed ? true : false;
 
   String get submitButtonText {
-    int remaining = interestsAllowed - _selectedInterests.length;
+    int remaining = minInterestsAllowed - _selectedInterests.length;
     if (remaining == 1) {
       return "Add 1 more interest";
     } else if (remaining > 1) {
@@ -88,7 +89,7 @@ class SetInterestsPageModel extends ChangeNotifier {
   void tapInterest(Interest interest) {
     if (isSelected(interest.name)) {
       _selectedInterests.remove(interest.name);
-    } else if (_selectedInterests.length < interestsAllowed) {
+    } else if (_selectedInterests.length < maxInterestsAllowed) {
       _selectedInterests.add(interest.name);
     }
     notifyListeners();
