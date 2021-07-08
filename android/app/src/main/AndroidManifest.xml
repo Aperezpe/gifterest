@@ -13,7 +13,7 @@
         <!-- android:name=".Application" -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="bonobo"
+        android:label="Gifterest"
         android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true"
         >

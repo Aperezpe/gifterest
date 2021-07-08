@@ -79,7 +79,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
         Provider.of<Database>(context, listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Bonobo",
+      title: "Gifterest",
       theme: ThemeData(
         primarySwatch: Colors.pink,
         scaffoldBackgroundColor: Colors.white,

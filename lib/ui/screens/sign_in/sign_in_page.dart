@@ -23,7 +23,7 @@ class SignInPage extends StatefulWidget {
     final auth = Provider.of<AuthBase>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Bonobo",
+      title: "Gifterest",
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.pink,

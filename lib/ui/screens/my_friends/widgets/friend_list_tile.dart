@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bonobo/resize/size_config.dart';
 import 'package:bonobo/ui/models/person.dart';
 import 'package:bonobo/ui/screens/my_friends/dates.dart';
@@ -201,10 +202,9 @@ class _FriendListTileState extends State<FriendListTile> {
 
   Widget secondaryTextWidget({EdgeInsets padding}) => Container(
         padding: padding,
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: '$remainingDays\n',
+        child: AutoSizeText.rich(
+          TextSpan(
+            text: remainingDays <= 999 ? '$remainingDays\n' : '999+\n',
             style: TextStyle(
               color: remainingDaysColor,
               fontSize: SizeConfig.titleSize,
@@ -219,6 +219,10 @@ class _FriendListTileState extends State<FriendListTile> {
               ),
             ],
           ),
+          stepGranularity: 1,
+          maxLines: 2,
+          overflow: TextOverflow.clip,
+          textAlign: TextAlign.center,
         ),
       );
 }

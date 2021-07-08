@@ -7,6 +7,8 @@ class Dates {
       DateTime.now().day,
     );
 
+    if (eventTime.year > now.year) return eventTime.difference(now).inDays;
+
     DateTime eventNow = DateTime(now.year, eventTime.month, eventTime.day);
 
     if (eventNow.isBefore(now)) {
