@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  "heigh_important_channel",
+  "high_important_channel",
   "High importnace notification",
   "this channel is used for importan notifications",
   importance: Importance.high,
@@ -82,6 +82,10 @@ class FirebaseNotifications {
   Future<String> getToken() async {
     String token = await FirebaseMessaging.instance.getToken();
     return token;
+  }
+
+  Future<void> deleteToken() async {
+    await FirebaseMessaging.instance.deleteToken();
   }
 
   /// Get any messages which caused the application to open from

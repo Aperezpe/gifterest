@@ -106,7 +106,10 @@ class AppDrawer extends StatelessWidget {
                     CustomListTile(
                       title: "Sign Out",
                       icon: LineIcons.alternateSignOut,
-                      onTap: () => auth.signOut(),
+                      onTap: () async {
+                        await database.deleteUserToken();
+                        await auth.signOut();
+                      },
                     ),
                   ],
                 ),

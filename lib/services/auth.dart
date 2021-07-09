@@ -3,6 +3,7 @@ import 'package:bonobo/ui/screens/landing/landing_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:bonobo/flutter_notifications.dart';
 
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
@@ -123,6 +124,10 @@ class Auth implements AuthBase {
   @override
   Future<void> signOut() async {
     final googleSignIn = GoogleSignIn();
+    final _firebaseNotifications = FirebaseNotifications();
+
+    await _firebaseNotifications.deleteToken();
+    print("deleting token...");
     await googleSignIn.signOut();
     await _firebaseAuth.signOut();
   }

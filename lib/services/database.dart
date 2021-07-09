@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 
 abstract class Database {
   Future<void> saveUserToken(String token);
+  Future<void> deleteUserToken();
   Future<void> setPerson(Person person);
   Future<void> deleteFriend(Person person);
   Stream<List<Person>> friendsStream();
@@ -63,6 +64,14 @@ class FirestoreDatabase implements Database {
     await _service.updateData(path: APIPath.user(uid), data: {
       'tokens': FieldValue.arrayUnion([token])
     });
+  }
+
+  @override
+  Future<void> deleteUserToken() async {
+    await _service.updateData(
+      path: APIPath.user(uid),
+      data: {'tokens': FieldValue.delete()},
+    );
   }
 
   @override
@@ -147,10 +156,11 @@ class FirestoreDatabase implements Database {
   /// Sets friend or user depending on person object
   Future<Person> setPerson(Person person) async {
     if (person.id == uid) {
-      await _service.setData(path: APIPath.user(uid), data: person.toMap());
+      await _service.setOrUpdateData(
+          path: APIPath.user(uid), data: person.toMap());
       return person;
     } else {
-      await _service.setData(
+      await _service.setOrUpdateData(
           path: APIPath.friend(uid, person.id), data: person.toMap());
       return person;
     }
@@ -158,7 +168,7 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> deleteFriend(Person person) async =>
-      await _service.deleteData(path: APIPath.friend(uid, person.id));
+      await _service.deleteDocument(path: APIPath.friend(uid, person.id));
 
   @override
   Stream<List<Friend>> friendsStream() => _service.collectionStream(
@@ -186,12 +196,12 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> deleteRootSpecialEvent(SpecialEvent specialEvent) async =>
-      await _service.deleteData(
+      await _service.deleteDocument(
           path: APIPath.rootSpecialEvent(specialEvent.id));
 
   @override
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent) async =>
-      await _service.deleteData(
+      await _service.deleteDocument(
           path: APIPath.specialEvent(uid, specialEvent.id));
 
   @override
@@ -202,5 +212,5 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> deleteFavorite(Product product) async =>
-      await _service.deleteData(path: APIPath.favorite(uid, product.id));
+      await _service.deleteDocument(path: APIPath.favorite(uid, product.id));
 }
