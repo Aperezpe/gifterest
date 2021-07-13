@@ -1,4 +1,4 @@
-package com.example.bonobo
+package com.aperezpe.bonobo
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback

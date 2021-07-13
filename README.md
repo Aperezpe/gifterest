@@ -68,3 +68,19 @@ The number `'8.0.0'` could mismatch the Firebase version specified in the Podfil
 Source: https://stackoverflow.com/questions/54135078/how-to-solve-error-running-pod-install-in-flutter-on-mac/63504980
 
 After following these steps, you can then go to the following [THIS](https://github.com/invertase/firestore-ios-sdk-frameworks) github repository to check all the firestore ios sdk framework versions and use the latest or any other version that matches your Podfile.lock
+
+# Deployment
+
+## iOS
+
+Deployment was done following the steps in this documentation:
+https://flutter.dev/docs/deployment/ios. Read the second "Note" section in the create a build archive to
+
+## Android
+
+- Get upload_keystore from my google drive if is not in local machine
+- Review app manifest and build configuration if necessary
+- `flutter build appbundle`
+- I can test offline bundle tool but on Windows because is not working on mac
+
+https://flutter.dev/docs/deployment/android
