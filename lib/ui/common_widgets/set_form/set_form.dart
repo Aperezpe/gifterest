@@ -19,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:bonobo/extensions/string_truncator.dart';
 
 class SetPersonForm extends StatefulWidget {
   SetPersonForm({
@@ -153,10 +152,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
 
   String get floatingActionbuttonText {
     if (_isUser) return "Choose Interests";
-    final String name = _person?.name;
-    return _isNewFriend
-        ? "Add Events"
-        : 'Edit ${name.truncateWithEllipsis(10)}\'s Events';
+    return _isNewFriend ? "Add Events" : 'Edit Events';
   }
 
   @override

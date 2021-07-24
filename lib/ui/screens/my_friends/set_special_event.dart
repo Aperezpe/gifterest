@@ -16,7 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:bonobo/extensions/string_truncator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -137,9 +136,7 @@ class SetSpecialEvent extends StatelessWidget {
               children: [
                 _buildContent(events),
                 BottomButton(
-                  text: _isNewFriend
-                      ? "Add Interests"
-                      : 'Edit ${_person.name.truncateWithEllipsis(10)}\'s Interests',
+                  text: _isNewFriend ? "Add Interests" : 'Edit Interests',
                   onPressed: () => _model.goToInterestsPage(context),
                   color: Colors.pink,
                   padding: EdgeInsets.fromLTRB(
