@@ -95,7 +95,6 @@ class SetInterestsPageModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO: bring filters from GridBuilder
   List<dynamic> filterInterests(List<dynamic> interests, dynamic filters) {
     List<dynamic> filteredInterests = [];
 

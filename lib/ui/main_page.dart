@@ -40,7 +40,6 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
     });
 
     // If user is not created on sign up for some  reason, this will create it
-    // TODO: Para eliminar esto puedo no crear el usuario hasta que se terminen los setup screens por primera vez y ya
     database.userStream().listen((user) async {
       print(widget.initialUser);
       if (user == null) await database.setPerson(widget.initialUser);

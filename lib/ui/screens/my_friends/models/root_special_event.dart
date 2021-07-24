@@ -17,36 +17,7 @@ class RootSpecialEvent {
   String gender;
   String friendName;
   String uid;
-
-  //TODO: Delete this factory constructor. Not needed
-  factory RootSpecialEvent.fromMap(
-    Map<String, dynamic> data,
-    String documentId,
-  ) {
-    if (data == null) {
-      return null;
-    }
-    final int startMilliseconds = data['date'];
-
-    final DateTime date =
-        DateTime.fromMillisecondsSinceEpoch(startMilliseconds);
-    final bool oneTimeEvent = data['one_time_event'];
-    final String eventName = data['event_name'];
-    final String gender = data['gender'];
-    final String friendName = data['friend_name'];
-    final String uid = data['uid'];
-
-    return RootSpecialEvent(
-      id: documentId,
-      date: date,
-      oneTimeEvent: oneTimeEvent,
-      eventName: eventName,
-      gender: gender,
-      friendName: friendName,
-      uid: uid,
-    );
-  }
-
+  
   Map<String, dynamic> toMap({
     @required String uid,
     @required String friendName,

@@ -121,8 +121,6 @@ class _SignInPageState extends State<SignInPage> {
     _retypePasswordController.clear();
   }
 
-  /// TODO: Put Stack as body and create an invisible widget on top of
-  /// everything that only shows on loading
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

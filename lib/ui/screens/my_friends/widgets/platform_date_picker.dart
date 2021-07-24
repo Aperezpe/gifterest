@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 typedef DropdownButtonBuilder<T> = Widget Function(T selectedValue);
 
-// TODO: User cupertino pickers for everything
 class PlatformDatePicker extends PlatformWidget {
   PlatformDatePicker({
     this.selectedDate,

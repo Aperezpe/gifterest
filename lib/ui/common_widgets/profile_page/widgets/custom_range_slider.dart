@@ -26,7 +26,6 @@ class _CustomRangeSliderState extends State<CustomRangeSlider> {
   }
 
   /// Prevents rangeValues to be equal
-  /// TODO: Borrar de aqui cuando se vaya a ProfilePage
   void _onChangeEnd(RangeValues endValues) {
     if (onStartValues.start != endValues.start) {
       if (endValues.start == endValues.end) {

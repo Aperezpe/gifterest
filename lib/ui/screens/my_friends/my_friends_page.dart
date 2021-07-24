@@ -19,14 +19,10 @@ import 'package:bonobo/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:bonobo/extensions/base_colors.dart';
 
 import 'models/special_event.dart';
 
-// TODO: Sacar un snackbar o hacer highlight el friend que acaban de hacer update
-// TODO: Add animation to delete items https://github.com/mobiten/flutter_staggered_animations/issues/13
 class MyFriendsPage extends StatefulWidget {
   MyFriendsPage({Key key}) : super(key: key);
 
