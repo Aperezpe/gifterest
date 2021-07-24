@@ -52,31 +52,16 @@ class AppDrawer extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   height: is700Wide
-                      ? SizeConfig.safeBlockVertical * 22
-                      : SizeConfig.safeBlockVertical * 29,
+                      ? null
+                      : SizeConfig.safeBlockVertical * 15,
                   child: DrawerHeader(
                     margin: EdgeInsets.only(bottom: 0),
+                    padding:
+                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 2),
                     decoration: BoxDecoration(
                       color: Colors.orange[400],
                     ),
-                    // Uncomment for radial gradient
-                    // decoration: BoxDecoration(
-                    //   gradient: RadialGradient(
-                    //     colors: <Color>[
-                    //       Color(0xffffcc00).withOpacity(.8),
-                    //       Colors.red,
-                    //       // Color(0xfffb997f),
-                    //       // Color(0xfff47199),
-                    //     ],
-                    //     center: Alignment(0, -1),
-                    //     radius: 1.4,
-
-                    //     // stops: [0, .8],
-                    //     // begin: Alignment(.5, 0),
-                    //     // end: Alignment(.7, 1),
-                    //   ),
-                    // ),
-                    child: _buildUserAvatar(database),
+                    child: _buildHeader(database),
                   ),
                 ),
               ),
@@ -121,69 +106,61 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildUserAvatar(FirestoreDatabase database) {
-    final is700Wide = SizeConfig.screenWidth >= 700;
-
-    final avatarRadius = is700Wide
-        ? SizeConfig.safeBlockVertical * 5
-        : SizeConfig.safeBlockVertical * 6.5;
+  Widget _buildHeader(FirestoreDatabase database) {
     return StreamBuilder<Person>(
       stream: database.userStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final user = snapshot.data;
-          return Column(
-            children: [
-              // TODO: Poner un changuito o algo envez de un placeholder
-              Expanded(
-                flex: 3,
-                child: CircleAvatar(
-                  radius: avatarRadius,
-                  backgroundImage: AssetImage('assets/placeholder.jpg'),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text(
-                  "${user.name}",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(.25),
-                        offset: Offset(1, 4),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                    fontSize: SizeConfig.titleSize,
+          return Center(
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "${user.name}",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(.25),
+                          offset: Offset(1, 4),
+                          blurRadius: 4,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                      fontSize: SizeConfig.titleSize,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text(
-                  "See your profile",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w400,
-                    fontSize: SizeConfig.subtitleSize,
+                Flexible(
+                  flex: 1,
+                  child: SizedBox(height: SizeConfig.blockSizeVertical),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    "See your profile",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w400,
+                      fontSize: SizeConfig.subtitleSize,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         } else if (snapshot.hasError) {
           print("Drawer error: ${snapshot.error}");
         }
-        return CircleAvatar(
-          radius: avatarRadius,
-        );
+
+        return Container();
       },
     );
   }

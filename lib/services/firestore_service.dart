@@ -72,8 +72,6 @@ class FirestoreService {
     Query query;
 
     switch (eventType) {
-      // TODO: possibly create a girl baby shower and boy baby shower
-      // because this will show both since friend.gender is not relevant
 
       /// Query by BabyShower of Anniversary. If not given, then just query
       /// by the friend's interests
