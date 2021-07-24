@@ -22,8 +22,6 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'models/set_special_event_model.dart';
 
-// TODO: Prevent user from deleting all events for a friend, cz this will cause
-// errors when sorting friends by upcoming events
 class SetSpecialEvent extends StatelessWidget {
   SetSpecialEvent({@required this.model});
   final SetSpecialEventModel model;
@@ -189,6 +187,12 @@ class SetSpecialEvent extends StatelessWidget {
 
   Widget _buildContent(List<String> events) {
     final specialEvents = _model.friendSpecialEvents;
+
+    // Disable the delete button when theres only one card to enforce user to
+    // input at least one event, so that list is able to sort in MyFriendsPage
+    bool disableDelete = false;
+    if (specialEvents.length == 1) disableDelete = true;
+
     return ListView(
       padding: EdgeInsets.only(bottom: SizeConfig.safeBlockVertical * 18),
       children: [
@@ -198,6 +202,7 @@ class SetSpecialEvent extends StatelessWidget {
             index: _model.friendSpecialEvents.indexOf(specialEvent),
             events: events,
             model: _model,
+            disableDelete: disableDelete,
             specialEvent: specialEvent,
           ),
       ],

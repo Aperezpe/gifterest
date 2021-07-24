@@ -13,6 +13,7 @@ class AddEventCard extends StatefulWidget {
   final List<String> events;
   final SetSpecialEventModel model;
   final SpecialEvent specialEvent;
+  final bool disableDelete;
 
   const AddEventCard({
     Key key,
@@ -20,6 +21,7 @@ class AddEventCard extends StatefulWidget {
     this.events,
     this.model,
     this.specialEvent,
+    this.disableDelete,
   }) : super(key: key);
 
   @override
@@ -176,22 +178,24 @@ class _AddEventCardState extends State<AddEventCard> {
               fontWeight: FontWeight.w600,
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.zero,
-            child: IconButton(
-              splashRadius: 18,
-              icon: Icon(
-                Icons.delete,
-                color: Colors.red,
-                size: is700Wide ? screenWidth / 30 : screenWidth / 15,
-              ),
-              onPressed: () => {
-                widget.model
-                    .deleteSpecialEvent(widget.index, widget.specialEvent),
-              },
-            ),
-          ),
+          widget.disableDelete
+              ? Container()
+              : Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.zero,
+                  child: IconButton(
+                    splashRadius: 18,
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: is700Wide ? screenWidth / 30 : screenWidth / 15,
+                    ),
+                    onPressed: () => {
+                      widget.model.deleteSpecialEvent(
+                          widget.index, widget.specialEvent),
+                    },
+                  ),
+                ),
         ],
       ),
     );
