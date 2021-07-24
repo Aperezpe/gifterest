@@ -149,11 +149,12 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
                 ),
               ),
       ),
-      body: friends.isEmpty
+      body: _isEmpty
           ? EmptyContent(
               assetPath: 'assets/fantasmita.png',
               title: "Friends Not Found",
               message: "Add a new friend to get started",
+              imageWidth: is700Wide ? 250 : 170,
               bottomWidget: CustomButton(
                 onPressed: _addNewFriend,
                 text: "Add Friend",

@@ -40,8 +40,8 @@ class FavoritesPage extends StatelessWidget {
             final favorites = snapshot.data;
             return favorites.isEmpty
                 ? EmptyContent(
-                    assetPath: 'assets/sad_monkey2.png',
-                    imageWidth: 150,
+                    assetPath: 'assets/broken_heart.png',
+                    imageWidth: is700Wide ? 270 : 170,
                     title: "Oh crap, you've got nothing yet",
                     message: "",
                   )

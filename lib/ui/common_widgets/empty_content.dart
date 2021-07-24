@@ -20,14 +20,19 @@ class EmptyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final is700Wide = SizeConfig.screenWidth >= 700;
+
 
     return Center(
-      child: Column(
+
+      child: Container (
+        margin: EdgeInsets.only(left: SizeConfig.safeBlockHorizontal * 6, right: SizeConfig.safeBlockHorizontal * 6),
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (assetPath != null)
             Padding(
-              padding: EdgeInsets.only(bottom: 25),
+              padding: EdgeInsets.only(bottom: SizeConfig.safeBlockVertical * 4),
               child: Opacity(
                   child: Image.asset(assetPath, width: imageWidth),
                   opacity: imageOpacity),
@@ -41,7 +46,7 @@ class EmptyContent extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 15),
+          SizedBox(height: SizeConfig.safeBlockVertical * 3),
           Text(
             message,
             style: TextStyle(
@@ -49,10 +54,10 @@ class EmptyContent extends StatelessWidget {
               color: Colors.black45,
             ),
           ),
-          if (bottomWidget != null) SizedBox(height: 25),
+          if (bottomWidget != null) SizedBox(height: SizeConfig.safeBlockVertical * 3),
           bottomWidget ?? Container(),
         ],
-      ),
+      ),),
     );
   }
 }

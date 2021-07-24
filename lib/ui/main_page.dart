@@ -110,12 +110,12 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
             stream: database.userStream(),
             builder: (context, snapshot) {
               SizeConfig().init(context);
-              final is700Wide = SizeConfig.screenWidth >= 700;
+              // final is700Wide = SizeConfig.screenWidth >= 700;
 
               if (snapshot.hasData) {
                 final user = snapshot.data;
 
-                // if (false)
+                // if (true)
                 //   return DeviceSimulator(
                 //     enable: debugEnableDeviceSimulator,
                 //     child: _isFirstTime
