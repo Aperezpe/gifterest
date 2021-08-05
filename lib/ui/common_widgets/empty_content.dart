@@ -49,9 +49,11 @@ class EmptyContent extends StatelessWidget {
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           Text(
             message,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: SizeConfig.subtitleSize,
               color: Colors.black45,
+            
             ),
           ),
           if (bottomWidget != null) SizedBox(height: SizeConfig.safeBlockVertical * 3),
