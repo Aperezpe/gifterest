@@ -151,7 +151,7 @@ class SetInterestsPage extends StatelessWidget {
                 crossAxisSpacing: maxWidth / 40,
               ),
               itemBuilder: (context, index) {
-                return _buildInterestCard(context, snapshot.data[index]);
+                return _buildInterestCard(context, snapshot.data[index], index + 1);
               },
             );
           });
@@ -164,11 +164,12 @@ class SetInterestsPage extends StatelessWidget {
     );
   }
 
-  _buildInterestCard(BuildContext context, Interest interest) {
+  _buildInterestCard(BuildContext context, Interest interest, int selectedNumber) {
     return ClickableInterest(
       interest: interest,
       onTap: () => model.tapInterest(interest),
       isSelected: model.isSelected(interest.name),
+      selectedInterests: model.selectedInterests,
     );
   }
 }

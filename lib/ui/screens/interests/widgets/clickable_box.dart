@@ -8,11 +8,13 @@ class ClickableInterest extends StatelessWidget {
     @required this.interest,
     @required this.onTap,
     @required this.isSelected,
+    @required this.selectedInterests,
   });
 
   final Interest interest;
   final VoidCallback onTap;
   final bool isSelected;
+  final List<String> selectedInterests;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,28 @@ class ClickableInterest extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: Visibility(
+                  visible: isSelected,
+                  child: Container(
+                    margin: EdgeInsets.all(0),
+                    height: SizeConfig.blockSizeVertical * 3,
+                    width: SizeConfig.blockSizeVertical * 3,
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${selectedInterests.indexOf(interest.name) + 1}',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
