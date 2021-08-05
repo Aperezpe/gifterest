@@ -51,9 +51,6 @@ class AppDrawer extends StatelessWidget {
                 ),
                 child: Container(
                   width: double.infinity,
-                  height: is700Wide
-                      ? null
-                      : SizeConfig.safeBlockVertical * 15,
                   child: DrawerHeader(
                     margin: EdgeInsets.only(bottom: 0),
                     padding:
@@ -114,43 +111,37 @@ class AppDrawer extends StatelessWidget {
           final user = snapshot.data;
           return Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    "${user.name}",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(.25),
-                          offset: Offset(1, 4),
-                          blurRadius: 4,
-                          spreadRadius: 0,
-                        ),
-                      ],
-                      fontSize: SizeConfig.titleSize,
-                    ),
+                Text(
+                  "${user.name}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.25),
+                        offset: Offset(1, 4),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                    fontSize: SizeConfig.titleSize,
                   ),
                 ),
-                Flexible(
-                  flex: 1,
-                  child: SizedBox(height: SizeConfig.blockSizeVertical),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    "See your profile",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w400,
-                      fontSize: SizeConfig.subtitleSize,
-                    ),
+                
+                SizedBox(height: SizeConfig.blockSizeVertical),
+                
+                Text(
+                  "See your profile",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w400,
+                    fontSize: SizeConfig.subtitleSize,
                   ),
                 ),
               ],
