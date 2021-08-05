@@ -1,3 +1,4 @@
+import 'package:bonobo/flutter_notifications.dart';
 import 'package:bonobo/services/api_path.dart';
 import 'package:bonobo/services/firestore_service.dart';
 import 'package:bonobo/ui/models/app_user.dart';
@@ -59,6 +60,9 @@ class FirestoreDatabase implements Database {
   final String uid;
   final _service = FirestoreService.instance;
 
+  /// Maps the token to the Device Id and saves it in Database. This is done
+  /// so that the token can  be retrieved specifically for each device and
+  /// handled accordingly.
   @override
   Future<void> saveUserToken(String token) async {
     await _service.updateData(path: APIPath.user(uid), data: {
@@ -68,9 +72,13 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> deleteUserToken() async {
+    FirebaseNotifications _firebaseNotifications = FirebaseNotifications();
+    final token = await _firebaseNotifications.getToken();
     await _service.updateData(
       path: APIPath.user(uid),
-      data: {'tokens': FieldValue.delete()},
+      data: {
+        'tokens': FieldValue.arrayRemove([token])
+      },
     );
   }
 

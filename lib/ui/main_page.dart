@@ -53,9 +53,10 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
     String token = await _firebaseNotifications.getToken();
+
     await database
         .saveUserToken(token)
-        .whenComplete(() => print("Tokens have been saved to dabase"));
+        .whenComplete(() => print("Tokens have been saved to dabase : $token"));
   }
 
   @override
@@ -67,6 +68,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
     print("isFirstTime? $_isFirstTime");
 
     _saveToken();
+
     _firebaseNotifications.getInitialMessage();
 
     super.initState();

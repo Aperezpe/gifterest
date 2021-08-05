@@ -127,6 +127,7 @@ class Auth implements AuthBase {
     final _firebaseNotifications = FirebaseNotifications();
 
     await _firebaseNotifications.deleteToken();
+
     print("deleting token...");
     await googleSignIn.signOut();
     await _firebaseAuth.signOut();
