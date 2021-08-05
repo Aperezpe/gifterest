@@ -116,6 +116,14 @@ class _ProductPageState extends State<ProductPage> {
                   fontSize: SizeConfig.safeBlockVertical * 2.5,
                 ),
               ),
+              Text(
+                widget.product.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: SizeConfig.safeBlockVertical * 2.5,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SizedBox(height: SizeConfig.safeBlockVertical * 2),
               CustomButton(
                 text: 'Check out in store',
@@ -147,20 +155,32 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _buildRating() {
+    double rating = widget.product.rating;
+    int remainingStars = 5;
+    List<Widget> stars = [];
+
+    while (rating >= 1) {
+      stars.add(Icon(LineIcons.starAlt,
+          color: Colors.yellow[700], size: SizeConfig.safeBlockVertical * 3.8));
+      remainingStars--;
+      rating = rating - 1;
+    }
+    if (rating != 0) {
+      stars.add(Icon(LineIcons.alternateStarHalf,
+          color: Colors.yellow[700], size: SizeConfig.safeBlockVertical * 3.8));
+      remainingStars--;
+
+      for (int i = 0; i < remainingStars; i++)
+        stars.add(
+          Icon(LineIcons.star,
+              color: Colors.yellow[700],
+              size: SizeConfig.safeBlockVertical * 3.8),
+        );
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(LineIcons.star,
-            color: Colors.grey[400], size: SizeConfig.safeBlockVertical * 3.8),
-        Icon(LineIcons.star,
-            color: Colors.grey[400], size: SizeConfig.safeBlockVertical * 3.8),
-        Icon(LineIcons.star,
-            color: Colors.grey[400], size: SizeConfig.safeBlockVertical * 3.8),
-        Icon(LineIcons.star,
-            color: Colors.grey[400], size: SizeConfig.safeBlockVertical * 3.8),
-        Icon(LineIcons.star,
-            color: Colors.grey[400], size: SizeConfig.safeBlockVertical * 3.8),
-      ],
+      children: stars,
     );
   }
 }

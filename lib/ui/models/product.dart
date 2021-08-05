@@ -14,6 +14,7 @@ class Product {
   String itemUrl;
   String gender;
   String itemId;
+  double rating;
 
   Product({
     @required this.id,
@@ -26,6 +27,7 @@ class Product {
     @required this.itemUrl,
     @required this.categories,
     @required this.gender,
+    this.rating,
     this.itemId,
   });
 
@@ -44,6 +46,7 @@ class Product {
     String itemUrl = data['item_url'];
     String gender = data['gender'];
     String itemId = data['item_id'];
+    double rating = data['rating'] + .0;
 
     return Product(
       id: documentId,
@@ -57,6 +60,7 @@ class Product {
       categories: categories,
       gender: gender,
       itemId: itemId,
+      rating: rating,
     );
   }
 
@@ -72,6 +76,7 @@ class Product {
       "categories": categories,
       "gender": gender,
       "item_id": itemId,
+      "rating": rating,
     };
   }
 
@@ -88,6 +93,7 @@ class Product {
         categories.join(","),
         gender,
         itemId,
+        rating,
       );
 
   @override
@@ -105,11 +111,12 @@ class Product {
         distributor == otherProduct.distributor &&
         categories.join(",") == otherProduct.categories.join(",") &&
         gender == otherProduct.gender &&
-        itemId == otherProduct.itemId;
+        itemId == otherProduct.itemId &&
+        rating == otherProduct.rating;
   }
 
   @override
   String toString() => '''id: $id, name: $name, price: $price, event: $event, 
       imageUrl: $imageUrl, ageRange: $ageRange, distributor: $distributor, 
-      categories: $categories, gender: $gender, itemId: $itemId''';
+      categories: $categories, gender: $gender, itemId: $itemId, rating: $rating''';
 }
