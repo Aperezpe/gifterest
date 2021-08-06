@@ -43,7 +43,7 @@ Bonobo was created to help solve the problem of forgetting important dates plus 
 
 If you're getting an error like this:
 
-`Podfile is out of date please try 'pod repo update'`
+## **Problem:** Podfile is out of date please try 'pod repo update'
 
 This could be caused because the following line in podfile:
 
@@ -53,12 +53,12 @@ pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk
 
 The number `'8.0.0'` could mismatch the Firebase version specified in the Podfile.lock. This usually happens when the Podile.lock is changed somehow.
 
-## To fix this problem you can try the following:
+### **To fix this problem you can try the following:**
 
 - Instead of `'8.0.0'` or any version you wrote, change that number to the
   number your Podfile.lock specifies.
 
-## If this does not work, you can try the following:
+### **If this does not work, you can try the following:**
 
 1. Delete your Podfile, Podfile.lock, and the Pods directory in your ios directory
 2. Run `flutter clean` in the terminal
@@ -68,6 +68,44 @@ The number `'8.0.0'` could mismatch the Firebase version specified in the Podfil
 Source: https://stackoverflow.com/questions/54135078/how-to-solve-error-running-pod-install-in-flutter-on-mac/63504980
 
 After following these steps, you can then go to the following [THIS](https://github.com/invertase/firestore-ios-sdk-frameworks) github repository to check all the firestore ios sdk framework versions and use the latest or any other version that matches your Podfile.lock
+
+## **Problem:** file not found #import <Flutter/Flutter.h>
+
+```
+Xcode's output:
+↳
+    In file included from /usr/local/Caskroom/flutter/2.2.3/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.2/ios/Classes/FLTPathProviderPlugin.m:5:
+    /usr/local/Caskroom/flutter/2.2.3/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.2/ios/Classes/FLTPathProviderPlugin.h:5:9: fatal error: 'Flutter/Flutter.h'
+    file not found
+    #import <Flutter/Flutter.h>
+            ^~~~~~~~~~~~~~~~~~~
+    1 error generated.
+```
+
+### **This is the only solution that worked for me:**
+
+1. Backup `ios/Runner` folder.
+
+2. Delete the `ios` folder.
+
+3. Run `flutter create (your project name)`. in the previous folder where you have your project(`cd users/user/"projects_folder"`) (this will recreate your `ios` folder).
+
+4. Paste your Runner backup in the `ios` folder (into the project).
+
+5. Open `Runner.xcworkspace` (into `ios` folder) and there, check the Version, the Bundle ID, all the info.
+
+6. (If do you Have Firebase, you have to copy and paste again the `GoogleService-Info.Plist` into the `Runner` folder (Always through Xcode) (If do you do this manually, it doesn't work).
+
+Finally, flutter run and should work!
+
+If flutter run fails:
+
+1. `cd ios`
+2. `pod install`
+3. `cd ..`
+4. `flutter run`
+
+Source: https://stackoverflow.com/questions/64973346/error-flutter-flutter-h-file-not-found-when-flutter-run-on-ios
 
 # Deployment
 
