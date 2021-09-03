@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
+import 'package:gifterest/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
 import 'package:flutter/material.dart';
 import '../format.dart';
 

@@ -1,6 +1,6 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/profile_page/widgets/custom_range_slider.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/common_widgets/profile_page/widgets/custom_range_slider.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {

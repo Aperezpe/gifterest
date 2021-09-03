@@ -1,7 +1,7 @@
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/my_friends/models/root_special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/my_friends/models/root_special_event.dart';
+import 'package:gifterest/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../models/interest.dart';

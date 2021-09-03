@@ -1,10 +1,11 @@
-import 'package:age/age.dart';
+// import 'package:age/age.dart';
 
 extension AgeCalculator on DateTime {
   int getAge(DateTime dob) {
-    AgeDuration age = Age.dateDifference(
-        fromDate: dob, toDate: DateTime.now(), includeToDate: false);
+    // AgeDuration age = Age.dateDifference(
+    // fromDate: dob, toDate: DateTime.now(), includeToDate: false);
 
-    return age.years;
+    // return age.years;
+    return 15;
   }
 }

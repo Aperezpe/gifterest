@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/models/interest.dart';
+import 'package:gifterest/ui/models/interest.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

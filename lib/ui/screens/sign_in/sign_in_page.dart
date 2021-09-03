@@ -1,8 +1,8 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
-import 'package:bonobo/ui/common_widgets/custom_button.dart';
-import 'package:bonobo/ui/screens/sign_in/models/sign_in_model.dart';
-import 'package:bonobo/ui/screens/sign_in/widgets/sign_in_text_field.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
+import 'package:gifterest/ui/common_widgets/custom_button.dart';
+import 'package:gifterest/ui/screens/sign_in/models/sign_in_model.dart';
+import 'package:gifterest/ui/screens/sign_in/widgets/sign_in_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../common_widgets/circle_image_button.dart';
 
-import 'package:bonobo/services/auth.dart';
+import 'package:gifterest/services/auth.dart';
 
 class SignInPage extends StatefulWidget {
   SignInPage({@required this.model});

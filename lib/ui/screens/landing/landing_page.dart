@@ -1,9 +1,9 @@
-import 'package:bonobo/services/auth.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/locator.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/models/app_user.dart';
-import 'package:bonobo/ui/screens/sign_in/sign_in_page.dart';
+import 'package:gifterest/services/auth.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/services/locator.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/models/app_user.dart';
+import 'package:gifterest/ui/screens/sign_in/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

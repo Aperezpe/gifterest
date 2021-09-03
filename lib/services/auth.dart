@@ -1,9 +1,9 @@
-import 'package:bonobo/services/locator.dart';
-import 'package:bonobo/ui/screens/landing/landing_page.dart';
+import 'package:gifterest/services/locator.dart';
+import 'package:gifterest/ui/screens/landing/landing_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:bonobo/flutter_notifications.dart';
+import 'package:gifterest/flutter_notifications.dart';
 
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;

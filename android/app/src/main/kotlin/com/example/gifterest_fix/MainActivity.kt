@@ -1,4 +1,4 @@
-package com.aperezpe.bonobo
+package com.example.gifterest
 
 import io.flutter.embedding.android.FlutterActivity
 

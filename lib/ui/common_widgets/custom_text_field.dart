@@ -1,4 +1,4 @@
-import 'package:bonobo/resize/size_config.dart';
+import 'package:gifterest/resize/size_config.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {

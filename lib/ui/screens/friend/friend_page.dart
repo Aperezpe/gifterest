@@ -1,18 +1,19 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
-import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/common_widgets/profile_page/profile_page.dart';
-import 'package:bonobo/ui/models/friend.dart';
-import 'package:bonobo/ui/screens/friend/event_type.dart';
-import 'package:bonobo/ui/common_widgets/profile_page/widgets/products_grid.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/common_widgets/app_bar_button.dart';
+import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/common_widgets/profile_page/profile_page.dart';
+import 'package:gifterest/ui/models/friend.dart';
+import 'package:gifterest/ui/screens/friend/event_type.dart';
+import 'package:gifterest/ui/common_widgets/profile_page/widgets/products_grid.dart';
+import 'package:gifterest/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+// import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class FriendPage extends StatefulWidget {
   FriendPage({

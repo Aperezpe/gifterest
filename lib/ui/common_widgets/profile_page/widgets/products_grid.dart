@@ -1,10 +1,10 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/empty_content.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/models/product.dart';
-import 'package:bonobo/ui/common_widgets/profile_page/widgets/clickable_product.dart';
-import 'package:bonobo/ui/screens/friend/event_type.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/common_widgets/empty_content.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/models/product.dart';
+import 'package:gifterest/ui/common_widgets/profile_page/widgets/clickable_product.dart';
+import 'package:gifterest/ui/screens/friend/event_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -69,12 +69,11 @@ class _ProductsGridViewState extends State<ProductsGridView>
         if (snapshot.hasData) {
           final products = queryProducts(snapshot.data);
 
-          if (products.isEmpty) 
+          if (products.isEmpty)
             return EmptyContent(
               title: "There's nothing here!",
               message: "No products to show in this range",
             );
-          
 
           return StreamBuilder<List<Product>>(
             stream: widget.database.favoritesStream(),

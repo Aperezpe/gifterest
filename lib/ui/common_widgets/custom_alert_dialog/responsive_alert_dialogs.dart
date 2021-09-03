@@ -1,10 +1,10 @@
-import 'package:bonobo/ui/common_widgets/custom_alert_dialog/custom_alert_dialog.dart';
+import 'package:gifterest/ui/common_widgets/custom_alert_dialog/custom_alert_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:bonobo/extensions/base_colors.dart';
+import 'package:gifterest/extensions/base_colors.dart';
 
 class WarningDialog extends CustomAlertDialog {
   WarningDialog({

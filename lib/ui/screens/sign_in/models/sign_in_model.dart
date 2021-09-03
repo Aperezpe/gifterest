@@ -1,6 +1,6 @@
-import 'package:bonobo/services/auth.dart';
-import 'package:bonobo/services/locator.dart';
-import 'package:bonobo/ui/screens/landing/landing_page.dart';
+import 'package:gifterest/services/auth.dart';
+import 'package:gifterest/services/locator.dart';
+import 'package:gifterest/ui/screens/landing/landing_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 

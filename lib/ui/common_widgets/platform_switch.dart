@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/common_widgets/platform_widget.dart';
+import 'package:gifterest/ui/common_widgets/platform_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

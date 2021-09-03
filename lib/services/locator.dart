@@ -1,7 +1,7 @@
-import 'package:bonobo/resize/layout_info.dart';
-import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/screens/favorites.dart';
-import 'package:bonobo/ui/screens/landing/landing_page.dart';
+import 'package:gifterest/resize/layout_info.dart';
+import 'package:gifterest/ui/models/gender.dart';
+import 'package:gifterest/ui/screens/favorites.dart';
+import 'package:gifterest/ui/screens/landing/landing_page.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;

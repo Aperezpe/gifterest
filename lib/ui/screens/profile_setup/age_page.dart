@@ -1,12 +1,12 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/models/app_user.dart';
-import 'package:bonobo/ui/screens/interests/set_interests_page.dart';
-import 'package:bonobo/ui/screens/my_friends/format.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
-import 'package:bonobo/ui/screens/my_profile/my_profile_page.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/models/app_user.dart';
+import 'package:gifterest/ui/screens/interests/set_interests_page.dart';
+import 'package:gifterest/ui/screens/my_friends/format.dart';
+import 'package:gifterest/ui/screens/my_friends/widgets/platform_date_picker.dart';
+import 'package:gifterest/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bonobo/extensions/age_calculator.dart';
+import 'package:gifterest/extensions/age_calculator.dart';
 
 class AgePage extends StatefulWidget {
   const AgePage({Key key, @required this.user}) : super(key: key);

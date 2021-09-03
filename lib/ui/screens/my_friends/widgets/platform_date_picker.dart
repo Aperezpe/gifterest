@@ -1,5 +1,5 @@
-import 'package:bonobo/ui/common_widgets/platform_widget.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/ios_date_picker.dart';
+import 'package:gifterest/ui/common_widgets/platform_widget.dart';
+import 'package:gifterest/ui/screens/my_friends/widgets/ios_date_picker.dart';
 import 'package:flutter/material.dart';
 
 typedef DropdownButtonBuilder<T> = Widget Function(T selectedValue);

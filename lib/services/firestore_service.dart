@@ -1,5 +1,5 @@
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/friend/event_type.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/friend/event_type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../extensions/string_capitalize.dart';

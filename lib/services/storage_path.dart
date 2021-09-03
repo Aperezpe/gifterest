@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/models/person.dart';
+import 'package:gifterest/ui/models/person.dart';
 
 class StoragePath {
   static String get defaultProfileImage => "/placeholder.jpg";

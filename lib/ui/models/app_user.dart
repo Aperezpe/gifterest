@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/models/person.dart';
+import 'package:gifterest/ui/models/person.dart';
 import 'package:flutter/foundation.dart';
 
 class AppUser implements Person {

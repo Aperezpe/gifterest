@@ -1,6 +1,6 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
-import 'package:bonobo/ui/screens/my_friends/format.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/common_widgets/platform_dropdown/custom_dropdown_button.dart';
+import 'package:gifterest/ui/screens/my_friends/format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

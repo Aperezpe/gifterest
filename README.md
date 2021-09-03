@@ -1,4 +1,4 @@
-# Bonobo
+# Gifterest
 
 Bonobo is an event reminder plus gift recommendations app. Bonobo helps you remember important friend's or family's events while giving you mindful gift recommendations depending on their interests.
 

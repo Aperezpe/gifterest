@@ -1,4 +1,4 @@
-import 'package:bonobo/ui/screens/sign_in/validators.dart';
+import 'package:gifterest/ui/screens/sign_in/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

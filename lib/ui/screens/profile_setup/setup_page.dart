@@ -1,7 +1,7 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/common_widgets/gradient_button.dart';
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/profile_setup/gender_page.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/common_widgets/gradient_button.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/profile_setup/gender_page.dart';
 import 'package:flutter/material.dart';
 
 class SetupPage extends StatelessWidget {

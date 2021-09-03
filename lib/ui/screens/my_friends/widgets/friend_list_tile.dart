@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/my_friends/dates.dart';
-import 'package:bonobo/ui/screens/my_friends/models/my_friends_page_model.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/my_friends/dates.dart';
+import 'package:gifterest/ui/screens/my_friends/models/my_friends_page_model.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 

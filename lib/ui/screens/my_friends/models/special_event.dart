@@ -1,5 +1,5 @@
-import 'package:bonobo/ui/models/person.dart';
-// import 'package:bonobo/ui/screens/my_friends/models/friend.dart';
+import 'package:gifterest/ui/models/person.dart';
+// import 'package:gifterest/ui/screens/my_friends/models/friend.dart';
 
 class SpecialEvent {
   SpecialEvent({

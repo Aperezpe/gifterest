@@ -1,14 +1,14 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/app_bar_button.dart';
-import 'package:bonobo/ui/common_widgets/bottom_button.dart';
-import 'package:bonobo/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
-import 'package:bonobo/ui/common_widgets/custom_app_bar.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/interests/models/set_interests_page_model.dart';
-import 'package:bonobo/ui/screens/interests/widgets/clickable_box.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/common_widgets/app_bar_button.dart';
+import 'package:gifterest/ui/common_widgets/bottom_button.dart';
+import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
+import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/interests/models/set_interests_page_model.dart';
+import 'package:gifterest/ui/screens/interests/widgets/clickable_box.dart';
+import 'package:gifterest/ui/screens/my_friends/models/special_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
@@ -151,7 +151,8 @@ class SetInterestsPage extends StatelessWidget {
                 crossAxisSpacing: maxWidth / 40,
               ),
               itemBuilder: (context, index) {
-                return _buildInterestCard(context, snapshot.data[index], index + 1);
+                return _buildInterestCard(
+                    context, snapshot.data[index], index + 1);
               },
             );
           });
@@ -164,7 +165,8 @@ class SetInterestsPage extends StatelessWidget {
     );
   }
 
-  _buildInterestCard(BuildContext context, Interest interest, int selectedNumber) {
+  _buildInterestCard(
+      BuildContext context, Interest interest, int selectedNumber) {
     return ClickableInterest(
       interest: interest,
       onTap: () => model.tapInterest(interest),

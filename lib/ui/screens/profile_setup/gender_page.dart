@@ -1,9 +1,9 @@
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/common_widgets/loading_screen.dart';
-import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/models/person.dart';
-import 'package:bonobo/ui/screens/profile_setup/age_page.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/models/gender.dart';
+import 'package:gifterest/ui/models/person.dart';
+import 'package:gifterest/ui/screens/profile_setup/age_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

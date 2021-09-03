@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/models/interest.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/models/interest.dart';
 import 'package:flutter/material.dart';
 
 class ClickableInterest extends StatelessWidget {

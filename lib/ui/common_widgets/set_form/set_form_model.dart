@@ -1,11 +1,11 @@
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/ui/models/app_user.dart';
-import 'package:bonobo/ui/models/friend.dart';
-import 'package:bonobo/ui/models/gender.dart';
-import 'package:bonobo/ui/models/person.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/ui/models/app_user.dart';
+import 'package:gifterest/ui/models/friend.dart';
+import 'package:gifterest/ui/models/gender.dart';
+import 'package:gifterest/ui/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bonobo/extensions/age_calculator.dart';
+import 'package:gifterest/extensions/age_calculator.dart';
 
 class SetFormModel extends ChangeNotifier {
   SetFormModel({

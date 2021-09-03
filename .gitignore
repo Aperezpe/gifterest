@@ -8,7 +8,6 @@
 .buildlog/
 .history
 .svn/
-.vscode/
 
 # IntelliJ related
 *.iml
@@ -31,7 +30,6 @@
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -42,16 +40,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-
-# Built application files
-*.apk
-*.ap_
-*.aab
-
-# Keystore files
-*.jks
-
-# the notifications directory
-/notifications
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+ios/Runner/GoogleService-Info.plist
+pubspec.lock

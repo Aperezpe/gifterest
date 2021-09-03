@@ -1,4 +1,4 @@
-import 'package:bonobo/services/auth.dart';
+import 'package:gifterest/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 

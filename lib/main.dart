@@ -1,6 +1,8 @@
-import 'package:bonobo/services/auth.dart';
-import 'package:bonobo/services/database.dart';
-import 'package:bonobo/services/locator.dart';
+import 'dart:io';
+
+import 'package:gifterest/services/auth.dart';
+import 'package:gifterest/services/database.dart';
+import 'package:gifterest/services/locator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'ui/screens/landing/landing_page.dart';
 
 void main() async {
+  HttpOverrides.global = new MyHttpOverrides(); // Only use in DEV
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
@@ -26,5 +29,18 @@ class MyApp extends StatelessWidget {
         databaseBuilder: (uid) => FirestoreDatabase(uid: uid),
       ),
     );
+  }
+}
+
+///This should be used while in development mode, do NOT do this when you want to release to production,
+///the aim of this answer is to make the development a bit easier for you, for production, you need to
+///fix your certificate issue and use it properly, look at the other answers for this as it might be helpful for your case.
+///https://stackoverflow.com/questions/54285172/how-to-solve-flutter-certificate-verify-failed-error-while-performing-a-post-req
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

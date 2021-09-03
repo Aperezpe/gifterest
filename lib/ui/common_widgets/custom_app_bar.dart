@@ -1,6 +1,6 @@
-import 'package:bonobo/resize/layout_info.dart';
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/services/locator.dart';
+import 'package:gifterest/resize/layout_info.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/locator.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {

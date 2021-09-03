@@ -1,10 +1,10 @@
-// import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/resize/size_config.dart';
-import 'package:bonobo/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
-import 'package:bonobo/ui/common_widgets/platform_switch.dart';
-import 'package:bonobo/ui/screens/my_friends/models/set_special_event_model.dart';
-import 'package:bonobo/ui/screens/my_friends/models/special_event.dart';
-import 'package:bonobo/ui/screens/my_friends/widgets/platform_date_picker.dart';
+// import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/ui/common_widgets/platform_dropdown/platform_dropdown.dart';
+import 'package:gifterest/ui/common_widgets/platform_switch.dart';
+import 'package:gifterest/ui/screens/my_friends/models/set_special_event_model.dart';
+import 'package:gifterest/ui/screens/my_friends/models/special_event.dart';
+import 'package:gifterest/ui/screens/my_friends/widgets/platform_date_picker.dart';
 
 import 'package:flutter/material.dart';
 
