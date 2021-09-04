@@ -1,10 +1,10 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:gifterest/flutter_notifications.dart';
 import 'package:gifterest/resize/layout_info.dart';
 import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/services/locator.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
 import 'package:gifterest/ui/models/gender.dart';
 import 'package:gifterest/ui/models/person.dart';
 import 'package:gifterest/ui/screens/my_friends/my_friends_page.dart';
@@ -24,8 +24,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin {
-  FirebaseNotifications _firebaseNotifications = FirebaseNotifications();
-
   @override
   void afterFirstLayout(BuildContext context) {
     // Load genders after it has been built to use throughout the app
@@ -44,34 +42,6 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
       print(widget.initialUser);
       if (user == null) await database.setPerson(widget.initialUser);
     }).onError((error) => print("UserStreamError: $error"));
-  }
-
-  bool _isFirstTime;
-
-  void _saveToken() async {
-    await _firebaseNotifications.initialize();
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
-    String token = await _firebaseNotifications.getToken();
-
-    await database
-        .saveUserToken(token)
-        .whenComplete(() => print("Tokens have been saved to dabase : $token"));
-  }
-
-  @override
-  void initState() {
-    // Check if user is new to show Setup Profile Page
-    final Auth auth = Provider.of<AuthBase>(context, listen: false);
-
-    _isFirstTime = auth.userCredentials?.additionalUserInfo?.isNewUser ?? false;
-    print("isFirstTime? $_isFirstTime");
-
-    _saveToken();
-
-    _firebaseNotifications.getInitialMessage();
-
-    super.initState();
   }
 
   @override
@@ -124,7 +94,20 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
                 //         ? WelcomePage(user: user)
                 //         : MyFriendsPage(),
                 //   );
-                return _isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
+
+                final Auth auth = Provider.of<AuthBase>(context, listen: false);
+
+                bool isFirstTime =
+                    auth.userCredentials?.additionalUserInfo?.isNewUser ??
+                        false;
+
+                print("isFirstTime? $isFirstTime");
+                return isFirstTime ? WelcomePage(user: user) : MyFriendsPage();
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.connectionState == ConnectionState.active) {
+                return LoadingScreen();
               }
 
               return MyFriendsPage();

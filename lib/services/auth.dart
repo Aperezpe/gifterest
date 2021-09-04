@@ -7,6 +7,7 @@ import 'package:gifterest/flutter_notifications.dart';
 
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
+  UserCredential get userCredentials;
   Future<User> currentUser();
   Future<User> signInWithGoogle();
   Future<User> signInWithEmailAndPassword(String email, String password);
