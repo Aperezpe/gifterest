@@ -46,3 +46,6 @@ app.*.map.json
 /android/app/release
 ios/Runner/GoogleService-Info.plist
 pubspec.lock
+android/.settings/*
+android/app/google-services.json
+android/.project

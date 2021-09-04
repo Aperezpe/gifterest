@@ -1,8 +1,17 @@
+<!--            android:name=".MainActivity"-->
+<!-- android:name="androidx.multidex.MultiDexApplication" -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gifterest">
+package="com.aperezpe.bonobo">
+
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.INTERNET"/>
+
+
    <application
-        android:label="gifterest"
-        android:icon="@mipmap/ic_launcher">
+        android:name="io.flutter.app.FlutterApplication"
+        android:label="Gifterest"
+        android:icon="@mipmap/launcher_icon"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
