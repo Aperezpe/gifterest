@@ -98,3 +98,10 @@ class FirebaseNotifications {
     }
   }
 }
+
+class NotificationSettingsLocal {
+  AuthorizationStatus authorizationStatus;
+
+  AuthorizationStatus setAuthorizationStatus(AuthorizationStatus value) =>
+      authorizationStatus = value;
+}

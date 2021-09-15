@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:gifterest/flutter_notifications.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/services/locator.dart';
@@ -82,6 +83,11 @@ class LandingPage extends StatelessWidget {
                     if (notificationsSnapshot.hasData) {
                       final authorizationStatus =
                           notificationsSnapshot.data.authorizationStatus;
+                      // Used to detect authorization status changes while using application
+                      locator
+                          .get<NotificationSettingsLocal>()
+                          .setAuthorizationStatus(authorizationStatus);
+
                       print("authorizationStatus: $authorizationStatus");
                       return FutureBuilder<AppUser>(
                         future: _createOrFetchUser(context, initialUser),
