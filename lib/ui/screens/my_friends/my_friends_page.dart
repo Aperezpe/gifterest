@@ -35,7 +35,6 @@ class MyFriendsPage extends StatefulWidget {
 }
 
 class _MyFriendsPageState extends State<MyFriendsPage> {
-  FirebaseNotifications _firebaseNotifications = FirebaseNotifications();
   final _silableController = SlidableController();
   bool _isEmpty;
 
@@ -77,33 +76,6 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     );
   }
 
-  // Saves Firebase Notification Token to Database
-  void _saveNotificationsToken() async {
-    await _firebaseNotifications.initialize();
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
-    String token = await _firebaseNotifications.getToken();
-
-    await database
-        .saveUserToken(token)
-        .whenComplete(() => print("Tokens have been saved to dabase : $token"));
-  }
-
-  Future<NotificationSettings> _requestNotificationsPermissions() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    //Request iOS permissions
-    return await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
@@ -111,55 +83,38 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
     SizeConfig().init(context);
 
-    return FutureBuilder<NotificationSettings>(
-      future: _requestNotificationsPermissions(),
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return LoadingScreen();
-        }
-
         if (snapshot.hasData) {
-          if (snapshot.data.authorizationStatus ==
-              AuthorizationStatus.authorized) {
-            _saveNotificationsToken();
-            _firebaseNotifications.getInitialMessage();
-          }
+          final allSpecialEvents = snapshot.data;
+          return StreamBuilder<List<Friend>>(
+            stream: database.friendsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final friends = snapshot.data;
+                _isEmpty = friends.isEmpty;
+                return ChangeNotifierProvider<MyFriendsPageModel>(
+                  create: (context) => MyFriendsPageModel(
+                    database: database,
+                    allSpecialEvents: allSpecialEvents,
+                    friends: friends,
+                  ),
+                  builder: (context, child) {
+                    final model =
+                        Provider.of<MyFriendsPageModel>(context, listen: false);
+
+                    return _buildContent(friends, model);
+                  },
+                );
+              }
+              if (snapshot.hasError) ErrorPage(snapshot.error);
+              return LoadingScreen();
+            },
+          );
         }
-
-        return StreamBuilder<List<SpecialEvent>>(
-          stream: database.specialEventsStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final allSpecialEvents = snapshot.data;
-              return StreamBuilder<List<Friend>>(
-                stream: database.friendsStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final friends = snapshot.data;
-                    _isEmpty = friends.isEmpty;
-                    return ChangeNotifierProvider<MyFriendsPageModel>(
-                      create: (context) => MyFriendsPageModel(
-                        database: database,
-                        allSpecialEvents: allSpecialEvents,
-                        friends: friends,
-                      ),
-                      builder: (context, child) {
-                        final model = Provider.of<MyFriendsPageModel>(context,
-                            listen: false);
-
-                        return _buildContent(friends, model);
-                      },
-                    );
-                  }
-                  if (snapshot.hasError) ErrorPage(snapshot.error);
-                  return LoadingScreen();
-                },
-              );
-            }
-            if (snapshot.hasError) ErrorPage(snapshot.error);
-            return LoadingScreen();
-          },
-        );
+        if (snapshot.hasError) ErrorPage(snapshot.error);
+        return LoadingScreen();
       },
     );
   }

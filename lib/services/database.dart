@@ -18,7 +18,7 @@ import 'package:uuid/uuid.dart';
 abstract class Database {
   Future<void> saveUserToken(String token);
   Future<void> deleteUserToken();
-  Future<void> setPerson(Person person);
+  Future<Person> setPerson(Person person);
   Future<void> deleteFriend(Person person);
   Stream<List<Person>> friendsStream();
   Stream<Person> userStream();
@@ -166,6 +166,7 @@ class FirestoreDatabase implements Database {
     if (person.id == uid) {
       await _service.setOrUpdateData(
           path: APIPath.user(uid), data: person.toMap());
+      print("user $uid has been created/updated");
       return person;
     } else {
       await _service.setOrUpdateData(
