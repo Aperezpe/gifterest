@@ -2,8 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gifterest/flutter_notifications.dart';
 import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/services/database.dart';
+import 'package:gifterest/services/locator.dart';
 import 'package:gifterest/ui/app_drawer.dart';
-import 'package:gifterest/ui/common_widgets/custom_alert_dialog/custom_alert_dialog.dart';
 import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
@@ -16,6 +16,8 @@ import 'package:gifterest/ui/common_widgets/set_form/set_form.dart';
 import 'package:gifterest/ui/models/friend.dart';
 import 'package:gifterest/ui/models/person.dart';
 import 'package:gifterest/ui/screens/friend/friend_page.dart';
+import 'package:gifterest/ui/screens/landing/landing_page.dart';
+import 'package:gifterest/ui/screens/landing/life_cycle_event_handler.dart';
 import 'package:gifterest/ui/screens/my_friends/widgets/custom_slider_action.dart';
 import 'package:gifterest/ui/screens/my_friends/widgets/friend_list_tile.dart';
 import 'package:gifterest/ui/screens/my_friends/models/my_friends_page_model.dart';
@@ -38,6 +40,45 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   FirebaseNotifications _firebaseNotifications = FirebaseNotifications();
   final _silableController = SlidableController();
   bool _isEmpty;
+
+  void _updateToken(
+      AuthorizationStatus authorizationStatus, Database database) async {
+    // Save a token in DB if the user has authorized while using the app
+    // TODO: Check in real device whether it receives push notifications when user
+    // disable notifiactions while using the app. Because when that's done in settings
+    // I don't change any value in the app. So if same values are present in app, does it sends the notif?
+    // If so, then do the required changes to prevent sending notificaions when user updated settings while using the app.
+    await _firebaseNotifications.initialize();
+
+    if (authorizationStatus == AuthorizationStatus.authorized) {
+      String token = await _firebaseNotifications.getToken();
+      await database.saveUserToken(token);
+      print("Tokens have been saved to database: $token");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final FirestoreDatabase database =
+        Provider.of<Database>(context, listen: false);
+
+    // If the user has changed the notification settings manually, save the token one more time
+    WidgetsBinding.instance.addObserver(
+      LifecycleEventHandler(resumeCallBack: () async {
+        final newSettings = await messaging.getNotificationSettings();
+        final sessionStatus =
+            locator.get<NotificationSettingsLocal>().authorizationStatus;
+        if (newSettings.authorizationStatus != sessionStatus) {
+          locator
+              .get<NotificationSettingsLocal>()
+              .setAuthorizationStatus(newSettings.authorizationStatus);
+          _updateToken(newSettings.authorizationStatus, database);
+        }
+      }),
+    );
+  }
 
   void _deleteFriend(BuildContext context, Person friend) async {
     final model = Provider.of<MyFriendsPageModel>(context, listen: false);
@@ -77,33 +118,6 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     );
   }
 
-  // Saves Firebase Notification Token to Database
-  void _saveNotificationsToken() async {
-    await _firebaseNotifications.initialize();
-    final FirestoreDatabase database =
-        Provider.of<Database>(context, listen: false);
-    String token = await _firebaseNotifications.getToken();
-
-    await database
-        .saveUserToken(token)
-        .whenComplete(() => print("Tokens have been saved to dabase : $token"));
-  }
-
-  Future<NotificationSettings> _requestNotificationsPermissions() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    //Request iOS permissions
-    return await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final FirestoreDatabase database =
@@ -111,55 +125,38 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
     SizeConfig().init(context);
 
-    return FutureBuilder<NotificationSettings>(
-      future: _requestNotificationsPermissions(),
+    return StreamBuilder<List<SpecialEvent>>(
+      stream: database.specialEventsStream(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return LoadingScreen();
-        }
-
         if (snapshot.hasData) {
-          if (snapshot.data.authorizationStatus ==
-              AuthorizationStatus.authorized) {
-            _saveNotificationsToken();
-            _firebaseNotifications.getInitialMessage();
-          }
+          final allSpecialEvents = snapshot.data;
+          return StreamBuilder<List<Friend>>(
+            stream: database.friendsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final friends = snapshot.data;
+                _isEmpty = friends.isEmpty;
+                return ChangeNotifierProvider<MyFriendsPageModel>(
+                  create: (context) => MyFriendsPageModel(
+                    database: database,
+                    allSpecialEvents: allSpecialEvents,
+                    friends: friends,
+                  ),
+                  builder: (context, child) {
+                    final model =
+                        Provider.of<MyFriendsPageModel>(context, listen: false);
+
+                    return _buildContent(friends, model);
+                  },
+                );
+              }
+              if (snapshot.hasError) ErrorPage(snapshot.error);
+              return LoadingScreen();
+            },
+          );
         }
-
-        return StreamBuilder<List<SpecialEvent>>(
-          stream: database.specialEventsStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final allSpecialEvents = snapshot.data;
-              return StreamBuilder<List<Friend>>(
-                stream: database.friendsStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final friends = snapshot.data;
-                    _isEmpty = friends.isEmpty;
-                    return ChangeNotifierProvider<MyFriendsPageModel>(
-                      create: (context) => MyFriendsPageModel(
-                        database: database,
-                        allSpecialEvents: allSpecialEvents,
-                        friends: friends,
-                      ),
-                      builder: (context, child) {
-                        final model = Provider.of<MyFriendsPageModel>(context,
-                            listen: false);
-
-                        return _buildContent(friends, model);
-                      },
-                    );
-                  }
-                  if (snapshot.hasError) ErrorPage(snapshot.error);
-                  return LoadingScreen();
-                },
-              );
-            }
-            if (snapshot.hasError) ErrorPage(snapshot.error);
-            return LoadingScreen();
-          },
-        );
+        if (snapshot.hasError) ErrorPage(snapshot.error);
+        return LoadingScreen();
       },
     );
   }

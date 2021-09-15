@@ -1,3 +1,4 @@
+import 'package:gifterest/flutter_notifications.dart';
 import 'package:gifterest/resize/layout_info.dart';
 import 'package:gifterest/ui/models/gender.dart';
 import 'package:gifterest/ui/screens/favorites.dart';
@@ -11,4 +12,5 @@ void setupLocator() {
   locator.registerLazySingleton(() => AppUserInfo());
   locator.registerLazySingleton(() => GenderProvider());
   locator.registerLazySingleton(() => LayoutInfo());
+  locator.registerLazySingleton(() => NotificationSettingsLocal());
 }
