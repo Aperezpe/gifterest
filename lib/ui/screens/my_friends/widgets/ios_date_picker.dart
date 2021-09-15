@@ -13,12 +13,14 @@ class IOSDatePicker extends StatelessWidget {
     @required this.selectedDate,
     this.selectDate,
     this.dropdownButton,
+    this.isDateOfBirth: false,
   }) : super(key: key);
 
   final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
   final DropdownButtonBuilder<DateTime> dropdownButton;
+  final bool isDateOfBirth;
 
   void _showDatePicker(BuildContext context) {
     showModalBottomSheet(
@@ -60,7 +62,7 @@ class IOSDatePicker extends StatelessWidget {
                 child: CupertinoDatePicker(
                   initialDateTime: initialDate,
                   minimumYear: 1800,
-                  maximumYear: 2500,
+                  maximumYear: isDateOfBirth ? DateTime.now().year : 2500,
                   mode: CupertinoDatePickerMode.date,
                   onDateTimeChanged: selectDate,
                 ),

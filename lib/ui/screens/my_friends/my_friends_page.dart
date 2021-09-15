@@ -41,9 +41,9 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   final _silableController = SlidableController();
   bool _isEmpty;
 
+  // Save a token in DB if the user has authorized while using the app
   void _updateToken(
       AuthorizationStatus authorizationStatus, Database database) async {
-    // Save a token in DB if the user has authorized while using the app
     // TODO: Check in real device whether it receives push notifications when user
     // disable notifiactions while using the app. Because when that's done in settings
     // I don't change any value in the app. So if same values are present in app, does it sends the notif?

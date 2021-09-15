@@ -246,6 +246,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
               initialDate: _model.dob,
               selectedDate: _model.dob,
               selectDate: (dob) => _model.changeDob(dob),
+              isDateOfBirth: true,
             )
           : CustomTextField(
               focusNode: _ageFocusNode,

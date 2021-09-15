@@ -108,7 +108,7 @@ class _AgePageState extends State<AgePage> {
                 right: SizeConfig.safeBlockHorizontal * 8,
               ),
               child: Text(
-                "What is your birthday?",
+                "What is your date of birth?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: SizeConfig.safeBlockVertical * 5,
@@ -134,6 +134,7 @@ class _AgePageState extends State<AgePage> {
                 ),
                 child: PlatformDatePicker(
                   initialDate: DateTime.now(),
+                  isDateOfBirth: true,
                   selectedDate: _selectedDate,
                   selectDate: (date) => setState(() => _selectedDate = date),
                   dropdownButton: (selectedDate) =>

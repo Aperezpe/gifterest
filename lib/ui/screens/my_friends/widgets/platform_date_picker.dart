@@ -10,12 +10,14 @@ class PlatformDatePicker extends PlatformWidget {
     this.selectDate,
     this.initialDate,
     this.dropdownButton,
+    this.isDateOfBirth: false,
   });
 
   final DateTime initialDate;
   final DateTime selectedDate;
   final ValueChanged<DateTime> selectDate;
   final DropdownButtonBuilder<DateTime> dropdownButton;
+  final bool isDateOfBirth;
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {
@@ -24,6 +26,7 @@ class PlatformDatePicker extends PlatformWidget {
       selectedDate: selectedDate,
       selectDate: selectDate,
       dropdownButton: dropdownButton,
+      isDateOfBirth: isDateOfBirth,
     );
   }
 
