@@ -16,6 +16,12 @@ class ClickableInterest extends StatelessWidget {
   final bool isSelected;
   final List<String> selectedInterests;
 
+  final Map<String, String> abbreviations = {"Skateboarding": "Sk8"};
+
+  String _getName() => abbreviations.containsKey(interest.name)
+      ? abbreviations[interest.name]
+      : interest.name;
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -55,7 +61,7 @@ class ClickableInterest extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child: AutoSizeText(
-                      "${interest.name}",
+                      "${_getName()}",
                       textAlign: TextAlign.center,
                       wrapWords: false,
                       overflow: TextOverflow.clip,
