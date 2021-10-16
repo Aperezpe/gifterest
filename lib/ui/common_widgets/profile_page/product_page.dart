@@ -132,9 +132,9 @@ class _ProductPageState extends State<ProductPage> {
               ),
               SizedBox(height: SizeConfig.safeBlockVertical),
               Text(
-                "(Paid Link)",
+                "Paid Link",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: SizeConfig.subtitleSize),
+                style: TextStyle(fontSize: SizeConfig.subtitleSize / 1.3),
               ),
               Divider(
                 thickness: 1,

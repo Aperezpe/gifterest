@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/apple_sign_in_available.dart';
 import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
 import 'package:gifterest/ui/screens/sign_in/models/sign_in_model.dart';
@@ -106,6 +107,18 @@ class _SignInPageState extends State<SignInPage> {
       title: 'Sign in failed',
       exception: exception,
     ).show(context);
+  }
+
+  Future<void> _signinWithApple() async {
+    try {
+      await model.signInWithApple();
+    } on PlatformException catch (e) {
+      if (e.code != 'ERROR_ABORTED_BY_USER') {
+        _showSignInError(e);
+      } else {
+        _showSignInError(e);
+      }
+    }
   }
 
   Future<void> _signInWithGoogle() async {
@@ -343,6 +356,9 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Column _buildSignInServices() {
+    final appleSingInAvailable =
+        Provider.of<AppleSignInAvailable>(context, listen: false);
+
     return Column(
       children: <Widget>[
         Center(
@@ -355,9 +371,8 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ),
         SizedBox(height: SizeConfig.safeBlockVertical * 2),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          if (!appleSingInAvailable.isAvailable)
             CircleImageButton(
               key: Key("google-signin"),
               color: Colors.white,
@@ -365,15 +380,21 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: model.isLoading ? null : _signInWithGoogle,
               imagePath: 'assets/google_logo.jpg',
             ),
-            CircleImageButton(
-              key: Key("apple-signin"),
-              color: Colors.grey[400],
-              textColor: Colors.white,
-              onPressed: null,
-              imagePath: 'assets/apple_logo.jpg',
-            ),
-          ],
-        ),
+          CircleImageButton(
+            key: Key("apple-signin"),
+            color: Colors.grey[400],
+            textColor: Colors.white,
+            onPressed: model.isLoading ? null : _signinWithApple,
+            imagePath: 'assets/apple_logo.jpg',
+          ),
+          CircleImageButton(
+            key: Key("google-signin"),
+            color: Colors.white,
+            textColor: Colors.blue,
+            onPressed: model.isLoading ? null : _signInWithGoogle,
+            imagePath: 'assets/google_logo.jpg',
+          ),
+        ]),
         SizedBox(height: 25),
       ],
     );
