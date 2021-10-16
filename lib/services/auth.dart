@@ -140,14 +140,17 @@ class Auth implements AuthBase {
         );
         final userCredential =
             await _firebaseAuth.signInWithCredential(credential);
+
         final firebaseUser = userCredential.user;
         if (scopes.contains(Scope.fullName)) {
           final fullName = appleIdCredential.fullName;
+          final email = appleIdCredential.email;
           if (fullName != null &&
               fullName.givenName != null &&
               fullName.familyName != null) {
             final displayName = '${fullName.givenName} ${fullName.familyName}';
             await firebaseUser.updateDisplayName(displayName);
+            await firebaseUser.updateEmail(email);
           }
         }
         return firebaseUser;
