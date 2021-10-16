@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
 import 'package:gifterest/ui/screens/sign_in/models/sign_in_model.dart';
+import 'package:gifterest/ui/screens/sign_in/terms_and_conditions.dart';
 import 'package:gifterest/ui/screens/sign_in/widgets/sign_in_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animations/loading_animations.dart';
@@ -71,6 +74,10 @@ class _SignInPageState extends State<SignInPage> {
     _passwordController.dispose();
     _retypePasswordController.dispose();
     super.dispose();
+  }
+
+  Stream<bool> termsState(bool value) async* {
+    yield value;
   }
 
   Future<void> _submit() async {
@@ -316,6 +323,8 @@ class _SignInPageState extends State<SignInPage> {
           onPressed: model.isLoading ? null : _submit,
         ),
         SizedBox(height: SizeConfig.safeBlockVertical * 1.5),
+        TermsAndConditions(model: model),
+        SizedBox(height: SizeConfig.safeBlockVertical * 1.5),
         TextButton(
           key: Key("toggle-form"),
           child: Text(
@@ -356,13 +365,13 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: model.isLoading ? null : _signInWithGoogle,
               imagePath: 'assets/google_logo.jpg',
             ),
-            // CircleImageButton(
-            //   key: Key("apple-signin"),
-            //   color: Colors.grey[400],
-            //   textColor: Colors.white,
-            //   onPressed: null,
-            //   imagePath: 'assets/apple_logo.jpg',
-            // ),
+            CircleImageButton(
+              key: Key("apple-signin"),
+              color: Colors.grey[400],
+              textColor: Colors.white,
+              onPressed: null,
+              imagePath: 'assets/apple_logo.jpg',
+            ),
           ],
         ),
         SizedBox(height: 25),

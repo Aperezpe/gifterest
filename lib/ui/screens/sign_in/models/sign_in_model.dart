@@ -18,6 +18,8 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     this.formType = EmailSignInFormType.signIn,
     this.isLoading = true,
     this.submitted = false,
+    this.hasAcceptedTerms = false,
+    this.hasReadTerms = false,
   });
 
   final AuthBase auth;
@@ -28,6 +30,8 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   EmailSignInFormType formType;
   bool isLoading;
   bool submitted;
+  bool hasAcceptedTerms;
+  bool hasReadTerms;
 
   Future<void> submit() async {
     updateWith(submitted: true);
@@ -79,6 +83,7 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     return nameValidator.isValid(name) &&
         emailValidator.isValid(email) &&
         retypePasswordValidator.isValid(password, retypePassword) &&
+        hasAcceptedTerms &&
         !isLoading;
   }
 
@@ -124,6 +129,12 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
   void updateRetypePassword(String retypePassword) =>
       updateWith(retypePassword: retypePassword);
 
+  /// The user has to read the terms first before being able to check the
+  /// Terms & Conditions checkbox.
+  void updateHasAcceptedTerms(bool value) =>
+      updateWith(hasAcceptedTerms: value);
+  void updateHasReadTerms(bool value) => updateWith(hasReadTerms: value);
+
   void updateWith({
     String name,
     String email,
@@ -132,6 +143,8 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     EmailSignInFormType formType,
     bool isLoading,
     bool submitted,
+    bool hasAcceptedTerms,
+    bool hasReadTerms,
   }) {
     this.name = name ?? this.name;
     this.email = email ?? this.email;
@@ -140,6 +153,8 @@ class SignInModel with EmailAndPasswordValidators, ChangeNotifier {
     this.formType = formType ?? this.formType;
     this.isLoading = isLoading ?? this.isLoading;
     this.submitted = submitted ?? this.submitted;
+    this.hasAcceptedTerms = hasAcceptedTerms ?? this.hasAcceptedTerms;
+    this.hasReadTerms = hasReadTerms ?? this.hasReadTerms;
     notifyListeners();
   }
 

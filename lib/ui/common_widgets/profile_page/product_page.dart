@@ -130,6 +130,12 @@ class _ProductPageState extends State<ProductPage> {
                 color: Colors.orange,
                 onPressed: _launchURL,
               ),
+              SizedBox(height: SizeConfig.safeBlockVertical),
+              Text(
+                "(Paid Link)",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: SizeConfig.subtitleSize),
+              ),
               Divider(
                 thickness: 1,
                 color: Colors.grey[400],

@@ -14,6 +14,8 @@ class CustomButton extends StatelessWidget {
     this.height: 50,
     this.width: 350,
     this.padding,
+    this.borderRadius: 50,
+    this.textSize,
   }) : super(key: key);
 
   final Key key;
@@ -25,12 +27,14 @@ class CustomButton extends StatelessWidget {
   final double height;
   final double width;
   final EdgeInsets padding;
+  final double borderRadius;
+  double textSize;
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    double textSize = SizeConfig.h3Size;
+    textSize = textSize ?? SizeConfig.h3Size;
     double letterSpacing = SizeConfig.safeBlockHorizontal / 5;
     String fontFamily = 'Poppins';
     if (SizeConfig.screenWidth >= 700) {
@@ -68,7 +72,7 @@ class CustomButton extends StatelessWidget {
         ),
         shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) => RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
         elevation: MaterialStateProperty.resolveWith<double>((states) => 5),
