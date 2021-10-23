@@ -7,6 +7,7 @@ import 'package:gifterest/ui/screens/favorites/favorites_page.dart';
 import 'package:gifterest/ui/screens/my_friends/my_friends_page.dart';
 import 'package:gifterest/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:gifterest/ui/screens/settings/settings_page.dart';
 import 'package:provider/provider.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -86,12 +87,13 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ),
                     CustomListTile(
-                      title: "Sign Out",
-                      icon: LineIcons.alternateSignOut,
-                      onTap: () async {
-                        await database.deleteUserToken();
-                        await auth.signOut();
-                      },
+                      title: "Settings",
+                      icon: LineIcons.cog,
+                      onTap: () => _openRoute(
+                        context,
+                        routeName: SettingsPage.routeName,
+                        child: SettingsPage(),
+                      ),
                     ),
                   ],
                 ),

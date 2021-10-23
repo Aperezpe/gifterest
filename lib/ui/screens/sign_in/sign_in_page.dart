@@ -4,6 +4,7 @@ import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/services/apple_sign_in_available.dart';
 import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
+import 'package:gifterest/ui/common_widgets/loading_screen.dart';
 import 'package:gifterest/ui/screens/sign_in/models/sign_in_model.dart';
 import 'package:gifterest/ui/screens/sign_in/terms_and_conditions.dart';
 import 'package:gifterest/ui/screens/sign_in/widgets/sign_in_text_field.dart';
@@ -154,16 +155,7 @@ class _SignInPageState extends State<SignInPage> {
         body: Stack(
           children: [
             _buildContent(),
-            Visibility(
-              visible: model.isLoading,
-              child: Container(
-                color: Colors.black.withOpacity(.5),
-                child: Center(
-                  child:
-                      LoadingBouncingGrid.circle(backgroundColor: Colors.pink),
-                ),
-              ),
-            ),
+            model.isLoading ? LoadingScreen(isGray: true) : Container(),
           ],
         ),
       ),
