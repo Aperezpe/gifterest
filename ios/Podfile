@@ -27,7 +27,7 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
  flutter_ios_podfile_setup
 
  target 'Runner' do
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '8.6.0'
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '8.8.0'
    use_frameworks!
    use_modular_headers!
 

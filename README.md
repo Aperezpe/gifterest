@@ -15,12 +15,6 @@ Bonobo was created to help solve the problem of forgetting important dates plus 
 - Generate Friend Profile with:
   - Gift Recommendations gotten by querying friend's Age, Gender, Interests, Event, and Budget
 
-# Screenshots
-
-![Login](screenshots/Login.jpg)
-![Login](screenshots/MyFriends.jpg)
-![Login](screenshots/Interests.jpg)
-![Login](screenshots/FriendProfile.jpg)
 
 # Upcoming Features:
 
