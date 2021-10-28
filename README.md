@@ -105,8 +105,8 @@ Source: https://stackoverflow.com/questions/64973346/error-flutter-flutter-h-fil
 
 ## iOS
 
-Deployment was done following the steps in this documentation:
-https://flutter.dev/docs/deployment/ios. Read the second "Note" section in the create a build archive to
+I uploaded to App Store by following this tutorial:
+https://dzone.com/articles/flutter-release-ios-app-on-apple-store
 
 ## Android
 
