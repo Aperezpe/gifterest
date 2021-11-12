@@ -3,6 +3,8 @@ EventType getEventType(String eventName) {
     return EventType.anniversary;
   } else if (eventName == "Babyshower") {
     return EventType.babyShower;
+  } else if (eventName == "Valentines") {
+    return EventType.valentines;
   }
   return EventType.any;
 }
@@ -10,5 +12,6 @@ EventType getEventType(String eventName) {
 enum EventType {
   babyShower,
   anniversary,
+  valentines,
   any,
 }

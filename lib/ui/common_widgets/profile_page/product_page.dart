@@ -38,7 +38,7 @@ class _ProductPageState extends State<ProductPage> {
   _launchURL() async {
     String url = widget.product.itemUrl;
     if (await canLaunch(url)) {
-      await launch(url);
+      await launch(url, forceSafariVC: false);
     } else {
       throw 'Could not launch $url';
     }
