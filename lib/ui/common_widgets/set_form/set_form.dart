@@ -147,7 +147,7 @@ class _SetPersonFormState extends State<SetPersonForm> {
 
   String get appBarText {
     if (_isUser) return "Edit Profile";
-    return _isNewFriend ? "New Friend" : "Edit Friend";
+    return _isNewFriend ? "New Friend" : "Edit ${_person.name}";
   }
 
   String get floatingActionbuttonText {

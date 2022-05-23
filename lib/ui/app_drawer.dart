@@ -44,23 +44,21 @@ class AppDrawer extends StatelessWidget {
         child: Drawer(
           child: Column(
             children: [
-              InkWell(
-                onTap: () => _openRoute(
-                  context,
-                  routeName: MyProfilePage.routeName,
-                  child: MyProfilePage(),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  child: DrawerHeader(
-                    margin: EdgeInsets.only(bottom: 0),
-                    padding:
-                        EdgeInsets.only(top: SizeConfig.safeBlockVertical * 2),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[400],
+              Container(
+                width: double.infinity,
+                child: DrawerHeader(
+                  margin: EdgeInsets.only(bottom: 0),
+                  padding:
+                      EdgeInsets.only(bottom: SizeConfig.safeBlockVertical * 2),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xffF6821F), Color(0xffE11382)],
+                      stops: [0.5, 1],
+                      end: Alignment.bottomLeft,
+                      begin: Alignment.topRight,
                     ),
-                    child: _buildHeader(database),
                   ),
+                  child: _buildHeader(),
                 ),
               ),
               Flexible(
@@ -68,6 +66,15 @@ class AppDrawer extends StatelessWidget {
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   children: [
+                    CustomListTile(
+                      title: "My Profile",
+                      icon: LineIcons.user,
+                      onTap: () => _openRoute(
+                        context,
+                        routeName: MyProfilePage.routeName,
+                        child: MyProfilePage(),
+                      ),
+                    ),
                     CustomListTile(
                       title: "My Friends",
                       icon: LineIcons.gift,
@@ -105,54 +112,20 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(FirestoreDatabase database) {
-    return StreamBuilder<Person>(
-      stream: database.userStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final user = snapshot.data;
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "${user.name}",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(.25),
-                        offset: Offset(1, 4),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                    fontSize: SizeConfig.titleSize,
-                  ),
-                ),
-                SizedBox(height: SizeConfig.blockSizeVertical),
-                Text(
-                  "See your profile",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w400,
-                    fontSize: SizeConfig.subtitleSize,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else if (snapshot.hasError) {
-          print("Drawer error: ${snapshot.error}");
-        }
-
-        return Container();
-      },
+  Widget _buildHeader() {
+    return Center(
+      child: Column(
+        children: [
+          Flexible(child: Image.asset("assets/logo_transpa.png")),
+          // Text(
+          //   "Gifterest",
+          //   style: TextStyle(
+          //       fontSize: SizeConfig.h3Size,
+          //       color: Colors.black,
+          //       fontWeight: FontWeight.bold),
+          // )
+        ],
+      ),
     );
   }
 }

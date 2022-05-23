@@ -42,8 +42,8 @@ class FavoritesPage extends StatelessWidget {
                 ? EmptyContent(
                     assetPath: 'assets/broken_heart.png',
                     imageWidth: is700Wide ? 270 : 170,
-                    title: "Oh crap, you've got nothing yet",
-                    message: "",
+                    title: "No favorites yet.",
+                    message: "Tap on heart button to add a favorite",
                   )
                 : GridView.builder(
                     padding: EdgeInsets.fromLTRB(

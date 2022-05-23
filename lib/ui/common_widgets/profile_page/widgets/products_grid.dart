@@ -1,12 +1,15 @@
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/ui/common_widgets/empty_content.dart';
 import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/models/person.dart';
 import 'package:gifterest/ui/models/product.dart';
 import 'package:gifterest/ui/common_widgets/profile_page/widgets/clickable_product.dart';
 import 'package:gifterest/ui/screens/friend/event_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductsGridView extends StatefulWidget {
   const ProductsGridView({
@@ -14,6 +17,7 @@ class ProductsGridView extends StatefulWidget {
     @required this.sliderValues,
     @required this.productStream,
     @required this.gender,
+    @required this.person,
     @required this.database,
     this.eventType,
   }) : super(key: key);
@@ -21,6 +25,7 @@ class ProductsGridView extends StatefulWidget {
   final RangeValues sliderValues;
   final Stream<List<Product>> productStream;
   final String gender;
+  final Person person;
   final FirestoreDatabase database;
   final EventType eventType;
 
@@ -35,6 +40,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
 
   int get startValue => widget.sliderValues.start.round();
   int get endValue => widget.sliderValues.end.round();
+  bool get _isUser => widget.person.id == widget.database.uid;
 
   List<Product> queryProducts(List<Product> products) {
     if (widget.eventType != EventType.anniversary)
@@ -68,6 +74,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
           final products = queryProducts(snapshot.data);
+          products.shuffle();
 
           if (products.isEmpty)
             return EmptyContent(
@@ -76,7 +83,9 @@ class _ProductsGridViewState extends State<ProductsGridView>
             );
 
           return StreamBuilder<List<Product>>(
-            stream: widget.database.favoritesStream(),
+            stream: _isUser
+                ? widget.database.favoritesStream()
+                : widget.database.friendFavoritesStream(widget.person),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final favorites = snapshot.data;

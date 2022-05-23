@@ -347,7 +347,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Column _buildSignInServices() {
+  Widget _buildSignInServices() {
     final appleSingInAvailable =
         Provider.of<AppleSignInAvailable>(context, listen: false);
 
@@ -363,30 +363,28 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ),
         SizedBox(height: SizeConfig.safeBlockVertical * 2),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          if (!appleSingInAvailable.isAvailable)
-            CircleImageButton(
-              key: Key("google-signin"),
-              color: Colors.white,
-              textColor: Colors.blue,
-              onPressed: model.isLoading ? null : _signInWithGoogle,
-              imagePath: 'assets/google_logo.jpg',
-            ),
-          CircleImageButton(
-            key: Key("apple-signin"),
-            color: Colors.grey[400],
-            textColor: Colors.white,
-            onPressed: model.isLoading ? null : _signinWithApple,
-            imagePath: 'assets/apple_logo.jpg',
-          ),
-          CircleImageButton(
-            key: Key("google-signin"),
-            color: Colors.white,
-            textColor: Colors.blue,
-            onPressed: model.isLoading ? null : _signInWithGoogle,
-            imagePath: 'assets/google_logo.jpg',
-          ),
-        ]),
+        Row(
+            mainAxisAlignment: appleSingInAvailable.isAvailable
+                ? MainAxisAlignment.spaceEvenly
+                : MainAxisAlignment.center,
+            children: [
+              appleSingInAvailable.isAvailable
+                  ? CircleImageButton(
+                      key: Key("apple-signin"),
+                      color: Colors.grey[400],
+                      textColor: Colors.white,
+                      onPressed: model.isLoading ? null : _signinWithApple,
+                      imagePath: 'assets/apple_logo.jpg',
+                    )
+                  : SizedBox.shrink(),
+              CircleImageButton(
+                key: Key("google-signin"),
+                color: Colors.white,
+                textColor: Colors.blue,
+                onPressed: model.isLoading ? null : _signInWithGoogle,
+                imagePath: 'assets/google_logo.jpg',
+              ),
+            ]),
         SizedBox(height: 25),
       ],
     );

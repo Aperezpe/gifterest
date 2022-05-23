@@ -4,6 +4,7 @@ import 'package:gifterest/ui/common_widgets/app_bar_button.dart';
 import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
 import 'package:gifterest/ui/common_widgets/loading_screen.dart';
 import 'package:gifterest/ui/common_widgets/profile_page/profile_page.dart';
+import 'package:gifterest/ui/common_widgets/set_form/set_form.dart';
 import 'package:gifterest/ui/models/friend.dart';
 import 'package:gifterest/ui/screens/friend/event_type.dart';
 import 'package:gifterest/ui/common_widgets/profile_page/widgets/products_grid.dart';
@@ -85,6 +86,22 @@ class _FriendPageState extends State<FriendPage>
             icon: LineIcons.angleLeft,
             onTap: () => Navigator.of(context).pop(),
           ),
+          actions: [
+            TextButton(
+              child: Icon(
+                LineIcons.userEdit,
+                color: Colors.white,
+                size: is700Wide
+                    ? SizeConfig.safeBlockVertical * 3.2
+                    : SizeConfig.safeBlockVertical * 3.8,
+              ),
+              onPressed: () => SetPersonForm.create(
+                context,
+                person: widget.friend,
+                mainPage: widget,
+              ),
+            ),
+          ],
           isDismissable: true,
           title: widget.friend.name,
           shape: RoundedRectangleBorder(
@@ -140,6 +157,7 @@ class _FriendPageState extends State<FriendPage>
               for (var tab in myTabs)
                 ProductsGridView(
                   sliderValues: sliderValues,
+                  person: widget.friend,
                   productStream: database.queryFriendProductsStream(
                     friend: widget.friend,
                     eventType: getEventType(tab.text),

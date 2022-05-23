@@ -92,9 +92,11 @@ flutter:
   assets:
     - assets/bonobo_logo.png
     - assets/carita.png
+    - assets/logo_circle.png
     - assets/placeholder.jpg
     - assets/google_logo.jpg
     - assets/apple_logo.jpg
+    - assets/logo_transpa.png
     - assets/monkey.png
     - assets/broken_heart.png
     - assets/congrats.png

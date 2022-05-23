@@ -11,6 +11,9 @@ class APIPath {
 
   static String favorites(String uid) => 'users/$uid/favorites';
 
+  static String friendFavorites(String uid, String friendId) =>
+      'users/$uid/friends/$friendId/favorites';
+
   static String favorite(String uid, String productId) =>
       'users/$uid/favorites/$productId';
 

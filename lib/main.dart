@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:gifterest/services/apple_sign_in_available.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';

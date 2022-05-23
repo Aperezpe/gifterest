@@ -84,22 +84,15 @@ class SetInterestsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Interests",
+        title: model.isNewFriend ? "Add Interests" : "Edit ${person.name}",
         leading: AppBarButton(
           icon: LineIcons.angleLeft,
           onTap: () => Navigator.of(context).pop(),
         ),
         actions: model.selectedInterests.isNotEmpty
             ? [
-                TextButton(
-                  child: Text(
-                    'RESTART',
-                    style: TextStyle(
-                      fontSize: SizeConfig.h4Size,
-                      fontFamily: 'Poppins',
-                      color: Colors.white,
-                    ),
-                  ),
+                IconButton(
+                  icon: Icon(LineIcons.alternateUndo),
                   onPressed: model.deselectAll,
                 )
               ]

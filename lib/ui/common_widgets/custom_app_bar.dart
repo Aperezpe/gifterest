@@ -93,9 +93,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                softWrap: false,
+                // softWrap: false,
                 overflow: TextOverflow.fade,
-                maxLines: 1,
+                // maxLines: 1,
                 style: TextStyle(
                   fontSize: SizeConfig.appBarTitle,
                   fontFamily: 'Nunito-Sans',

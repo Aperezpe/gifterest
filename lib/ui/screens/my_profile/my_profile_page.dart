@@ -79,6 +79,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         setState(() => sliderValues = values),
                     body: Container(
                       child: ProductsGridView(
+                        person: user,
                         database: database,
                         sliderValues: sliderValues,
                         gender: user.gender,

@@ -37,6 +37,7 @@ abstract class Database {
   Stream<List<Interest>> queryInterestsStream(Person person);
   Stream<List<Gender>> genderStream();
   Stream<List<Product>> favoritesStream();
+  Stream<List<Product>> friendFavoritesStream(Person person);
 
   Stream<List<SpecialEvent>> specialEventsStream();
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Person person);
@@ -158,6 +159,13 @@ class FirestoreDatabase implements Database {
   @override
   Stream<List<Product>> favoritesStream() => _service.collectionStream(
         path: APIPath.favorites(uid),
+        builder: (data, documentId) => Product.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<List<Product>> friendFavoritesStream(Person friend) =>
+      _service.collectionStream(
+        path: APIPath.friendFavorites(uid, friend.id),
         builder: (data, documentId) => Product.fromMap(data, documentId),
       );
 
