@@ -8,7 +8,7 @@ package="com.aperezpe.bonobo">
 
 
    <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="${applicationName}"
         android:label="Gifterest"
         android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true">
