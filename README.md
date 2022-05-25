@@ -26,7 +26,7 @@ Bonobo was created to help solve the problem of forgetting important dates plus 
 
 # Tech/Framework Used
 
-- Flutter
+- Flutter 2.2.3 (Dart 2.13.4)
 - Provider
 - Firebase
   - Authentication
