@@ -2,6 +2,105 @@
 # Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
 
 workflows:
+  dev-(ios):
+    name: dev (iOS)
+    max_build_duration: 120
+    environment:
+      groups:
+        - appstore_credentials
+      # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
+        # APP_STORE_CONNECT_ISSUER_ID
+        # APP_STORE_CONNECT_KEY_IDENTIFIER
+        # APP_STORE_CONNECT_PRIVATE_KEY 
+        # CERTIFICATE_PRIVATE_KEY
+      vars:
+        IOS_FIREBASE_SECRET: |-
+          PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBF
+          IHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0
+          cDovL3d3dy5hcHBsZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+Cjxw
+          bGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+Q0xJRU5UX0lEPC9rZXk+
+          Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS1zazRxYTlsaWRyc2huNWNzbTQ4NDdlczg0
+          cnJnaDQ4di5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJPGtl
+          eT5SRVZFUlNFRF9DTElFTlRfSUQ8L2tleT4KCTxzdHJpbmc+Y29tLmdvb2dsZXVz
+          ZXJjb250ZW50LmFwcHMuOTk5Njk4ODA2MDk1LXNrNHFhOWxpZHJzaG41Y3NtNDg0
+          N2VzODRycmdoNDh2PC9zdHJpbmc+Cgk8a2V5PkFORFJPSURfQ0xJRU5UX0lEPC9r
+          ZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS02bGJzZjYxZzMxM3RqYmQxaTU0bG9m
+          cTUwbGY0Y2dhMS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJ
+          PGtleT5BUElfS0VZPC9rZXk+Cgk8c3RyaW5nPkFJemFTeUR2NHVQT3lGeTM0dHlF
+          eERCdEZaMFhlTzZfYnR3cnhDSTwvc3RyaW5nPgoJPGtleT5HQ01fU0VOREVSX0lE
+          PC9rZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NTwvc3RyaW5nPgoJPGtleT5QTElT
+          VF9WRVJTSU9OPC9rZXk+Cgk8c3RyaW5nPjE8L3N0cmluZz4KCTxrZXk+QlVORExF
+          X0lEPC9rZXk+Cgk8c3RyaW5nPmNvbS5leGFtcGxlLmJvbm9ibzwvc3RyaW5nPgoJ
+          PGtleT5QUk9KRUNUX0lEPC9rZXk+Cgk8c3RyaW5nPmltcG9ydGFudC1kYXRlcy1y
+          ZW1pbmRlcnM8L3N0cmluZz4KCTxrZXk+U1RPUkFHRV9CVUNLRVQ8L2tleT4KCTxz
+          dHJpbmc+aW1wb3J0YW50LWRhdGVzLXJlbWluZGVycy5hcHBzcG90LmNvbTwvc3Ry
+          aW5nPgoJPGtleT5JU19BRFNfRU5BQkxFRDwva2V5PgoJPGZhbHNlPjwvZmFsc2U+
+          Cgk8a2V5PklTX0FOQUxZVElDU19FTkFCTEVEPC9rZXk+Cgk8ZmFsc2U+PC9mYWxz
+          ZT4KCTxrZXk+SVNfQVBQSU5WSVRFX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1
+          ZT4KCTxrZXk+SVNfR0NNX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxr
+          ZXk+SVNfU0lHTklOX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxrZXk+
+          R09PR0xFX0FQUF9JRDwva2V5PgoJPHN0cmluZz4xOjk5OTY5ODgwNjA5NTppb3M6
+          NWVkMGRhYjZiZmUwYTU3MmZlODEzYTwvc3RyaW5nPgoJPGtleT5EQVRBQkFTRV9V
+          Ukw8L2tleT4KCTxzdHJpbmc+aHR0cHM6Ly9pbXBvcnRhbnQtZGF0ZXMtcmVtaW5k
+          ZXJzLmZpcmViYXNlaW8uY29tPC9zdHJpbmc+CjwvZGljdD4KPC9wbGlzdD4=
+      flutter: 2.2.3
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*dev*'
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: '*'
+          include: true
+    scripts:
+      - flutter pub get
+      - |
+        #!/bin/sh
+
+        echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+      - find . -name "Podfile" -execdir pod install \;
+      - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
+        script: keychain initialize
+      - name: Fetch signing files
+        script: |
+          # You can allow creating resources if existing are not found with `--create` flag
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
+            --type IOS_APP_DEVELOPMENT \
+            --create      
+      - name: Set up signing certificate
+        script: keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
+      - flutter build ios --debug --no-codesign --build-number=$(($PROJECT_BUILD_NUMBER + 200))
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      app_store_connect: # For iOS or macOS app
+        # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
+        
+        # Configuration related to TestFlight (optional)
+        submit_to_testflight: true # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
+        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+          - First Testers
+          - First External Testers
+        
+        # Configuration related to App Store (optional)
+        # submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
+        # release_type: SCHEDULED # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
+        # earliest_release_date: 2021-12-01T14:00:00+00:00 # Optional. Timezone-aware ISO8601 timestamp with hour precision when scheduling the release. This can be only used when release type is set to SCHEDULED. It cannot be set to a date in the past.
+        # copyright: 2022 Abraham Perez # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
+      email:
+        recipients:
+          - aperezpe01@gmail.com
   dev-(android):
     name: dev (Android)
     max_build_duration: 120
@@ -101,102 +200,3 @@ workflows:
         credentials: Encrypted(Z0FBQUFBQmlkV1d4U0ZWS2lsVnViVzNlZlVSVmt1dzNkejdKaXJQWVdxdXpyUHBxVDdTeTZyNDBGS2pBeWZjNWtBMkM5NTFVZG83ZlJDbDhvZkI1TE5ZMXZsNHVya2s5MHdlSmd1RlpTdnNEWFhsSVhjNFlMdkVZQm45QVVWRFFzRFJIWHhFQ0h4SDNaRDI1V19Bc2pNRU1vMzZrOFJqbEdCNEZza0ZDa2EtUjg4amQyaElSRXpyWGNOZDRwVEJBRTRsQWRRbDdqZXA5RWZuMnJqcXVWXzZqNFR2OGlKZHp3dFhTbklWZ0Fualk3dVFjeWJvZ3VOTGIta205OG13RFB2bFBmSVotckZGb0p0ZVlQN3ZweWVsRDBfbmJiZFRnTDNzc1RlZ3RrazEwWUx3U2FvU2VDN1Nncmw5b3FYSGhxUHc0dXkxcTZXRTRvSzZGQnJWYXgzOFZuRzNMUGZpcnRNeVh2d2RXa1lPR2NEZG5jSEhQUkJxbnR3NElmSnFDM3I3eGFiY0Q3QWV0eTRsUWpyTmpiU2NNYWlTSS1sVFloVVUzM2xhVTNUaFJUWEdPeTRETVBDWjAwek9xNXBiWk43ZFhWYzd0Z1FCNk9UVHpfcVpOTmJzbFBWaEVqcGQwbzZIU3kteTZLWThmRzVTbWhaN0F3WUlDRG1YdlBxaDBpU25NLXpMMjRlem0wejBIX01sQXphQkNTQVU2OHlwVVBWaXkyMmVYN1NmSm4zRU42bzZoX1pRNnAtaFZHUEZSeFgtVkdHMFUxQkhXcFFFMjVyQmFWNy1QVHlLYnVQQUpyTlZkTGZ2eGpCelVUZFNsc1JRcWZtaFUySGl5QS1EOW1kaXlZclNQbzRHMFRkdi1Ia0VTTGdpSFpnZ3pXSEtJY2pSSkxlRl9CaUNNd05MZ05LZExnaGwxX2xDZnB0MENNQVJwTGpua2kxV19JbjMyeTRZWFU3cnMtMWUySEZDQnVRN0FxTG1wTEF0V2VXVjZYSmtZbENRLXJfVnBWdU5vSzhBWF9JbUVrSUlPeGJnN0ttdEZCTXFHOUJ3TGFOM1dXM1EtSVJIUTZuNG5LMF91aFdwS1ltaDNHTEZrS1JqZ05oTWVBamxMbkR6alVjc0hFdmVKSi1hQVRPc1pZYTRGU1Nkd1VHSTR2UXk5UVd0WVdIX1E0Y2JXYWFpREdLUE9aZ2l4QWxYRGN4TTVtU1FTNFNRWE1CWlAxWmpjX2VPdkR0Q3hteF80S2xKeEZIOWIxYjV4U2dFNVV1TV9ubkd0ZnRBRk9LZU5CSFJwNVB4Uzg1cGxtbTFBOTkxLXhfR29HUkZDYlZ0ZVVJR1hpRTNqZmJpQnJEOFdWZDRLdS1xZUFQSVFianBrRXpmZmhHVXZabHl3Wkd4UGV2ZDJDWTBwQTZUM3BEd1dQWFdXTVBZUEtxdlF3Zkl0LXpyZXYwenhoMkVQMUhKVHRtM3JOOVNncmRydDdmdkUyTnVrZ3E2aV9CUTRmZG41MExXeWl1MkpnVGU2VlBkWmJveWhWY041bDRXUXEzTXlWd1dIdkRCMFlZbnFJMFNuZEptZEttbEhkanM2cG5VTkJIckpHTGhhaEh1T1NZV0VkOXI5UFVZeXlEVjFUYUFnTldueFExTmtRLXRMTWZiV0dtRGI3VWgyVW0xRVhOa3NBcF83bUZWMUZSY0xuWlZYeE9vVmJVTVF5b1V3UFFsWlNvLWR3WXJpbkVxeC1OUjIwOEFySWJZRG1QeE5qMHY1Z0ZVd1NGY0xxUzd2amtuZ19QSjFjenlGWkFtMENaQXhZdk44U2NBZFRlRDNseGhrU3ZDRlQ4MExjZDRkMVhaNW1fRGl3SmIxU2JvVWxUUWhiM3I5NDVXTmRyeFB5VkxPYUtUeHdtelBWZEN0RnZ6enpDOVNJQlNqXzZNX0pja21raEh2ZVgzZGx0dFpVSnNRSGF4T1hUb3hmYzhwZnJCUDVWM2gxdTluTklRNms5UVpiZDVuVmZZaUxxMmRnWG5oM3VLNjB1ZHVPN2xHRGx5NWRtcnQ3M0pNbmYyY2VhNmgyX1NqTHdqNHQwUjg4V3lENHNrdlJkLUcyYU1xUEVISGtLamdhTEctNFd0ejNENXllNkJJcWVCYk9UdGk5WlpJZTRDbW8zUWV3bTRjakFoNFVnV3V5ZHk4QVVXVXI3WXcxMVFWUVpQTnZYaXVGa082bERKQlFJeS1SRVEtVGx1TVVzZzRkQ1F1RnZicW9uamRvYVZNUlJuQmk1RXpmTzYxYlF6SDBQYTAxYWVKWldTdENrM3lLNldiTTNtU0hZVEJUNm10UlU5WFJzSUxXT0hiOFRod0NwNDkwMGZ5NW9EcUc4WndiVWYzaEcxOFZpa2wwYW4yQXVmMzRxRmRPMzJaRms2QnRzTGZCeXlNTEdCaFo1U0tkdUc4NlZsa195c1piUkV1WnYtVjNuS255RDhYLTNibjY3c0hRb25JLTRvdzkxUGI4NHYtZWo5MGlBblI0SHlFT2Y3bUctbVBOWS04YUZtb3FnX1dKYjAyd0lURkR4bW9QTjk1QlY4ZHpHMXV4b0dsTFRweGI3aGxNdWtnUzJzT09iSUttVTlxb2NaZHYwVlVCMFZaTzVqdm9IYjVPR0dmTFU4UzRkbXR0MzNnSUNxVG5iY2VxVWpnUWVXTC1WcFl5YWlKal9ZeVd6MDFDX0hQYUlObXNhX1J3WEdnLUl5WEliLXdOdWpici1halNlcWE3MjdxVWZxLUxrWjFEd1dNcTlETTZwRlJTcDBRMFJhNmktd19VZE9KOFNNTTMycjlaNU5ENllpbml5NlhIQXltRDM5OHR2cklXUExOS0pxNm5raDh4VEdPNzI0YnJYQ3IwYjRFUjkwTmpNTzcxNVR4SGQ4RUZIUlJyTWYyZkhQaFliTjJUYWRjaWdLdnN3WjJmTmRvQlAxQjEtQWNTZnBud212YVRvY09aVGUzb0NKVy1BZWtjNXl5MzFUY2pXQ05IblVnLXp0TlVnUWpuZHpxV2FsUkFaMC13LTVzVXdNS3NCZEJuTFBUWHJjM2hQVEctcHJKRXdCVExxSkJrMUlyRkE3aEhNamxma0F3RFYxUGI5bjZJeWV4dmpoUmZnUXhVYWZKb05CREFQcV9HSXdnLTNsM21hZm9sY203NjF4cm5YM3E4VDhLY1JPdjFuazY0VGN3bG1FUlJDSlA3Uy11UzN0MGYyQXJVaFR1bGFWYTVlQjVDWUdCaTcxa0t2dGFSWXEtUDUxamNmSVJjZktydlYzcjB2Ml9oUlZfZWJKZUhwLW5TNVVtbDZCU3dZeDZLS3BNd1hVOEVRaE4tcDM4RTltWWQ1TEYydjRsbUFYWU1PTkZNdERGWmtncGRDQ0c2a0Z0VHhlUkVYZ2xnMlJjbzRRS3Y1NDVxRjF0TnVGdUtNMmJib1hzRUUzdkQ3M0d4TlRLOWpOSzMyUGxFeDlPWTdmRF9HZXhDVV8wdWlicXNDcWZxMVRrSnN3dFRacl9QVzhxc1gzZmZycE1Zd25fUjFfTXBmbjltc0ZHaFo2VFhiTDI5R0c4RkRaVE82bUs1MFJab2ZyaDlRV29abzlJc19NNE5wM2o3NDBReTlPcmQtUGMwN1prMGNVSVp1MlZGOUtWVl9lQjlmSGNhT2pQZjd2Q0t3clJpZkpoQVpaWVB5Tm1WdGsyMU9CcXZpd2ZGc1pDRDFNY1NBRjNKR2FfUklPa3F1QzRPMGIyWEdlcHZEN1JKTUhrMzROaEJoclRrZ2o4dHo5SEkzYTRzWUw4RW9UTHl4a05HMG1pTHhUT0VrdmZSeEZ5RVRyMTlwb3Z3VnJDUTZfcWlzVlhjOUNoeXU4ZWZoX01EYUZhZmcxbV9uLW15WFk1WU53OEtqUkVUUzNkdy1kQ05SM0hMUldCY0VzdWtqWmdtQTlkb0IxM3J3Qmw4a2M1cGVxd29uZ2RrUVBuTjVBOTVJOXBvMGFHSzBJSkFwRHp2d0ZiSkNyVGw2TWcwNHFTV2haQXN3Z3ZMT3ozbjBwcENrczZOWmRZYWJMdENHWHVrdmhmbEUzNkp3Q0RMSS14Q2NkMXRtQnhiZUFha1NFbGcyVkhJaFNiSTE0SS1kQVE1NXlUejJ2VTF4dTNrVGF0RDc4UXRCTGZXcnZOSnVqdjRJbkx3cHFQSTZVZDlIWHJZMGRwU0REOTAyMEl6N00tMWEycm0tS0hsc1FyNUdjUUNRSm1zcHZnR3p5THo1YTFHdHllX2RDNzlCOEI3U25MRmxTNzdFQnpqbmlOeElqN2JUTHZzMDlwNW5SS1d1SUQ0SDNQRU4wQUJDaC1kVGphUEpnWkM4ZmNHdjQtckVUTE1aaGFIODRa)
         track: internal
         in_app_update_priority: 0
-  dev-(ios):
-    name: dev (iOS)
-    max_build_duration: 120
-    environment:
-      groups:
-        - appstore_credentials
-      # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
-        # APP_STORE_CONNECT_ISSUER_ID
-        # APP_STORE_CONNECT_KEY_IDENTIFIER
-        # APP_STORE_CONNECT_PRIVATE_KEY 
-        # CERTIFICATE_PRIVATE_KEY
-      vars:
-        IOS_FIREBASE_SECRET: |-
-          PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBF
-          IHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0
-          cDovL3d3dy5hcHBsZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+Cjxw
-          bGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+Q0xJRU5UX0lEPC9rZXk+
-          Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS1zazRxYTlsaWRyc2huNWNzbTQ4NDdlczg0
-          cnJnaDQ4di5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJPGtl
-          eT5SRVZFUlNFRF9DTElFTlRfSUQ8L2tleT4KCTxzdHJpbmc+Y29tLmdvb2dsZXVz
-          ZXJjb250ZW50LmFwcHMuOTk5Njk4ODA2MDk1LXNrNHFhOWxpZHJzaG41Y3NtNDg0
-          N2VzODRycmdoNDh2PC9zdHJpbmc+Cgk8a2V5PkFORFJPSURfQ0xJRU5UX0lEPC9r
-          ZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS02bGJzZjYxZzMxM3RqYmQxaTU0bG9m
-          cTUwbGY0Y2dhMS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJ
-          PGtleT5BUElfS0VZPC9rZXk+Cgk8c3RyaW5nPkFJemFTeUR2NHVQT3lGeTM0dHlF
-          eERCdEZaMFhlTzZfYnR3cnhDSTwvc3RyaW5nPgoJPGtleT5HQ01fU0VOREVSX0lE
-          PC9rZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NTwvc3RyaW5nPgoJPGtleT5QTElT
-          VF9WRVJTSU9OPC9rZXk+Cgk8c3RyaW5nPjE8L3N0cmluZz4KCTxrZXk+QlVORExF
-          X0lEPC9rZXk+Cgk8c3RyaW5nPmNvbS5leGFtcGxlLmJvbm9ibzwvc3RyaW5nPgoJ
-          PGtleT5QUk9KRUNUX0lEPC9rZXk+Cgk8c3RyaW5nPmltcG9ydGFudC1kYXRlcy1y
-          ZW1pbmRlcnM8L3N0cmluZz4KCTxrZXk+U1RPUkFHRV9CVUNLRVQ8L2tleT4KCTxz
-          dHJpbmc+aW1wb3J0YW50LWRhdGVzLXJlbWluZGVycy5hcHBzcG90LmNvbTwvc3Ry
-          aW5nPgoJPGtleT5JU19BRFNfRU5BQkxFRDwva2V5PgoJPGZhbHNlPjwvZmFsc2U+
-          Cgk8a2V5PklTX0FOQUxZVElDU19FTkFCTEVEPC9rZXk+Cgk8ZmFsc2U+PC9mYWxz
-          ZT4KCTxrZXk+SVNfQVBQSU5WSVRFX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1
-          ZT4KCTxrZXk+SVNfR0NNX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxr
-          ZXk+SVNfU0lHTklOX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxrZXk+
-          R09PR0xFX0FQUF9JRDwva2V5PgoJPHN0cmluZz4xOjk5OTY5ODgwNjA5NTppb3M6
-          NWVkMGRhYjZiZmUwYTU3MmZlODEzYTwvc3RyaW5nPgoJPGtleT5EQVRBQkFTRV9V
-          Ukw8L2tleT4KCTxzdHJpbmc+aHR0cHM6Ly9pbXBvcnRhbnQtZGF0ZXMtcmVtaW5k
-          ZXJzLmZpcmViYXNlaW8uY29tPC9zdHJpbmc+CjwvZGljdD4KPC9wbGlzdD4=
-      flutter: 2.2.3
-      xcode: latest
-      cocoapods: default
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: '*dev*'
-          include: true
-          source: true
-      tag_patterns:
-        - pattern: '*'
-          include: true
-    scripts:
-      - flutter pub get
-      - |
-        #!/bin/sh
-
-        echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-      - find . -name "Podfile" -execdir pod install \;
-      - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
-        script: keychain initialize
-      - name: Fetch signing files
-        script: |
-          # You can allow creating resources if existing are not found with `--create` flag
-          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type IOS_APP_DEVELOPMENT \
-            --create      
-      - name: Set up signing certificate
-        script: keychain add-certificates
-      - name: Set up code signing settings on Xcode project
-        script: xcode-project use-profiles
-      - flutter build ios --debug --no-codesign
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
-    publishing:
-      app_store_connect: # For iOS or macOS app
-        # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
-        
-        # Configuration related to TestFlight (optional)
-        submit_to_testflight: true # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
-        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
-          - First Testers
-          - First External Testers
-        
-        # Configuration related to App Store (optional)
-        # submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
-        # release_type: SCHEDULED # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
-        # earliest_release_date: 2021-12-01T14:00:00+00:00 # Optional. Timezone-aware ISO8601 timestamp with hour precision when scheduling the release. This can be only used when release type is set to SCHEDULED. It cannot be set to a date in the past.
-        # copyright: 2022 Abraham Perez # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
-      email:
-        recipients:
-          - aperezpe01@gmail.com
