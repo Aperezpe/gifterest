@@ -75,7 +75,7 @@ workflows:
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - flutter build ios --debug --no-codesign --build-number=$(($PROJECT_BUILD_NUMBER + 200))
+      - flutter build ios --debug --no-codesign --build-number=$(($PROJECT_BUILD_NUMBER + 17))
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
