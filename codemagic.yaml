@@ -105,6 +105,13 @@ workflows:
     name: dev (iOS)
     max_build_duration: 120
     environment:
+      groups:
+        - appstore_credentials
+      # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
+        # APP_STORE_CONNECT_ISSUER_ID
+        # APP_STORE_CONNECT_KEY_IDENTIFIER
+        # APP_STORE_CONNECT_PRIVATE_KEY 
+        # CERTIFICATE_PRIVATE_KEY
       vars:
         IOS_FIREBASE_SECRET: |-
           PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBF
@@ -155,6 +162,18 @@ workflows:
 
         echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
       - find . -name "Podfile" -execdir pod install \;
+      - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
+        script: keychain initialize
+      - name: Fetch signing files
+        script: |
+          # You can allow creating resources if existing are not found with `--create` flag
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
+            --type IOS_APP_DEVELOPMENT \
+            --create      
+      - name: Set up signing certificate
+        script: keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
       - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
