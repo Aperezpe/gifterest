@@ -55,7 +55,7 @@ workflows:
         FCI_KEYSTORE_PASSWORD: Encrypted(Z0FBQUFBQmlkV1d4NjVPeEdpWVBwcWxTZU5DbFRkV3BaMjNmM1BQaXhuMG5xTmJjOVlqRm5oeFBfYkhLT05aY2FsbTRpLXk0WW9kT05lRUhpdDBjM290RTE4cEZPUXE1bWc9PQ==)
         FCI_KEY_PASSWORD: Encrypted(Z0FBQUFBQmlkV1d4SUhWdlNtcXVkQnlUWElYS1VCZktVRHkzajRsNlRlQm9CZ2ZnN0RmOFRybHZwMnVRQ0I3M0RKVEhHck1VNWgyWHlHb3hLTjhBRGZwZE5ORWd4S0t0S1E9PQ==)
         FCI_KEY_ALIAS: Encrypted(Z0FBQUFBQmlkV1d4U3BPMmVCU3J1MjN4RFJobmE0TExCX3lSSThUajJQY1ZIUWFEX3g4alVHX0pwX3d4dERQby1HVWRHNWRuSzRkbmpYS0NNWW1iMndsSlJqTWEzM0xrcVE9PQ==)
-      flutter: stable
+      flutter: 2.2.3
       xcode: latest
       cocoapods: default
     triggering:
@@ -154,10 +154,6 @@ workflows:
         #!/bin/sh
 
         echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-      - cd $FCI_BUILD_DIR/ios
-      - ls
-      - cd $FCI_BUILD_DIR/ios/Flutter
-      - ls
       - find . -name "Podfile" -execdir pod install \;
       - flutter build ios --debug --no-codesign
     artifacts:
