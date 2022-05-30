@@ -149,11 +149,15 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - flutter packages pub get
+      - flutter pub get
       - |
         #!/bin/sh
 
         echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+      - cd $FCI_BUILD_DIR/ios
+      - ls
+      - cd $FCI_BUILD_DIR/ios/Flutter
+      - ls
       - find . -name "Podfile" -execdir pod install \;
       - flutter build ios --debug --no-codesign
     artifacts:
