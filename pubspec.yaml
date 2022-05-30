@@ -53,7 +53,7 @@ dependencies:
   loading_animations: ^2.2.0
   top_snackbar_flutter: ^1.0.0
   line_icons: ^2.0.1
-  flutter_local_notifications: ^8.1.1+1
+  flutter_local_notifications: ^4.0.1
 
   flutter:
     sdk: flutter
