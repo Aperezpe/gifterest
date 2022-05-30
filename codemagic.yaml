@@ -4,7 +4,7 @@
 workflows:
   dev-(android):
     name: dev (Android)
-    max_build_duration: 60
+    max_build_duration: 120
     environment:
       vars:
         ANDROID_FIREBASE_SECRET: |-
@@ -103,7 +103,7 @@ workflows:
         in_app_update_priority: 0
   dev-(ios):
     name: dev (iOS)
-    max_build_duration: 60
+    max_build_duration: 120
     environment:
       vars:
         IOS_FIREBASE_SECRET: |-
@@ -135,7 +135,7 @@ workflows:
           NWVkMGRhYjZiZmUwYTU3MmZlODEzYTwvc3RyaW5nPgoJPGtleT5EQVRBQkFTRV9V
           Ukw8L2tleT4KCTxzdHJpbmc+aHR0cHM6Ly9pbXBvcnRhbnQtZGF0ZXMtcmVtaW5k
           ZXJzLmZpcmViYXNlaW8uY29tPC9zdHJpbmc+CjwvZGljdD4KPC9wbGlzdD4=
-      flutter: stable
+      flutter: 2.2.3
       xcode: latest
       cocoapods: default
     triggering:
