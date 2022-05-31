@@ -75,7 +75,14 @@ workflows:
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - flutter build ios --debug --no-codesign --build-number=$(($PROJECT_BUILD_NUMBER + 17))
+      - name: Build ipa artifact
+        # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
+        # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
+        script: |
+          flutter build ipa --release \
+          --build-name=1.0.0 \
+          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --export-options-plist=/Users/builder/export_options.plist 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
@@ -101,6 +108,9 @@ workflows:
       email:
         recipients:
           - aperezpe01@gmail.com
+        notify:
+          success: true
+          failure: false
   dev-(android):
     name: dev (Android)
     max_build_duration: 120
