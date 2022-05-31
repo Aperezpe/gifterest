@@ -7,7 +7,7 @@ workflows:
     max_build_duration: 120
     environment:
       groups:
-        - appstore_credentials
+        - appstore_credentials_dev
       # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
         # APP_STORE_CONNECT_ISSUER_ID
         # APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -68,6 +68,99 @@ workflows:
       - name: Fetch signing files
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
+          # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
+            --type IOS_APP_DEVELOPMENT \
+            --create      
+      - name: Set up signing certificate
+        script: keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: xcode-project use-profiles
+      - flutter build ios --debug --no-codesign
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      slack:
+        channel: '#bonobo'
+        notify_on_build_start: true
+        notify:
+          success: true
+          failure: false
+      email:
+        recipients:
+          - aperezpe01@gmail.com
+        notify:
+          success: true
+          failure: false
+  uat-(ios):
+    name: uat (iOS)
+    max_build_duration: 120
+    environment:
+      groups:
+        - appstore_credentials
+      # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
+        # APP_STORE_CONNECT_ISSUER_ID
+        # APP_STORE_CONNECT_KEY_IDENTIFIER
+        # APP_STORE_CONNECT_PRIVATE_KEY 
+        # CERTIFICATE_PRIVATE_KEY
+      vars:
+        IOS_FIREBASE_SECRET: |-
+          PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBF
+          IHBsaXN0IFBVQkxJQyAiLS8vQXBwbGUvL0RURCBQTElTVCAxLjAvL0VOIiAiaHR0
+          cDovL3d3dy5hcHBsZS5jb20vRFREcy9Qcm9wZXJ0eUxpc3QtMS4wLmR0ZCI+Cjxw
+          bGlzdCB2ZXJzaW9uPSIxLjAiPgo8ZGljdD4KCTxrZXk+Q0xJRU5UX0lEPC9rZXk+
+          Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS1zazRxYTlsaWRyc2huNWNzbTQ4NDdlczg0
+          cnJnaDQ4di5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJPGtl
+          eT5SRVZFUlNFRF9DTElFTlRfSUQ8L2tleT4KCTxzdHJpbmc+Y29tLmdvb2dsZXVz
+          ZXJjb250ZW50LmFwcHMuOTk5Njk4ODA2MDk1LXNrNHFhOWxpZHJzaG41Y3NtNDg0
+          N2VzODRycmdoNDh2PC9zdHJpbmc+Cgk8a2V5PkFORFJPSURfQ0xJRU5UX0lEPC9r
+          ZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NS02bGJzZjYxZzMxM3RqYmQxaTU0bG9m
+          cTUwbGY0Y2dhMS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbTwvc3RyaW5nPgoJ
+          PGtleT5BUElfS0VZPC9rZXk+Cgk8c3RyaW5nPkFJemFTeUR2NHVQT3lGeTM0dHlF
+          eERCdEZaMFhlTzZfYnR3cnhDSTwvc3RyaW5nPgoJPGtleT5HQ01fU0VOREVSX0lE
+          PC9rZXk+Cgk8c3RyaW5nPjk5OTY5ODgwNjA5NTwvc3RyaW5nPgoJPGtleT5QTElT
+          VF9WRVJTSU9OPC9rZXk+Cgk8c3RyaW5nPjE8L3N0cmluZz4KCTxrZXk+QlVORExF
+          X0lEPC9rZXk+Cgk8c3RyaW5nPmNvbS5leGFtcGxlLmJvbm9ibzwvc3RyaW5nPgoJ
+          PGtleT5QUk9KRUNUX0lEPC9rZXk+Cgk8c3RyaW5nPmltcG9ydGFudC1kYXRlcy1y
+          ZW1pbmRlcnM8L3N0cmluZz4KCTxrZXk+U1RPUkFHRV9CVUNLRVQ8L2tleT4KCTxz
+          dHJpbmc+aW1wb3J0YW50LWRhdGVzLXJlbWluZGVycy5hcHBzcG90LmNvbTwvc3Ry
+          aW5nPgoJPGtleT5JU19BRFNfRU5BQkxFRDwva2V5PgoJPGZhbHNlPjwvZmFsc2U+
+          Cgk8a2V5PklTX0FOQUxZVElDU19FTkFCTEVEPC9rZXk+Cgk8ZmFsc2U+PC9mYWxz
+          ZT4KCTxrZXk+SVNfQVBQSU5WSVRFX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1
+          ZT4KCTxrZXk+SVNfR0NNX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxr
+          ZXk+SVNfU0lHTklOX0VOQUJMRUQ8L2tleT4KCTx0cnVlPjwvdHJ1ZT4KCTxrZXk+
+          R09PR0xFX0FQUF9JRDwva2V5PgoJPHN0cmluZz4xOjk5OTY5ODgwNjA5NTppb3M6
+          NWVkMGRhYjZiZmUwYTU3MmZlODEzYTwvc3RyaW5nPgoJPGtleT5EQVRBQkFTRV9V
+          Ukw8L2tleT4KCTxzdHJpbmc+aHR0cHM6Ly9pbXBvcnRhbnQtZGF0ZXMtcmVtaW5k
+          ZXJzLmZpcmViYXNlaW8uY29tPC9zdHJpbmc+CjwvZGljdD4KPC9wbGlzdD4=
+      flutter: 2.2.3
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*uat*'
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: '*'
+          include: true
+    scripts:
+      - flutter pub get
+      - |
+        #!/bin/sh
+
+        echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+      - find . -name "Podfile" -execdir pod install \;
+      - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
+        script: keychain initialize
+      - name: Fetch signing files
+        script: |
+          # You can allow creating resources if existing are not found with `--create` flag
+          # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
             --type IOS_APP_STORE \
             --create      
@@ -80,7 +173,7 @@ workflows:
         # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
         script: |
           flutter build ipa --release \
-          --build-name=1.0.1 \
+          --build-name=1.0.$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
           --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
           --export-options-plist=/Users/builder/export_options.plist 
     artifacts:
