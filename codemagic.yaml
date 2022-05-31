@@ -69,7 +69,7 @@ workflows:
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type IOS_APP_DEVELOPMENT \
+            --type IOS_APP_STORE \
             --create      
       - name: Set up signing certificate
         script: keychain add-certificates
