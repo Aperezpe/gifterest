@@ -31,7 +31,7 @@ workflows:
     scripts:
       - name: Setup Google Services
         script: |
-          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/google.services.json
+          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
       - name: Setup key properties
         script: |
           echo $CM_KEYSTORE | base64 --decode > /tmp/keystore.keystore
@@ -47,9 +47,9 @@ workflows:
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
-      - name: Build APK with Flutter
+      - name: Build App Bundle with Flutter
         script: |
-          cd . && flutter build apk --release --build-name=1.0.1 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
+          cd . && flutter build appbundle --release --build-name=1.0.1 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
