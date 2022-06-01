@@ -9,6 +9,7 @@ workflows:
       groups:
         - firestore_secrets_dev
         - keystore_credentials_dev
+        - google_play_dev
       vars:
         CM_KEYSTORE_PATH: /tmp/keystore.keystore
         PACKAGE_NAME: 'com.aperezpe.bonobo'
