@@ -2,7 +2,6 @@ import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/ui/common_widgets/custom_list_tile.dart';
-import 'package:gifterest/ui/models/person.dart';
 import 'package:gifterest/ui/screens/favorites/favorites_page.dart';
 import 'package:gifterest/ui/screens/my_friends/my_friends_page.dart';
 import 'package:gifterest/ui/screens/my_profile/my_profile_page.dart';

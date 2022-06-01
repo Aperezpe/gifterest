@@ -56,8 +56,8 @@ class Auth implements AuthBase {
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((value) => _userCredentials = value);
 
-    await _firebaseAuth.currentUser.updateProfile(displayName: name);
-    await authResult.user.updateProfile(displayName: name);
+    await _firebaseAuth.currentUser.updateDisplayName(name);
+    await authResult.user.updateDisplayName(name);
 
     return _userFromFirebase(_firebaseAuth.currentUser);
   }
