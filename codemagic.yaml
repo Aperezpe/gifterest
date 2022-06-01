@@ -13,7 +13,7 @@ workflows:
       vars:
         CM_KEYSTORE_PATH: /tmp/keystore.keystore
         PACKAGE_NAME: 'com.aperezpe.bonobo'
-        GOOGLE_PLAY_TRACK: "alpha"
+        GOOGLE_PLAY_TRACK: 'Family & Friends testing'
       flutter: 2.2.3
       xcode: latest
       cocoapods: default
@@ -29,7 +29,7 @@ workflows:
           include: true
     
     scripts:
-      - name: Stup Google Services
+      - name: Setup Google Services
         script: |
           echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/google.services.json
       - name: Setup key properties
@@ -71,7 +71,7 @@ workflows:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: $GOOGLE_PLAY_TRACK
-        in_app_update_priority: 0
+        submit_as_draft: true
   # dev-(ios):
   #   name: dev (iOS)
   #   max_build_duration: 120
