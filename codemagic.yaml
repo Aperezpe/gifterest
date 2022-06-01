@@ -69,7 +69,7 @@ workflows:
           success: true
           failure: false
       google_play:
-        credentials: $ANDROID_FIREBASE_SECRET
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: $GOOGLE_PLAY_TRACK
         in_app_update_priority: 0
   dev-(ios):
