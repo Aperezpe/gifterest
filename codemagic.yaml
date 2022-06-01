@@ -13,7 +13,7 @@ workflows:
       vars:
         CM_KEYSTORE_PATH: /tmp/keystore.keystore
         PACKAGE_NAME: 'com.aperezpe.bonobo'
-        GOOGLE_PLAY_TRACK: 'Family & Friends testing'
+        GOOGLE_PLAY_TRACK: 'beta'
       flutter: 2.2.3
       xcode: latest
       cocoapods: default
