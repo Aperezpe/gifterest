@@ -89,7 +89,7 @@ workflows:
         # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets
       flutter: 2.2.3
-      xcode: latest
+      xcode: 13.4
       cocoapods: default
     triggering:
       events:
@@ -112,6 +112,7 @@ workflows:
           #!/bin/sh
 
           echo $IOS_FIREBASE_SECRET_$CM_BRANCH | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+          echo $IOS_FIREBASE_SECRET_$CM_BRANCH
       - name: Pod install
         script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
@@ -146,10 +147,7 @@ workflows:
 
           echo Build number to release: $IOS_BUILD_NUMBER
 
-          flutter build ipa --release \
-          --build-name=1.0.2 \
-          --build-number=$IOS_BUILD_NUMBER \
-          --export-options-plist=/Users/builder/export_options.plist 
+          flutter build ipa --release --build-name=1.0.2 --build-number=6 --export-options-plist=/Users/builder/export_options.plist 
       # - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
