@@ -73,7 +73,7 @@ workflows:
   #       track: $GOOGLE_PLAY_TRACK
   #       submit_as_draft: true
   ios-workflow:
-    name: dev (iOS)
+    name: iOS Workflow
     max_build_duration: 120
     environment:
       groups:
@@ -81,7 +81,7 @@ workflows:
         # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
         # APP_STORE_CONNECT_ISSUER_ID
         # APP_STORE_CONNECT_KEY_IDENTIFIER
-        # APP_STORE_CONNECT_PRIVATE_KEY 
+        # APP_STORE_CONNECT_PRIVATE_KEY å
         - signing_cert
         # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets_dev
