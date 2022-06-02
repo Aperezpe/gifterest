@@ -120,6 +120,8 @@ workflows:
             main) SIGNING_TYPE="IOS_APP_STORE" ;;
             *) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
           esac
+
+          echo $SIGNING_TYPE
       - name: Fetch signing files
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
