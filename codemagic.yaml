@@ -82,7 +82,7 @@ workflows:
         # APP_STORE_CONNECT_ISSUER_ID
         # APP_STORE_CONNECT_KEY_IDENTIFIER
         # APP_STORE_CONNECT_PRIVATE_KEY 
-        - signing_cert
+        - distribution_signing_cert
         # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets_dev
       flutter: 2.2.3
