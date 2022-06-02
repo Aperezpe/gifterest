@@ -92,7 +92,7 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: '*$CM_BRANCH*'
+        - pattern: '*"$CM_BRANCH"*'
           include: true
           source: true
       tag_patterns:
