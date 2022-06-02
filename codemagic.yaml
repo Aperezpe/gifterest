@@ -84,7 +84,7 @@ workflows:
         # APP_STORE_CONNECT_PRIVATE_KEY 
         - distribution_signing_cert
         # CERTIFICATE_PRIVATE_KEY
-        - firestore_secrets_$CM_BRANCH
+        - firestore_secrets_dev
       flutter: 2.2.3
       xcode: latest
       cocoapods: default
