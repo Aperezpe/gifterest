@@ -76,6 +76,9 @@ workflows:
     name: iOS Workflow
     max_build_duration: 120
     environment:
+      # vars:
+      #   SIGNING_TYPE: IOS_APP_STORE
+      #   SIGNING_TYPE_DEV: IOS_APP_DEVELOPMENT
       groups:
         - appstore_credentials
         # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
@@ -84,7 +87,7 @@ workflows:
         # APP_STORE_CONNECT_PRIVATE_KEY å
         - signing_cert
         # CERTIFICATE_PRIVATE_KEY
-        - firestore_secrets_dev
+        - firestore_secrets
       flutter: 2.2.3
       xcode: latest
       cocoapods: default
@@ -102,12 +105,15 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - flutter pub get
-      - |
-        #!/bin/sh
+      - name: Get flutter packages
+        script: flutter pub get
+      - name: Saves Firebase Google Services
+        script: |
+          #!/bin/sh
 
-        echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-      - find . -name "Podfile" -execdir pod install \;
+          echo $IOS_FIREBASE_SECRET_$CM_BRANCH | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+      - name: Pod install
+        script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
         script: keychain initialize
       - name: Fetch signing files
@@ -118,13 +124,11 @@ workflows:
             main) SIGNING_TYPE="IOS_APP_STORE" ;;
             *) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
           esac
-          echo Signing with type: $SIGNING_TYPE since current branch is $CM_BRANCH
+          echo Signing with type: $SIGNING_TYPE since branch is $CM_BRANCH
 
           # You can allow creating resources if existing are not found with `--create` flag
           # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
-          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type IOS_APP_DEVELOPMENT \
-            --create      
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" --type $SIGNING_TYPE --create      
       - name: Set up signing certificate
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
@@ -143,6 +147,22 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
+      app_store_connect: # For iOS or macOS app
+        # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
+        
+        # Configuration related to TestFlight (optional)
+        # submit_to_testflight: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
+        # beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+        #   - First Testers
+        #   - First External Testers
+        
+        # Configuration related to App Store (optional)
+        # submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
+        # release_type: MANUAL # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
+        # copyright: 2022 Gifterest # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
       slack:
         channel: '#bonobo'
         notify_on_build_start: true
