@@ -73,7 +73,7 @@ workflows:
   #       track: $GOOGLE_PLAY_TRACK
   #       submit_as_draft: true
   dev-(ios):
-    name: iOS Workflow (iOS)
+    name: dev (iOS)
     max_build_duration: 120
     environment:
       groups:
@@ -82,7 +82,7 @@ workflows:
         # APP_STORE_CONNECT_ISSUER_ID
         # APP_STORE_CONNECT_KEY_IDENTIFIER
         # APP_STORE_CONNECT_PRIVATE_KEY 
-        - distribution_signing_cert
+        - signing_cert
         # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets_dev
       flutter: 2.2.3
@@ -107,30 +107,18 @@ workflows:
       - find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
         script: keychain initialize
-      - name: Assigning signing type for current branch $CM_BRANCH
-        script: |
-          case "$CM_BRANCH" in
-            dev) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
-            uat) SIGNING_TYPE="IOS_APP_STORE" ;;
-          esac
       - name: Fetch signing files
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
           # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type $SIGNING_TYPE \
+            --type IOS_APP_DEVELOPMENT \
             --create      
       - name: Set up signing certificate
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
-      - name: Build ipa artifact
-        # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
-        # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
-        script: |
-          flutter build ipa --release \
-          --build-name=1.0.1 \
-          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
-          --export-options-plist=/Users/builder/export_options.plist 
+        script: xcode-project use-profiles
+      - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
