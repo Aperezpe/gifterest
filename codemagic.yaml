@@ -95,6 +95,9 @@ workflows:
         - pattern: '*dev*'
           include: true
           source: true
+        - pattern: '*uat*'
+          include: true
+          source: true
       tag_patterns:
         - pattern: '*'
           include: true
