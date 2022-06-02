@@ -102,31 +102,63 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
-      - flutter pub get
-      - |
-        #!/bin/sh
+      - name: Get flutter packages
+        script: flutter pub get
+      - name: Saves Firebase Google Services
+        script: |
+          #!/bin/sh
 
-        echo $IOS_FIREBASE_SECRET_$CM_BRANCH | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-      - find . -name "Podfile" -execdir pod install \;
+          echo $IOS_FIREBASE_SECRET_$CM_BRANCH | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+      - name: Pod install
+        script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
         script: keychain initialize
+      - name: Set up signing type based on environment
+        script: |
+          case "$CM_BRANCH" in
+            DEV) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
+            UAT) SIGNING_TYPE="IOS_APP_STORE" ;;
+          esac
       - name: Fetch signing files
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
           # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type IOS_APP_DEVELOPMENT \
+            --type $SIGNING_TYPE \
             --create      
       - name: Set up signing certificate
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - flutter build ios --debug --no-codesign
+      - name: Build ipa artifact
+        # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
+        # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
+        script: |
+          flutter build ipa --release \
+          --build-name=1.0.2 \
+          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --export-options-plist=/Users/builder/export_options.plist 
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
+      app_store_connect: # For iOS or macOS app
+        # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
+        
+        # Configuration related to TestFlight (optional)
+        submit_to_testflight: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
+        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+          - First Testers
+          - First External Testers
+        
+        # Configuration related to App Store (optional)
+        submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
+        release_type: MANUAL # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
+        copyright: 2022 Gifterest # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
       slack:
         channel: '#bonobo'
         notify_on_build_start: true
