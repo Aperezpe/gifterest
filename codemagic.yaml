@@ -116,8 +116,9 @@ workflows:
       - name: Set up signing type based on environment
         script: |
           case "$CM_BRANCH" in
-            DEV) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
-            UAT) SIGNING_TYPE="IOS_APP_STORE" ;;
+            uat) SIGNING_TYPE="IOS_APP_STORE" ;;
+            main) SIGNING_TYPE="IOS_APP_STORE" ;;
+            *) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
           esac
       - name: Fetch signing files
         script: |
