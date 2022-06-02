@@ -121,14 +121,12 @@ workflows:
             *) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
           esac
 
-          echo $SIGNING_TYPE
+          echo Signing with type: $SIGNING_TYPE
       - name: Fetch signing files
         script: |
           # You can allow creating resources if existing are not found with `--create` flag
           # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
-          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
-            --type $SIGNING_TYPE \
-            --create      
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" --type "$SIGNING_TYPE" --create      
       - name: Set up signing certificate
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
