@@ -137,9 +137,18 @@ workflows:
         # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
         # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
         script: |
+          # Get Build number for environment specific
+          case "$CM_BRANCH" in
+            uat) BUILD_NUMBER=$(($(app-store-connect app_store_build_number "$APP_STORE_ID") + 1)) ;;
+            main) BUILD_NUMBER=$(($(app-store-connect app_store_build_number "$APP_STORE_ID") + 1)) ;;
+            *) BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) ;;
+          esac
+
+          echo Build number to release: $BUILD_NUMBER
+
           flutter build ipa --release \
           --build-name=1.0.2 \
-          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --build-number=$BUILD_NUMBER \
           --export-options-plist=/Users/builder/export_options.plist 
       # - flutter build ios --debug --no-codesign
     artifacts:
