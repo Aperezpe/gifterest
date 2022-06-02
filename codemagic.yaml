@@ -72,7 +72,7 @@ workflows:
   #       credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
   #       track: $GOOGLE_PLAY_TRACK
   #       submit_as_draft: true
-  dev-(ios):
+  $CM_BRANCH-(ios):
     name: dev (iOS)
     max_build_duration: 120
     environment:
