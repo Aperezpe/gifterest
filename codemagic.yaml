@@ -72,7 +72,7 @@ workflows:
   #       credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
   #       track: $GOOGLE_PLAY_TRACK
   #       submit_as_draft: true
-  ios-workflow:
+  dev-(ios):
     name: iOS Workflow (iOS)
     max_build_duration: 120
     environment:
