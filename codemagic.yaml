@@ -109,10 +109,16 @@ workflows:
         script: flutter pub get
       - name: Saves Firebase Google Services
         script: |
-          #!/bin/sh
+          # Set up google service file based on environment
+          case "$CM_BRANCH" in
+            uat) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_UAT" ;;
+            main) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET" ;;
+            *) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_DEV" ;;
+          esac
 
-          echo $IOS_FIREBASE_SECRET_$CM_BRANCH | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
-          echo $IOS_FIREBASE_SECRET_$CM_BRANCH
+          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+          
+          echo $IOS_FIREBASE_SECRET
       - name: Pod install
         script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
