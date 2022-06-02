@@ -160,13 +160,25 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
-      app_store_connect: # For iOS or macOS app
-        when:
-          condition: $CM_BRANCH == "uat"
-        # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
+      scripts: 
+        name: Publish
+        script: |
+          if [ $CM_BRANCH == "uat"] || [ $CM_BRANCH == "main" ]
+          then
+            app-store-connect publish \
+            --path /Users/builder/clone/build/ios/ipa/gifterest.ipa \ 
+            --key-id @env:APP_STORE_CONNECT_KEY_IDENTIFIER \
+            --issuer-id @env:APP_STORE_CONNECT_ISSUER_ID \
+            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY
+          else
+            echo "Build Successful!"
+          fi
+
+      # app_store_connect: # For iOS or macOS app
+      #   # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
+      #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+      #   key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
+      #   issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
         
         # Configuration related to TestFlight (optional)
         # submit_to_testflight: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
