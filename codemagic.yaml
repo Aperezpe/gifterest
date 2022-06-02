@@ -155,13 +155,7 @@ workflows:
 
           flutter build ipa --release --build-name=1.0.2 --build-number=6 --export-options-plist=/Users/builder/export_options.plist 
       # - flutter build ios --debug --no-codesign
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
-    publishing:
-      scripts: 
-        name: Publish
+      - name: Publish
         script: |
           if [ $CM_BRANCH == "uat"] || [ $CM_BRANCH == "main" ]
           then
@@ -173,7 +167,11 @@ workflows:
           else
             echo "Build Successful!"
           fi
-
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
       # app_store_connect: # For iOS or macOS app
       #   # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
       #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
