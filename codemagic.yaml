@@ -112,6 +112,14 @@ workflows:
         script: keychain initialize
       - name: Fetch signing files
         script: |
+          # Set up signing type based on environment
+          case "$CM_BRANCH" in
+            uat) SIGNING_TYPE="IOS_APP_STORE" ;;
+            main) SIGNING_TYPE="IOS_APP_STORE" ;;
+            *) SIGNING_TYPE="IOS_APP_DEVELOPMENT" ;;
+          esac
+          echo Signing with type: $SIGNING_TYPE since current branch is $CM_BRANCH
+
           # You can allow creating resources if existing are not found with `--create` flag
           # use --type IOS_APP_DEVELOPMENT together with development signing cert for DEVELOPMENT
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
@@ -121,7 +129,15 @@ workflows:
         script: keychain add-certificates
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
-      - flutter build ios --debug --no-codesign
+      - name: Build ipa artifact
+        # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
+        # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
+        script: |
+          flutter build ipa --release \
+          --build-name=1.0.2 \
+          --build-number=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) \
+          --export-options-plist=/Users/builder/export_options.plist 
+      # - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
