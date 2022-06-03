@@ -28,6 +28,15 @@ workflows:
           include: true
     
     scripts:
+       - name: Set up key properties
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH
+          cat >> "$CM_BUILD_DIR/android/key.properties" <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=$CM_KEYSTORE_PATH
+          EOF          
       - name: Setup Google Services
         script: |
           # Set up google service file based on environment
@@ -43,10 +52,6 @@ workflows:
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
-      - name: Signing Android app
-        script: |
-          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH   # Not required if using team code signing identities
-          cd $CM_BUILD_DIR/android && ls && ./gradlew assembleRelease
       - name: Build App Bundle with Flutter
         script: |
           cd . && flutter build appbundle \
