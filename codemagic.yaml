@@ -154,38 +154,42 @@ workflows:
 
           flutter build ipa --release --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist 
       # - flutter build ios --debug --no-codesign
-      - name: Publish
-        script: |
-          if [[ $CM_BRANCH == "uat" ]] || [[ $CM_BRANCH == "main" ]]; \
-          then app-store-connect publish \
-            --path /Users/builder/clone/build/ios/ipa/gifterest.ipa \
-            --key-id @env:APP_STORE_CONNECT_KEY_IDENTIFIER \
-            --issuer-id @env:APP_STORE_CONNECT_ISSUER_ID \
-            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY; \
-          else echo "Build Successful"; \
-          fi
+      # - name: Publish
+      #   script: |
+      #     if [[ $CM_BRANCH == "uat" ]] || [[ $CM_BRANCH == "main" ]]; \
+      #     then app-store-connect publish \
+      #       --path /Users/builder/clone/build/ios/ipa/gifterest.ipa \
+      #       --key-id @env:APP_STORE_CONNECT_KEY_IDENTIFIER \
+      #       --issuer-id @env:APP_STORE_CONNECT_ISSUER_ID \
+      #       --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY; \
+      #     else echo "Build Successful"; \
+      #     fi
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
-
+      scripts:
+        - name: Publishing Script
+          script: |
+            echo Publishing...
+            echo Success!
       # app_store_connect: # For iOS or macOS app
       #   # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
       #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
       #   key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER 
       #   issuer_id: $APP_STORE_CONNECT_ISSUER_ID 
         
-        # Configuration related to TestFlight (optional)
-        # submit_to_testflight: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
-        # beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
-        #   - First Testers
-        #   - First External Testers
+      #   # Configuration related to TestFlight (optional)
+      #   submit_to_testflight: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to TestFlight beta review. Required for distributing to beta groups. Note: This action is performed during post-processing.
+      #   beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+      #     - First Testers
+      #     - First External Testers
         
-        # Configuration related to App Store (optional)
-        # submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
-        # release_type: MANUAL # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
-        # copyright: 2022 Gifterest # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
+      #   # Configuration related to App Store (optional)
+      #   submit_to_app_store: false # Optional boolean, defaults to false. Whether or not to submit the uploaded build to App Store review. Note: This action is performed during post-processing.
+      #   release_type: MANUAL # Optional, defaults to MANUAL. Supported values: MANUAL, AFTER_APPROVAL or SCHEDULED
+      #   copyright: 2022 Gifterest # Optional. The name of the person or entity that owns the exclusive rights to your app, preceded by the year the rights were obtained.
       
       slack:
         channel: '#bonobo'
