@@ -8,10 +8,9 @@ workflows:
     environment:
       groups:
         - firestore_secrets
-        - keystore_credentials_dev
-        - google_play_dev
+        - keystore_credentials
+        - google_play_json_sec
       vars:
-        CM_KEYSTORE_PATH: /tmp/keystore.keystore
         PACKAGE_NAME: 'com.aperezpe.bonobo'
         GOOGLE_PLAY_TRACK: 'beta'
       flutter: 2.2.3
@@ -38,24 +37,21 @@ workflows:
           esac
 
           echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
-      - name: Setup key properties
-        script: |
-          echo $CM_KEYSTORE | base64 --decode > /tmp/keystore.keystore
-          cat >> "$CM_BUILD_DIR/android/key.properties" <<EOF
-          storePassword=$CM_KEYSTORE_PASSWORD
-          keyPassword=$CM_KEY_PASSWORD
-          keyAlias=$CM_KEY_ALIAS
-          storeFile=/tmp/keystore.keystore
-          EOF
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
       - name: Get Flutter packages
         script: |
           cd . && flutter packages pub get
+      - name: Signing Android app
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH   # Not required if using team code signing identities
+          cd android && ./gradlew assembleRelease
       - name: Build App Bundle with Flutter
         script: |
-          cd . && flutter build appbundle --release --build-name=1.0.1 --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
+          cd . && flutter build appbundle \
+          --release --build-name=1.0.1 \
+          --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
@@ -74,10 +70,10 @@ workflows:
         notify:
           success: true
           failure: false
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: $GOOGLE_PLAY_TRACK
-        submit_as_draft: true
+      # google_play:
+      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      #   track: $GOOGLE_PLAY_TRACK
+      #   submit_as_draft: true
   ios-workflow:
     name: iOS Workflow
     max_build_duration: 120
