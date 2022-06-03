@@ -10,6 +10,7 @@ workflows:
         - firestore_secrets
         - keystore_credentials
         - google_play_json_sec
+        # GCLOUD_SERVICE_ACCOUNT_CREDENTIALS is the service account json file but encrypted
       vars:
         PACKAGE_NAME: 'com.aperezpe.bonobo'
         GOOGLE_PLAY_TRACK: 'beta'
@@ -36,7 +37,8 @@ workflows:
           keyPassword=$CM_KEY_PASSWORD
           keyAlias=$CM_KEY_ALIAS
           storeFile=$CM_KEYSTORE_PATH
-          EOF          
+          EOF
+          cd $CM_BUILD_DIR/android && ls
       - name: Setup Google Services
         script: |
           # Set up google service file based on environment
@@ -87,7 +89,6 @@ workflows:
         APPLE_ID: '1575798313'
       groups:
         - appstore_credentials
-        # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
         # APP_STORE_CONNECT_ISSUER_ID
         # APP_STORE_CONNECT_KEY_IDENTIFIER
         # APP_STORE_CONNECT_PRIVATE_KEY å
