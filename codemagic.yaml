@@ -172,6 +172,7 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
+    
       # app_store_connect: # For iOS or macOS app
       #   # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
       #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
