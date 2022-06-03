@@ -28,7 +28,7 @@ workflows:
           include: true
     
     scripts:
-       - name: Set up key properties
+      - name: Set up key properties
         script: |
           echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH
           cat >> "$CM_BUILD_DIR/android/key.properties" <<EOF
