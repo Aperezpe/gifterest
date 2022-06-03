@@ -46,7 +46,7 @@ workflows:
       - name: Signing Android app
         script: |
           echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH   # Not required if using team code signing identities
-          cd android && ./gradlew assembleRelease
+          cd $CM_BUILD_DIR/android && ls && ./gradlew assembleRelease
       - name: Build App Bundle with Flutter
         script: |
           cd . && flutter build appbundle \
