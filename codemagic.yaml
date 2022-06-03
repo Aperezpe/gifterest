@@ -76,9 +76,8 @@ workflows:
     name: iOS Workflow
     max_build_duration: 120
     environment:
-      # vars:
-      #   SIGNING_TYPE: IOS_APP_STORE
-      #   SIGNING_TYPE_DEV: IOS_APP_DEVELOPMENT
+      vars:
+        BUNDLE_ID: com.example.bonobo
       groups:
         - appstore_credentials
         # Add the above mentioned group environment variables in Codemagic UI (either in Application/Team variables): 
@@ -146,33 +145,31 @@ workflows:
         script: |
           # Get Build number for environment specific
           case "$CM_BRANCH" in
-            uat) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_STORE_ID") + 1)) ;;
-            main) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_STORE_ID") + 1)) ;;
-            *) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APP_STORE_ID") + 1)) ;;
+            uat) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$BUNDLE_ID") + 1)) ;;
+            main) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$BUNDLE_ID") + 1)) ;;
+            *) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID") + 1)) ;;
           esac
 
           echo Build number to release: $IOS_BUILD_NUMBER
 
-          flutter build ipa --release --build-name=1.0.2 --build-number=6 --export-options-plist=/Users/builder/export_options.plist 
+          flutter build ipa --release --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist 
       # - flutter build ios --debug --no-codesign
       - name: Publish
         script: |
-          if [ $CM_BRANCH == "uat"] || [ $CM_BRANCH == "main" ]
-          then
-            app-store-connect publish \
-            --path /Users/builder/clone/build/ios/ipa/gifterest.ipa \ 
+          if [[ $CM_BRANCH == "uat" ]] || [[ $CM_BRANCH == "main" ]]; \
+          then app-store-connect publish \
+            --path /Users/builder/clone/build/ios/ipa/gifterest.ipa \
             --key-id @env:APP_STORE_CONNECT_KEY_IDENTIFIER \
             --issuer-id @env:APP_STORE_CONNECT_ISSUER_ID \
-            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY
-          else
-            echo "Build Successful!"
+            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY; \
+          else echo "Build Successful"; \
           fi
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
-    
+
       # app_store_connect: # For iOS or macOS app
       #   # For authenticating with App Store Connect and uploading the IPA to App Store Connect (required)
       #   api_key: $APP_STORE_CONNECT_PRIVATE_KEY
