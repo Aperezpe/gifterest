@@ -36,6 +36,7 @@ workflows:
       - name: Set up key properties
         script: |
           # set up key.properties
+          mkdir $CM_BUILD_DIR/android/app/app
           echo $FCI_KEYSTORE | base64 --decode > $CM_BUILD_DIR/android/app/app/upload_keystore.jks
           cat >> "$FCI_BUILD_DIR/android/key.properties" <<EOF
           storePassword=$FCI_KEYSTORE_PASSWORD
