@@ -31,14 +31,14 @@ workflows:
     scripts:
       - name: Set up key properties
         script: |
-          echo $CM_KEYSTORE | base64 --decode > $CM_KEYSTORE_PATH
-          cat >> "$CM_BUILD_DIR/android/key.properties" <<EOF
-          storePassword=$CM_KEYSTORE_PASSWORD
-          keyPassword=$CM_KEY_PASSWORD
-          keyAlias=$CM_KEY_ALIAS
-          storeFile=$CM_KEYSTORE_PATH
+          # set up key.properties
+          echo $FCI_KEYSTORE | base64 --decode > $FCI_KEYSTORE_PATH
+          cat >> "$FCI_BUILD_DIR/android/key.properties" <<EOF
+          storePassword=$FCI_KEYSTORE_PASSWORD
+          keyPassword=$FCI_KEY_PASSWORD
+          keyAlias=$FCI_KEY_ALIAS
+          storeFile=$FCI_KEYSTORE_PATH
           EOF
-          cd $CM_BUILD_DIR/android && ls
       - name: Setup Google Services
         script: |
           # Set up google service file based on environment
