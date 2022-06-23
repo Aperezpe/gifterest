@@ -51,6 +51,9 @@ abstract class Database {
   Future<void> deleteSpecialEvent(SpecialEvent specialEvent);
   Future<void> setFavorite(Product product);
   Future<void> deleteFavorite(Product product);
+
+  Future<void> setFriendFavorite(Person person, Product product);
+  Future<void> deleteFriendFavorite(Person person, Product product);
 }
 
 String documentIdFromCurrentDate() => DateTime.now().toIso8601String();
@@ -163,11 +166,13 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<List<Product>> friendFavoritesStream(Person friend) =>
-      _service.collectionStream(
-        path: APIPath.friendFavorites(uid, friend.id),
-        builder: (data, documentId) => Product.fromMap(data, documentId),
-      );
+  Stream<List<Product>> friendFavoritesStream(Person friend) {
+    print(APIPath.friendFavorites(uid, friend.id));
+    return _service.collectionStream(
+      path: APIPath.friendFavorites(uid, friend.id),
+      builder: (data, documentId) => Product.fromMap(data, documentId),
+    );
+  }
 
   /// Sets friend or user depending on person object
   Future<Person> setPerson(Person person) async {
@@ -230,4 +235,16 @@ class FirestoreDatabase implements Database {
   @override
   Future<void> deleteFavorite(Product product) async =>
       await _service.deleteDocument(path: APIPath.favorite(uid, product.id));
+
+  @override
+  Future<void> setFriendFavorite(Person person, Product product) async =>
+      await _service.setData(
+        path: APIPath.friendFavorite(uid, person.id, product.id),
+        data: product.toMap(),
+      );
+
+  @override
+  Future<void> deleteFriendFavorite(Person person, Product product) async =>
+      await _service.deleteDocument(
+          path: APIPath.friendFavorite(uid, person.id, product.id));
 }

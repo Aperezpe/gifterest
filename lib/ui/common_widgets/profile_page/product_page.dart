@@ -44,6 +44,7 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  // Toggles favorite at product page level
   void _toggleFavorite(bool isFavorite) async {
     final database = Provider.of<Database>(context, listen: false);
     favoritesController.isFavorite[widget.product.id] =

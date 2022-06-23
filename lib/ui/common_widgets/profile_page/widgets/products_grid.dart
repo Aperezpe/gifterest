@@ -109,6 +109,8 @@ class _ProductsGridViewState extends State<ProductsGridView>
                       favorites: favorites,
                       key: Key("product-box-${products[index].id}"),
                       product: products[index],
+                      person: widget.person,
+                      isUser: _isUser,
                     );
                   },
                 );

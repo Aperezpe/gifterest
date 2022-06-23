@@ -2,6 +2,7 @@ import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/services/locator.dart';
 import 'package:gifterest/ui/common_widgets/favorite_button.dart';
+import 'package:gifterest/ui/models/person.dart';
 import 'package:gifterest/ui/models/product.dart';
 import 'package:gifterest/ui/common_widgets/profile_page/product_page.dart';
 import 'package:gifterest/ui/screens/favorites.dart';
@@ -13,11 +14,15 @@ class ClickableProduct extends StatefulWidget {
     @required this.key,
     @required this.product,
     @required this.favorites,
+    @required this.person,
+    this.isUser: true,
   }) : super(key: key);
 
   final Key key;
   final Product product;
   final List<Product> favorites;
+  final Person person;
+  final bool isUser;
 
   @override
   _ClickableProductState createState() => _ClickableProductState();
@@ -54,15 +59,20 @@ class _ClickableProductState extends State<ClickableProduct> {
     );
   }
 
+  // Toggles favorite at friend/user profile page level
   void _toggleFavorite(bool isFavorite) async {
     final database = Provider.of<Database>(context, listen: false);
     favoritesController.isFavorite[widget.product.id] =
         !favoritesController.isFavorite[widget.product.id];
 
     if (isFavorite) {
-      await database.setFavorite(widget.product);
+      await widget.isUser
+          ? database.setFavorite(widget.product)
+          : database.setFriendFavorite(widget.person, widget.product);
     } else {
-      await database.deleteFavorite(widget.product);
+      await widget.isUser
+          ? database.deleteFavorite(widget.product)
+          : database.deleteFriendFavorite(widget.person, widget.product);
     }
   }
 
