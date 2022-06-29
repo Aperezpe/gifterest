@@ -162,6 +162,10 @@ class _FriendPageState extends State<FriendPage>
                     friend: widget.friend,
                     eventType: getEventType(tab.text),
                   ),
+                  favoritesStream: database.queryFriendFavoriteStream(
+                    friend: widget.friend,
+                    eventType: getEventType(tab.text),
+                  ),
                   gender: widget.friend.gender,
                   database: database,
                   eventType: getEventType(tab.text),

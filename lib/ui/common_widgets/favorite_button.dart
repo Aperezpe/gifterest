@@ -4,18 +4,15 @@ import 'package:flutter/material.dart';
 class FavoriteButton extends StatefulWidget {
   FavoriteButton({
     double iconSize,
-    Color iconColor,
-    bool isFavorite,
+    @required bool isFavorite,
     @required Function valueChanged,
     Key key,
   })  : _iconSize = iconSize ?? 60.0,
-        _iconColor = iconColor ?? Colors.red,
         _isFavorite = isFavorite ?? false,
         _valueChanged = valueChanged,
         super(key: key);
 
   final double _iconSize;
-  final Color _iconColor;
   final bool _isFavorite;
   final Function _valueChanged;
 
@@ -59,18 +56,19 @@ class _FavoriteButtonState extends State<FavoriteButton>
 
     _curve = CurvedAnimation(curve: Curves.slowMiddle, parent: _controller);
     Animation<Color> _selectedColorAnimation = ColorTween(
-      begin: widget._iconColor,
-      end: Colors.grey[400],
+      begin: _isFavorite ? Colors.red : Colors.grey[300],
+      end: Colors.grey[300],
     ).animate(_curve);
 
     Animation<Color> _deSelectedColorAnimation = ColorTween(
-      begin: Colors.grey[400],
-      end: widget._iconColor,
+      begin: Colors.grey[300],
+      end: _isFavorite ? Colors.grey[300] : Colors.red,
     ).animate(_curve);
 
     _colorAnimation = (_isFavorite == true)
         ? _selectedColorAnimation
         : _deSelectedColorAnimation;
+
     _sizeAnimation = TweenSequence(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
@@ -128,7 +126,7 @@ class _FavoriteButtonState extends State<FavoriteButton>
           },
           child: Icon(
             (Icons.favorite),
-            color: widget._iconColor,
+            color: _colorAnimation.value,
             size: _sizeAnimation.value,
           ),
         );

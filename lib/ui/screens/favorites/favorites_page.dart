@@ -23,6 +23,17 @@ class FavoritesPage extends StatelessWidget {
 
     final is700Wide = SizeConfig.screenWidth >= 700;
 
+    // Toggles favorite at friend/user profile page level
+    void _toggleFavorite(bool isFavorite, Product product) async {
+      final database = Provider.of<Database>(context, listen: false);
+
+      if (isFavorite) {
+        await database.setFavorite(product);
+      } else {
+        await database.deleteFavorite(product);
+      }
+    }
+
     return Scaffold(
       appBar: CustomAppBar(
         title: "Favorites",
@@ -64,6 +75,9 @@ class FavoritesPage extends StatelessWidget {
                         key: Key("product-box-${favorites[index].id}"),
                         product: favorites[index],
                         favorites: favorites,
+                        valueChanged: (isFavorite) =>
+                            _toggleFavorite(isFavorite, favorites[index]),
+                        isFavorite: favorites.contains(favorites[index]),
                       );
                     },
                   );

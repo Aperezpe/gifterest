@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:gifterest/resize/size_config.dart';
-import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/ui/common_widgets/empty_content.dart';
 import 'package:gifterest/ui/common_widgets/loading_screen.dart';
@@ -16,6 +16,7 @@ class ProductsGridView extends StatefulWidget {
     Key key,
     @required this.sliderValues,
     @required this.productStream,
+    @required this.favoritesStream,
     @required this.gender,
     @required this.person,
     @required this.database,
@@ -24,6 +25,7 @@ class ProductsGridView extends StatefulWidget {
 
   final RangeValues sliderValues;
   final Stream<List<Product>> productStream;
+  final Stream<List<Product>> favoritesStream;
   final String gender;
   final Person person;
   final FirestoreDatabase database;
@@ -42,6 +44,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
   int get endValue => widget.sliderValues.end.round();
   bool get _isUser => widget.person.id == widget.database.uid;
 
+  // Filters products depending on price and geneder
   List<Product> queryProducts(List<Product> products) {
     if (widget.eventType != EventType.anniversary)
       products = products
@@ -59,6 +62,23 @@ class _ProductsGridViewState extends State<ProductsGridView>
       }).toList();
 
     return products;
+  }
+
+  // Toggles favorite at friend/user profile page level
+  void _toggleFavorite(bool isFavorite, Product product) async {
+    final database = Provider.of<Database>(context, listen: false);
+
+    if (isFavorite) {
+      _isUser
+          ? await database.setFavorite(product)
+          : await database.setFriendFavorite(
+              widget.person, widget.eventType, product);
+    } else {
+      _isUser
+          ? await database.deleteFavorite(product)
+          : await database.deleteFriendFavorite(
+              widget.person, widget.eventType, product);
+    }
   }
 
   @override
@@ -83,12 +103,16 @@ class _ProductsGridViewState extends State<ProductsGridView>
             );
 
           return StreamBuilder<List<Product>>(
-            stream: _isUser
-                ? widget.database.favoritesStream()
-                : widget.database.friendFavoritesStream(widget.person),
+            stream: widget.favoritesStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final favorites = snapshot.data;
+                final favorites = queryProducts(snapshot.data);
+
+                // To show favorites at the top of each category
+                favorites.forEach((favorite) => products.remove(favorite));
+                products.insertAll(0, favorites);
+
+                print("Toggling favorites in ${widget.eventType}");
 
                 return GridView.builder(
                   padding: EdgeInsets.fromLTRB(
@@ -109,8 +133,12 @@ class _ProductsGridViewState extends State<ProductsGridView>
                       favorites: favorites,
                       key: Key("product-box-${products[index].id}"),
                       product: products[index],
-                      person: widget.person,
                       isUser: _isUser,
+                      isFavorite: favorites.contains(products[index]),
+                      valueChanged: (isFavorite) => _toggleFavorite(
+                        isFavorite,
+                        products[index],
+                      ),
                     );
                   },
                 );

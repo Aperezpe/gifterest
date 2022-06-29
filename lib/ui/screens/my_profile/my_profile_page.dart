@@ -88,6 +88,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                           gender: user.gender,
                           interests: user.interests,
                         ),
+                        favoritesStream: database.favoritesStream(),
                       ),
                     ),
                   )
