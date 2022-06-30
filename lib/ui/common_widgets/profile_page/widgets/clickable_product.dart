@@ -2,6 +2,7 @@ import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/ui/common_widgets/favorite_button.dart';
 import 'package:gifterest/ui/models/product.dart';
 import 'package:gifterest/ui/common_widgets/profile_page/product_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ClickableProduct extends StatefulWidget {
@@ -70,14 +71,24 @@ class _ClickableProductState extends State<ClickableProduct> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 8),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(widget.product.imageUrl),
-                        fit: BoxFit.contain,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.product.imageUrl,
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.blockSizeVertical * 2,
+                        ),
                       ),
                     ),
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
                   ),
                 ),
                 Container(
