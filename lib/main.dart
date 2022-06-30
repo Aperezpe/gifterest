@@ -16,12 +16,12 @@ void main() async {
   setupLocator();
 
   final appleSignInAvailable = await AppleSignInAvailable.check();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) => runApp(Provider<AppleSignInAvailable>.value(
-      value: appleSignInAvailable,
-      child: MyApp(),
-    )),
-  );
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  runApp(Provider<AppleSignInAvailable>.value(
+    value: appleSignInAvailable,
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
