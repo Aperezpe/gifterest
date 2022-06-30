@@ -85,6 +85,14 @@ class FirestoreService {
                 .where('event', isEqualTo: "Anniversary")
                 .where('gender', whereIn: [gender, ""]);
         break;
+
+      case EventType.valentines:
+        query = gender == "Other"
+            ? ref.where('event', isEqualTo: "Valentines")
+            : ref
+                .where('event', isEqualTo: "Valentines")
+                .where('gender', whereIn: [gender, ""]);
+        break;
       default:
         query = ref.where('categories', arrayContainsAny: interests);
         break;

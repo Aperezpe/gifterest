@@ -99,7 +99,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
           if (products.isEmpty)
             return EmptyContent(
               title: "There's nothing here!",
-              message: "No products to show in this range",
+              message: "No products to show in this filter",
             );
 
           return StreamBuilder<List<Product>>(

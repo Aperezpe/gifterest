@@ -59,8 +59,9 @@ class _FriendPageState extends State<FriendPage>
     );
 
     friendSpecialEvents.forEach((event) {
-      if (event.name == "Anniversary" || event.name == "Babyshower")
-        myTabs.add(Tab(text: event.name));
+      if (event.name == "Anniversary" ||
+          event.name == "Babyshower" ||
+          event.name == "Valentines") myTabs.add(Tab(text: event.name));
     });
 
     _tabController = TabController(vsync: this, length: myTabs.length);
