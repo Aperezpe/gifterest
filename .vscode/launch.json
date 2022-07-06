@@ -5,15 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gifterest",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "gifterest (profile mode)",
+            "name": "Gifterest Debug",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug",
+            "args": [
+                "-t",
+                "lib/main_dev.dart",
+                "--flavor",
+                "dev"
+            ]
+        },
+        {
+            "name": "Gifterest Release",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-t",
+                "lib/main_prod.dart",
+                "--flavor",
+                "prod"
+            ]
         }
     ]
 }

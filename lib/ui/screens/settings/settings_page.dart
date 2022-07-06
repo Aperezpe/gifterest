@@ -1,4 +1,5 @@
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/resources/app_config.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/ui/app_drawer.dart';
 import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
@@ -6,7 +7,6 @@ import 'package:gifterest/ui/common_widgets/drawer_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:gifterest/ui/common_widgets/loading_screen.dart';
 import 'package:gifterest/ui/screens/sign_in/terms_and_conditions.dart';
-import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -70,10 +70,11 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text("Sign Out"),
         onTap: () => _onAsyncMethod(auth.signOut()),
       ),
-      // ListTile(
-      //   title: Text("Load"),
-      //   onTap: () => _onAsyncMethod(Future.delayed(Duration(seconds: 2))),
-      // ),
+      if (AppConfig.of(context).buildFlavor == "Development")
+        ListTile(
+          title: Text(AppConfig.of(context).buildFlavor),
+          onTap: null,
+        ),
     ];
 
     return AbsorbPointer(

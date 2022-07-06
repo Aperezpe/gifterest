@@ -24,6 +24,22 @@ Bonobo was created to help solve the problem of forgetting important dates plus 
 - Favorite Products
 - Calendar
 
+# Run locally
+
+First, run `flutter pub get` : To install necessary packages
+
+In the project directory, just run this command depending on flavor you want to run.
+
+DEV: `flutter run --debug -t lib/main_dev.dart --flavor dev`
+PROD: `flutter run --debug -t lib/main_prod.dart --flavor prod`
+
+Additionally, you can setup VS Code for debugging by like this inside the launch.json
+
+![VS Code config for debugging](docs/images/vs%20code%20for%20debugging.png)
+
+
+
+
 # Tech/Framework Used
 
 - Flutter 2.2.3 (Dart 2.13.4)
