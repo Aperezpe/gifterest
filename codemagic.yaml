@@ -155,7 +155,14 @@ workflows:
 
           echo Build number to release: $IOS_BUILD_NUMBER
 
-          flutter build ipa --release --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart --flavor $CM_BRANCH 
+          echo export plist:
+          cat /Users/builder/export_options.plist
+
+          echo target on: $FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
+
+          echo with flavor: $CM_BRANCH 
+
+          flutter build ipa --flavor $CM_BRANCH --release -v --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
       # - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
