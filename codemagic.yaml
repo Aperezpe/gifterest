@@ -127,7 +127,7 @@ workflows:
             *) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_DEV" ;;
           esac
 
-          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/Runner/GoogleService-Info.plist
+          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CM_BRANCH/GoogleService-Info.plist
           
           # echo $IOS_FIREBASE_SECRET
       - name: Pod install
