@@ -127,9 +127,10 @@ workflows:
             *) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_DEV" ;;
           esac
 
+          # Creates directory to output GoogleService-Info.plist
+          mkdir -p $FCI_BUILD_DIR/ios/config/$CM_BRANCH
+
           echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CM_BRANCH/GoogleService-Info.plist
-          
-          # echo $IOS_FIREBASE_SECRET
       - name: Pod install
         script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
