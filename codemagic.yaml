@@ -26,7 +26,10 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: '*dev*'
+        - pattern: 'dev'
+          include: true
+          source: true
+        - pattern: 'main'
           include: true
           source: true
       tag_patterns:
@@ -115,12 +118,12 @@ workflows:
       events:
         - push
       branch_patterns:
-        - pattern: '*dev*'
+        - pattern: 'dev'
           include: true
           source: true
-        # - pattern: '*uat*'
-        #   include: true
-        #   source: true
+        - pattern: 'main'
+          include: true
+          source: true
       tag_patterns:
         - pattern: '*'
           include: true
