@@ -15,7 +15,6 @@ void main() async {
   final appleSignInAvailable = await AppleSignInAvailable.check();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  // Still not sure if this is correct
   var configuredApp = AppConfig(
     child: Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,

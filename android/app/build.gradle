@@ -47,10 +47,6 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders += [applicationName: 'io.flutter.app.FlutterApplication']
-        // multiDexEnabled true
-        // ndk {
-        //     abiFilters 'x86', 'armeabi-v7a'
-        // }
     }
 
     signingConfigs {
@@ -72,6 +68,21 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+        }
+    }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        dev {
+            resValue "string", "app_name", "Gifterest (Dev)"
+            versionNameSuffix "-dev"
+            // applicationId "com.aperezpe.bonobo"
+        }
+
+        prod {
+            resValue "string", "app_name", "Gifterest"
+            applicationId "com.aperezpe.bonobo"
         }
     }
 }

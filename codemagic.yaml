@@ -46,13 +46,19 @@ workflows:
           EOF
       - name: Setup Google Services
         script: |
+          # TODO: This script will ONLY work with prod and dev branches. Any other branch will fail this step.
+          # I can later make this step always create a dev directory if I want it to work with any branch.
+
           # Set up google service file based on environment
           case "$CM_BRANCH" in
             main) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET" ;;
             *) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET_DEV" ;;
           esac
 
-          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/google-services.json
+          # Creates directory to output GoogleService-Info.plist
+          mkdir -p $FCI_BUILD_DIR/android/app/src/$CM_BRANCH
+
+          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CM_BRANCH/google-services.json
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
@@ -62,8 +68,10 @@ workflows:
       - name: Build App Bundle with Flutter
         script: |
           cd . && flutter build appbundle \
+          --flavor $CM_BRANCH \
           --release --build-name=1.0.1 \
-          --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
+          --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
+          --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
@@ -156,14 +164,11 @@ workflows:
 
           echo Build number to release: $IOS_BUILD_NUMBER
 
-          echo export plist:
-          cat /Users/builder/export_options.plist
-
           echo target on: $FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
 
           echo with flavor: $CM_BRANCH 
 
-          flutter build ipa --flavor $CM_BRANCH --release -v --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
+          flutter build ipa --flavor $CM_BRANCH --release --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
       # - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
