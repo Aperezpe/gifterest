@@ -158,3 +158,5 @@ Note: Just replace IOS_DISTRIBUTION.p12 with the name of the file you exported
 - I can test offline bundle tool but on Windows because is not working on mac
 
 https://flutter.dev/docs/deployment/android
+
+
