@@ -69,7 +69,7 @@ workflows:
         script: |
           cd . && flutter build appbundle \
           --flavor $CM_BRANCH \
-          --release --build-name=1.0.1 \
+          --release --build-name=1.0.2 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
           --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
     artifacts:
@@ -168,7 +168,7 @@ workflows:
 
           echo with flavor: $CM_BRANCH 
 
-          flutter build ipa --flavor $CM_BRANCH --release --build-name=1.0.2 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
+          flutter build ipa --flavor $CM_BRANCH --release --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/main_$CM_BRANCH.dart
       # - flutter build ios --debug --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
