@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:gifterest/flutter_notifications.dart';
 import 'package:gifterest/resize/layout_info.dart';
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/resources/app_config.dart';
 import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/services/locator.dart';
@@ -90,7 +91,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin {
         Provider.of<Database>(context, listen: false);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Gifterest",
+      title: AppConfig.of(context).appTitle,
       theme: ThemeData(
         primarySwatch: Colors.pink,
         scaffoldBackgroundColor: Colors.white,

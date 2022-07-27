@@ -11,11 +11,15 @@ class APIPath {
 
   static String favorites(String uid) => 'users/$uid/favorites';
 
-  static String friendFavorites(String uid, String friendId) =>
-      'users/$uid/friends/$friendId/favorites';
-
   static String favorite(String uid, String productId) =>
       'users/$uid/favorites/$productId';
+
+  static String friendFavorites(String uid, String friendId, String event) =>
+      'users/$uid/friends/$friendId/favorites${event.isNotEmpty ? '_' + event : event}';
+
+  static String friendFavorite(
+          String uid, String friendId, String event, String productId) =>
+      'users/$uid/friends/$friendId/favorites${event.isNotEmpty ? '_' + event : event}/$productId';
 
   static String friend(
     String uid,

@@ -9,6 +9,21 @@ EventType getEventType(String eventName) {
   return EventType.any;
 }
 
+extension ParseToString on EventType {
+  String toShortString() {
+    switch (this) {
+      case EventType.anniversary:
+        return "Anniversary";
+      case EventType.babyShower:
+        return "BabyShower";
+      case EventType.valentines:
+        return "Valentines";
+      default:
+        return "";
+    }
+  }
+}
+
 enum EventType {
   babyShower,
   anniversary,

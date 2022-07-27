@@ -24,6 +24,22 @@ Bonobo was created to help solve the problem of forgetting important dates plus 
 - Favorite Products
 - Calendar
 
+# Run locally
+
+First, run `flutter pub get` : To install necessary packages
+
+In the project directory, just run this command depending on flavor you want to run.
+
+DEV: `flutter run --debug -t lib/main_dev.dart --flavor dev`
+PROD: `flutter run --debug -t lib/main_prod.dart --flavor prod`
+
+Additionally, you can setup VS Code for debugging by like this inside the launch.json
+
+![VS Code config for debugging](docs/images/vs%20code%20for%20debugging.png)
+
+
+
+
 # Tech/Framework Used
 
 - Flutter 2.2.3 (Dart 2.13.4)
@@ -107,6 +123,32 @@ Source: https://stackoverflow.com/questions/64973346/error-flutter-flutter-h-fil
 
 I uploaded to App Store by following this tutorial:
 https://dzone.com/articles/flutter-release-ios-app-on-apple-store
+
+### **Renew Certificate of Distribution (When expired)**
+
+First, you should be receiving an email 30 days before expiring. After receiving that email, then follow these steps.
+
+1. Go to [Certificates, Identifiers & Profiles](https://developer.apple.com/account/resources/certificates/list)
+2. Click '+' on Certificates to create a new certificate
+3. Select iOS Distribution, and then Continue
+4. You'll need a Certificate Signing Request. Follow these steps
+    1. Open Keychain Access
+    2. Go to Keychain Access > Certificate Assistant >  Request a Certificate From a Certificate Authority
+    ![Request Certificate Screenshot](docs/images/keychain%20step.jpg)
+    3. Add an email to User Email Address, a Common Name such as Gifterest Dev, and leave CA Email Address empty. Also, check Saved to disk.
+    ![Request Certificate Screenshot2](docs/images/Requesting%20certificate.jpg)
+    4. Click Continue and save it in the Desktop
+5. Upload your Certificate Signing Request when requesting new Distrbution Certificate.
+6. After Distribution certificate is created, Download it, open it in Keychain Access, and export the P12 file
+![Exporting Private Key Screnshot](docs/images/exporting%20private%20key.jpg)
+7. Save the .p12 file in your desktop with a password easy to remember
+8. Run following command to get the private key from the certificate:\
+\
+`openssl pkcs12 -in IOS_DISTRIBUTION.p12 -nodes -nocerts | openssl rsa -out ios_distribution_private_key`\
+Note: Just replace IOS_DISTRIBUTION.p12 with the name of the file you exported
+9. Open `ios_distribution_private_key` file in a text editor.
+10. Copy and pase that private key into the CERTIFICATE_PRIVATE_KEY to replace previous key (Delete previous one). Don't forget to Secure the password so that it gets encrypted.
+
 
 ## Android
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/resources/app_config.dart';
 import 'package:gifterest/services/apple_sign_in_available.dart';
 import 'package:gifterest/ui/common_widgets/custom_alert_dialog/responsive_alert_dialogs.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
@@ -28,7 +29,7 @@ class SignInPage extends StatefulWidget {
     final auth = Provider.of<AuthBase>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Gifterest",
+      title: AppConfig.of(context).appTitle,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.pink,
@@ -217,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
               alignment: Alignment.center,
               height: textContainerHeight,
               child: Text(
-                "Gifterest",
+                AppConfig.of(context).appTitle,
                 style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: FontWeight.w800,

@@ -73,17 +73,24 @@ class FirestoreService {
 
     switch (eventType) {
 
-      /// Query by BabyShower of Anniversary. If not given, then just query
+      /// Query by BabyShower or Anniversary. If not given, then just query
       /// by the friend's interests
       case EventType.babyShower:
         query = ref.where('event', isEqualTo: "Babyshower");
         break;
       case EventType.anniversary:
-        print(gender);
         query = gender == "Other"
             ? ref.where('event', isEqualTo: "Anniversary")
             : ref
                 .where('event', isEqualTo: "Anniversary")
+                .where('gender', whereIn: [gender, ""]);
+        break;
+
+      case EventType.valentines:
+        query = gender == "Other"
+            ? ref.where('event', isEqualTo: "Valentines")
+            : ref
+                .where('event', isEqualTo: "Valentines")
                 .where('gender', whereIn: [gender, ""]);
         break;
       default:

@@ -1,25 +1,25 @@
 import 'package:gifterest/resize/size_config.dart';
-import 'package:gifterest/services/database.dart';
-import 'package:gifterest/services/locator.dart';
 import 'package:gifterest/ui/common_widgets/app_bar_button.dart';
 import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
 import 'package:gifterest/ui/common_widgets/custom_button.dart';
 import 'package:gifterest/ui/common_widgets/favorite_button.dart';
 import 'package:gifterest/ui/models/product.dart';
-import 'package:gifterest/ui/screens/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductPage extends StatefulWidget {
   final Product product;
-  final ValueChanged<bool> onChanged;
+  final List<Product> favorites;
+  final Function valueChanged;
+  final bool isFavorite;
 
   ProductPage({
     Key key,
-    this.product,
-    this.onChanged,
+    @required this.product,
+    @required this.valueChanged,
+    @required this.isFavorite,
+    @required this.favorites,
   }) : super(key: key);
 
   @override
@@ -27,9 +27,6 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final favoritesController = locator.get<FavoritesController>();
-  bool get isFavorite => favoritesController.isFavorite[widget.product.id];
-
   @override
   void initState() {
     super.initState();
@@ -42,20 +39,6 @@ class _ProductPageState extends State<ProductPage> {
     } else {
       throw 'Could not launch $url';
     }
-  }
-
-  void _toggleFavorite(bool isFavorite) async {
-    final database = Provider.of<Database>(context, listen: false);
-    favoritesController.isFavorite[widget.product.id] =
-        !favoritesController.isFavorite[widget.product.id];
-
-    if (isFavorite) {
-      await database.setFavorite(widget.product);
-    } else {
-      await database.deleteFavorite(widget.product);
-    }
-
-    setState(() {});
   }
 
   @override
@@ -90,9 +73,9 @@ class _ProductPageState extends State<ProductPage> {
                       right: SizeConfig.safeBlockVertical * 2,
                     ),
                     child: FavoriteButton(
-                      valueChanged: _toggleFavorite,
-                      iconColor: isFavorite ? Colors.red : Colors.grey[300],
-                      isFavorite: isFavorite,
+                      valueChanged: (isFavorite) =>
+                          widget.valueChanged(isFavorite),
+                      isFavorite: widget.isFavorite,
                       iconSize: SizeConfig.safeBlockVertical * 6.5,
                     ),
                   ),

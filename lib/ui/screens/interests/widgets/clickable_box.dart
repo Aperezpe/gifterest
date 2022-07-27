@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/ui/models/interest.dart';
 import 'package:flutter/material.dart';
@@ -46,14 +47,36 @@ class ClickableInterest extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Center(
-                child: Image.network(
-                  interest.imageUrl,
-                  fit: BoxFit.fitHeight,
-                  color: isSelected
-                      ? Colors.black.withOpacity(.7)
-                      : Colors.black.withOpacity(.2),
-                  colorBlendMode: BlendMode.darken,
-                  height: double.infinity,
+                child: Container(
+                  child: CachedNetworkImage(
+                    imageUrl: interest.imageUrl,
+                    colorBlendMode: BlendMode.darken,
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.safeBlockVertical * 1.5,
+                        ),
+                        color: isSelected
+                            ? Colors.black.withOpacity(.5)
+                            : Colors.black.withOpacity(.2),
+                      ),
+                    ),
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.fitHeight,
+                          colorFilter: ColorFilter.mode(
+                            isSelected
+                                ? Colors.black.withOpacity(.7)
+                                : Colors.black.withOpacity(.2),
+                            BlendMode.darken,
+                          ),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                  ),
                 ),
               ),
               Positioned.fill(
