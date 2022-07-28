@@ -40,10 +40,10 @@ workflows:
       - name: Initialize environment variables
         script: |
           case "$CM_BRANCH" in
-            main) echo CUR_ENVIRONMENT=prod >> $CM_ENV \
-              ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET >> $CM_ENV ;;
-            *) echo CUR_ENVIRONMENT=dev >> CM_ENV \
-              ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV >> $CM_ENV ;;
+            main) echo "CUR_ENVIRONMENT=prod" >> $CM_ENV \
+              echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET" >> $CM_ENV ;;
+            *) echo "CUR_ENVIRONMENT=dev" >> CM_ENV \
+              echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;;
           esac
       - name: Set up key properties
         script: |
