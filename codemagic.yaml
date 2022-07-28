@@ -48,11 +48,11 @@ workflows:
               echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;;
           esac
           
-          cat This is the running environment!
-          cat $CUR_ENVIRONMENT
+          echo This is the running environment:
+          echo $CUR_ENVIRONMENT
 
-          cat This is the firebase secret
-          cat $ANDROID_FIREBASE_SECRET
+          echo This is the firebase secret:
+          echo $ANDROID_FIREBASE_SECRET
       - name: Set up key properties
         script: |
           # set up key.properties
