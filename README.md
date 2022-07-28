@@ -119,10 +119,26 @@ Source: https://stackoverflow.com/questions/64973346/error-flutter-flutter-h-fil
 
 # Deployment
 
+### About  build-name and build-number:
+
+- **build-name:** only need to increase when delivering to PROD\
+- **build-number:** Number used for testing, to know which build has been uploaded. 
+
+### Which do I have to update manually?
+
+- For testing: Nothing to be done, the build-number gets increased automatically.
+
+- For production: Just increase build-name.
+
 ## iOS
 
-I uploaded to App Store by following this tutorial:
-https://dzone.com/articles/flutter-release-ios-app-on-apple-store
+After CICD has built successfully, you should've received an artifact in the Slack called gifterest.ipa
+
+1. Just download the .ipa artifact
+2. Drag and drop to Transporter (download Transforter app if necessary)
+3. Click Deliver, and solve any error if there is.
+
+The artifact should be available in app store connect in 15-20 minutes.
 
 ### **Renew Certificate of Distribution (When expired)**
 

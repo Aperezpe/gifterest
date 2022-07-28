@@ -73,7 +73,7 @@ workflows:
         script: |
           cd . && flutter build appbundle \
           --flavor $CUR_ENVIRONMENT \
-          --release --build-name=1.0.2 \
+          --release --build-name=1.0.1 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
           -v
