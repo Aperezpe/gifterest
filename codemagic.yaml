@@ -47,6 +47,12 @@ workflows:
               echo "CUR_ENVIRONMENT=dev" >> CM_ENV ;
               echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;;
           esac
+          
+          cat This is the running environment!
+          cat $CUR_ENVIRONMENT
+
+          cat This is the firebase secret
+          cat $ANDROID_FIREBASE_SECRET
       - name: Set up key properties
         script: |
           # set up key.properties
@@ -74,6 +80,9 @@ workflows:
           cd . && flutter packages pub get
       - name: Build App Bundle with Flutter
         script: |
+          cat This is the running environment!
+          cat $CUR_ENVIRONMENT
+
           cd . && flutter build appbundle \
           --flavor $CUR_ENVIRONMENT \
           --release --build-name=1.0.2 \
