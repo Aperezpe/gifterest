@@ -37,6 +37,12 @@ workflows:
           include: true
     
     scripts:
+      - name: Initialize environment variables
+        script: |
+          case "$CM_BRANCH" in
+            main) echo "CUR_ENVIRONMENT=prod\nANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET" >> $CM_ENV ;;
+            *) echo "CUR_ENVIRONMENT=dev\nANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;;
+          esac
       - name: Set up key properties
         script: |
           # set up key.properties
@@ -52,16 +58,10 @@ workflows:
           # TODO: This script will ONLY work with prod and dev branches. Any other branch will fail this step.
           # I can later make this step always create a dev directory if I want it to work with any branch.
 
-          # Set up google service file based on environment
-          case "$CM_BRANCH" in
-            main) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET" ;;
-            *) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET_DEV" ;;
-          esac
-
           # Creates directory to output GoogleService-Info.plist
-          mkdir -p $FCI_BUILD_DIR/android/app/src/$CM_BRANCH
+          mkdir -p $FCI_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT
 
-          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CM_BRANCH/google-services.json
+          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT/google-services.json
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
@@ -70,22 +70,11 @@ workflows:
           cd . && flutter packages pub get
       - name: Build App Bundle with Flutter
         script: |
-          # setup target file
-          case "$CM_BRANCH" in
-            main) TARGET_MAIN_FILE=main_prod.dart;;
-            *) TARGET_MAIN_FILE=main_dev.dart ;;
-          esac
-
-          case "$CM_BRANCH" in
-            main) FLAVOR=prod;;
-            *) FLAVOR=dev ;;
-          esac
-
           cd . && flutter build appbundle \
-          --flavor $FLAVOR \
+          --flavor $CUR_ENVIRONMENT \
           --release --build-name=1.0.2 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
-          --target=$FCI_BUILD_DIR/lib/$TARGET_MAIN_FILE
+          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
