@@ -47,12 +47,6 @@ workflows:
               echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;
               echo CUR_ENVIRONMENT=dev >> $CM_ENV ;;
           esac
-          
-          echo This is the running environment:
-          echo $CUR_ENVIRONMENT
-
-          echo This is the firebase secret:
-          echo $ANDROID_FIREBASE_SECRET
       - name: Set up key properties
         script: |
           # set up key.properties
@@ -87,7 +81,8 @@ workflows:
           --flavor $CUR_ENVIRONMENT \
           --release --build-name=1.0.2 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
-          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
+          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
+          -v
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
@@ -131,9 +126,9 @@ workflows:
       events:
         - push
       branch_patterns:
-        # - pattern: 'dev'
-        #   include: true
-        #   source: true
+        - pattern: 'dev'
+          include: true
+          source: true
         - pattern: 'main'
           include: true
           source: true
@@ -141,20 +136,24 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
+      - name: Initialize environment variables
+        script: |
+          case "$CM_BRANCH" in
+            main) 
+              echo "IOS_FIREBASE_SECRET=$IOS_FIREBASE_SECRET" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=prod >> $CM_ENV ;;
+            *) 
+              echo "IOS_FIREBASE_SECRET=$IOS_FIREBASE_SECRET_DEV" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=dev >> $CM_ENV ;;
+          esac
       - name: Get flutter packages
         script: flutter pub get
       - name: Saves Firebase Google Services
         script: |
-          # Set up google service file based on environment
-          case "$CM_BRANCH" in
-            main) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET" ;;
-            *) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_DEV" ;;
-          esac
-
           # Creates directory to output GoogleService-Info.plist
-          mkdir -p $FCI_BUILD_DIR/ios/config/$CM_BRANCH
+          mkdir -p $FCI_BUILD_DIR/ios/config/$CUR_ENVIRONMENT
 
-          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CM_BRANCH/GoogleService-Info.plist
+          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CUR_ENVIRONMENT/GoogleService-Info.plist
       - name: Pod install
         script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
@@ -178,25 +177,14 @@ workflows:
             *) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APPLE_ID") + 1)) ;;
           esac
 
-          # setup target file
-          case "$CM_BRANCH" in
-            main) TARGET_MAIN_FILE=main_prod.dart;;
-            *) TARGET_MAIN_FILE=main_dev.dart ;;
-          esac
-
-          case "$CM_BRANCH" in
-            main) FLAVOR=prod;;
-            *) FLAVOR=dev ;;
-          esac
-
           echo Build number to release: $IOS_BUILD_NUMBER
-          
-          echo target main file is: $TARGET_MAIN_FILE
 
-          echo with flavor: $FLAVOR 
-
-          flutter build ipa --flavor $FLAVOR --release --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/$TARGET_MAIN_FILE
-      # - flutter build ios --debug --no-codesign
+          flutter build ipa \
+          --flavor $CUR_ENVIRONMENT --release \
+          --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER \
+          --export-options-plist=/Users/builder/export_options.plist \
+          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
+          -v
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
