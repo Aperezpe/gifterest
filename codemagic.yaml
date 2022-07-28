@@ -10,7 +10,6 @@ workflows:
         - firestore_secrets
         - keystore_credentials
         - google_play_json_sec
-        # GCLOUD_SERVICE_ACCOUNT_CREDENTIALS is the service account json file but encrypted
       vars:
         PACKAGE_NAME: 'com.aperezpe.bonobo'
         GOOGLE_PLAY_TRACK: 'beta'
@@ -25,6 +24,7 @@ workflows:
     triggering:
       events:
         - push
+      # I can add a '*' branch patter if I want to trigger cicd on any branch push 
       branch_patterns:
         - pattern: 'dev'
           include: true
@@ -59,10 +59,7 @@ workflows:
           EOF
       - name: Setup Google Services
         script: |
-          # TODO: This script will ONLY work with prod and dev branches. Any other branch will fail this step.
-          # I can later make this step always create a dev directory if I want it to work with any branch.
-
-          # Creates directory to output GoogleService-Info.plist
+          # Creates directory to output google-services.json
           mkdir -p $FCI_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT
 
           echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT/google-services.json
@@ -74,9 +71,6 @@ workflows:
           cd . && flutter packages pub get
       - name: Build App Bundle with Flutter
         script: |
-          cat This is the running environment!
-          cat $CUR_ENVIRONMENT
-
           cd . && flutter build appbundle \
           --flavor $CUR_ENVIRONMENT \
           --release --build-name=1.0.2 \
@@ -101,10 +95,6 @@ workflows:
         notify:
           success: true
           failure: false
-      # google_play:
-      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-      #   track: $GOOGLE_PLAY_TRACK
-      #   submit_as_draft: true
   ios-workflow:
     name: iOS Workflow
     max_build_duration: 120
@@ -113,11 +103,7 @@ workflows:
         APPLE_ID: '1575798313'
       groups:
         - appstore_credentials
-        # APP_STORE_CONNECT_ISSUER_ID
-        # APP_STORE_CONNECT_KEY_IDENTIFIER
-        # APP_STORE_CONNECT_PRIVATE_KEY å
         - distribution_signing_cert
-        # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets
       flutter: 2.2.3
       xcode: 13.4
@@ -125,6 +111,7 @@ workflows:
     triggering:
       events:
         - push
+      # I can add a '*' branch patter if I want to trigger cicd on any branch push 
       branch_patterns:
         - pattern: 'dev'
           include: true
