@@ -10,7 +10,6 @@ workflows:
         - firestore_secrets
         - keystore_credentials
         - google_play_json_sec
-        # GCLOUD_SERVICE_ACCOUNT_CREDENTIALS is the service account json file but encrypted
       vars:
         PACKAGE_NAME: 'com.aperezpe.bonobo'
         GOOGLE_PLAY_TRACK: 'beta'
@@ -25,6 +24,7 @@ workflows:
     triggering:
       events:
         - push
+      # I can add a '*' branch patter if I want to trigger cicd on any branch push 
       branch_patterns:
         - pattern: 'dev'
           include: true
@@ -37,6 +37,16 @@ workflows:
           include: true
     
     scripts:
+      - name: Initialize environment variables
+        script: |
+          case "$CM_BRANCH" in
+            main) 
+              echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=prod >> $CM_ENV ;;
+            *) 
+              echo "ANDROID_FIREBASE_SECRET=$ANDROID_FIREBASE_SECRET_DEV" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=dev >> $CM_ENV ;;
+          esac
       - name: Set up key properties
         script: |
           # set up key.properties
@@ -49,19 +59,10 @@ workflows:
           EOF
       - name: Setup Google Services
         script: |
-          # TODO: This script will ONLY work with prod and dev branches. Any other branch will fail this step.
-          # I can later make this step always create a dev directory if I want it to work with any branch.
+          # Creates directory to output google-services.json
+          mkdir -p $FCI_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT
 
-          # Set up google service file based on environment
-          case "$CM_BRANCH" in
-            main) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET" ;;
-            *) ANDROID_FIREBASE_SECRET="$ANDROID_FIREBASE_SECRET_DEV" ;;
-          esac
-
-          # Creates directory to output GoogleService-Info.plist
-          mkdir -p $FCI_BUILD_DIR/android/app/src/$CM_BRANCH
-
-          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CM_BRANCH/google-services.json
+          echo $ANDROID_FIREBASE_SECRET | base64 --decode > $CM_BUILD_DIR/android/app/src/$CUR_ENVIRONMENT/google-services.json
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
@@ -70,22 +71,12 @@ workflows:
           cd . && flutter packages pub get
       - name: Build App Bundle with Flutter
         script: |
-          # setup target file
-          case "$CM_BRANCH" in
-            main) TARGET_MAIN_FILE=main_prod.dart;;
-            *) TARGET_MAIN_FILE=main_dev.dart ;;
-          esac
-
-          case "$CM_BRANCH" in
-            main) FLAVOR=prod;;
-            *) FLAVOR=dev ;;
-          esac
-
           cd . && flutter build appbundle \
-          --flavor $FLAVOR \
-          --release --build-name=1.0.2 \
+          --flavor $CUR_ENVIRONMENT \
+          --release --build-name=1.0.1 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
-          --target=$FCI_BUILD_DIR/lib/$TARGET_MAIN_FILE
+          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
+          -v
     artifacts:
       - build/**/outputs/bundle/**/*.aab
       - build/**/outputs/apk/**/*.apk
@@ -104,10 +95,6 @@ workflows:
         notify:
           success: true
           failure: false
-      # google_play:
-      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-      #   track: $GOOGLE_PLAY_TRACK
-      #   submit_as_draft: true
   ios-workflow:
     name: iOS Workflow
     max_build_duration: 120
@@ -116,11 +103,7 @@ workflows:
         APPLE_ID: '1575798313'
       groups:
         - appstore_credentials
-        # APP_STORE_CONNECT_ISSUER_ID
-        # APP_STORE_CONNECT_KEY_IDENTIFIER
-        # APP_STORE_CONNECT_PRIVATE_KEY å
         - distribution_signing_cert
-        # CERTIFICATE_PRIVATE_KEY
         - firestore_secrets
       flutter: 2.2.3
       xcode: 13.4
@@ -128,6 +111,7 @@ workflows:
     triggering:
       events:
         - push
+      # I can add a '*' branch patter if I want to trigger cicd on any branch push 
       branch_patterns:
         - pattern: 'dev'
           include: true
@@ -139,20 +123,24 @@ workflows:
         - pattern: '*'
           include: true
     scripts:
+      - name: Initialize environment variables
+        script: |
+          case "$CM_BRANCH" in
+            main) 
+              echo "IOS_FIREBASE_SECRET=$IOS_FIREBASE_SECRET" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=prod >> $CM_ENV ;;
+            *) 
+              echo "IOS_FIREBASE_SECRET=$IOS_FIREBASE_SECRET_DEV" >> $CM_ENV ;
+              echo CUR_ENVIRONMENT=dev >> $CM_ENV ;;
+          esac
       - name: Get flutter packages
         script: flutter pub get
       - name: Saves Firebase Google Services
         script: |
-          # Set up google service file based on environment
-          case "$CM_BRANCH" in
-            main) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET" ;;
-            *) IOS_FIREBASE_SECRET="$IOS_FIREBASE_SECRET_DEV" ;;
-          esac
-
           # Creates directory to output GoogleService-Info.plist
-          mkdir -p $FCI_BUILD_DIR/ios/config/$CM_BRANCH
+          mkdir -p $FCI_BUILD_DIR/ios/config/$CUR_ENVIRONMENT
 
-          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CM_BRANCH/GoogleService-Info.plist
+          echo $IOS_FIREBASE_SECRET | base64 --decode > $FCI_BUILD_DIR/ios/config/$CUR_ENVIRONMENT/GoogleService-Info.plist
       - name: Pod install
         script: find . -name "Podfile" -execdir pod install \;
       - name: Set up keychain to be used for code signing using Codemagic CLI 'keychain' command
@@ -176,25 +164,14 @@ workflows:
             *) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APPLE_ID") + 1)) ;;
           esac
 
-          # setup target file
-          case "$CM_BRANCH" in
-            main) TARGET_MAIN_FILE=main_prod.dart;;
-            *) TARGET_MAIN_FILE=main_dev.dart ;;
-          esac
-
-          case "$CM_BRANCH" in
-            main) FLAVOR=prod;;
-            *) FLAVOR=dev ;;
-          esac
-
           echo Build number to release: $IOS_BUILD_NUMBER
-          
-          echo target main file is: $TARGET_MAIN_FILE
 
-          echo with flavor: $FLAVOR 
-
-          flutter build ipa --flavor $FLAVOR --release --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist --target=$FCI_BUILD_DIR/lib/$TARGET_MAIN_FILE
-      # - flutter build ios --debug --no-codesign
+          flutter build ipa \
+          --flavor $CUR_ENVIRONMENT --release \
+          --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER \
+          --export-options-plist=/Users/builder/export_options.plist \
+          --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
+          -v
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log

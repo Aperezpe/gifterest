@@ -44,6 +44,8 @@ class _ProductsGridViewState extends State<ProductsGridView>
   int get endValue => widget.sliderValues.end.round();
   bool get _isUser => widget.person.id == widget.database.uid;
 
+  List<Product> shuffledProducts = [];
+
   // Filters products depending on price and geneder
   List<Product> queryProducts(List<Product> products) {
     if (widget.eventType != EventType.anniversary)
@@ -93,8 +95,14 @@ class _ProductsGridViewState extends State<ProductsGridView>
         if (snapshot.hasError)
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
-          final products = queryProducts(snapshot.data);
-          products.shuffle();
+          List<Product> products;
+
+          if (shuffledProducts.isEmpty) {
+            snapshot.data.shuffle();
+            products = shuffledProducts = queryProducts(snapshot.data);
+          } else {
+            products = queryProducts(shuffledProducts);
+          }
 
           if (products.isEmpty)
             return EmptyContent(

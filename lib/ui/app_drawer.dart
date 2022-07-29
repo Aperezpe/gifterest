@@ -66,7 +66,7 @@ class AppDrawer extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   children: [
                     CustomListTile(
-                      title: "My Profile",
+                      title: "Profile",
                       icon: LineIcons.user,
                       onTap: () => _openRoute(
                         context,
@@ -75,7 +75,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ),
                     CustomListTile(
-                      title: "My Friends",
+                      title: "Friends",
                       icon: LineIcons.gift,
                       onTap: () => _openRoute(
                         context,
@@ -84,7 +84,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ),
                     CustomListTile(
-                      title: "Favorites",
+                      title: "My Favorites",
                       icon: LineIcons.heart,
                       onTap: () => _openRoute(
                         context,
