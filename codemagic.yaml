@@ -158,17 +158,12 @@ workflows:
         # --build-name = CFBundleShortVersionString (Must be different if publishing to App Store)
         # --build-number = CFBundleVersion (Must be different for testing. This code will automatically update it)
         script: |
-          # Get Build number for environment specific
-          case "$CM_BRANCH" in
-            main) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1)) ;;
-            *) IOS_BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "$APPLE_ID") + 1)) ;;
-          esac
-
-          echo Build number to release: $IOS_BUILD_NUMBER
+          # Get next artifact build number
+          echo Build number to release: $(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1))
 
           flutter build ipa \
           --flavor $CUR_ENVIRONMENT --release \
-          --build-name=1.0.3 --build-number=$IOS_BUILD_NUMBER \
+          --build-name=1.0.3 --build-number=$(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1)) \
           --export-options-plist=/Users/builder/export_options.plist \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart \
           -v
