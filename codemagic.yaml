@@ -71,10 +71,13 @@ workflows:
           cd . && flutter packages pub get
       - name: Build App Bundle with Flutter
         script: |
+          echo Build number to release: $(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1))
+          echo Build hardcoded number to release: 2
+          
           cd . && flutter build appbundle \
           --flavor $CUR_ENVIRONMENT \
           --release --build-name=1.0.2 \
-          --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
+          --build-number=2 \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
       - build/**/outputs/bundle/**/*.aab
@@ -159,10 +162,11 @@ workflows:
         script: |
           # Get next artifact build number
           echo Build number to release: $(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1))
+          echo Build hardcoded number to release: 3
 
           flutter build ipa \
           --flavor $CUR_ENVIRONMENT --release \
-          --build-name=1.0.4 --build-number=$(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1)) \
+          --build-name=1.0.4 --build-number=3 \
           --export-options-plist=/Users/builder/export_options.plist \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
