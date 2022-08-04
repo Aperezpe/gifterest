@@ -1,6 +1,7 @@
 import 'package:gifterest/resize/size_config.dart';
 import 'package:gifterest/resources/app_config.dart';
 import 'package:gifterest/services/auth.dart';
+import 'package:gifterest/services/database.dart';
 import 'package:gifterest/ui/app_drawer.dart';
 import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
 import 'package:gifterest/ui/common_widgets/drawer_button_builder.dart';
@@ -36,9 +37,15 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> _onSignOut() async {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final db = Provider.of<Database>(context, listen: false);
+    await db.deleteUserToken();
+    auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
     SizeConfig().init(context);
 
     final menu = <Widget>[
@@ -68,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       ListTile(
         title: Text("Sign Out"),
-        onTap: () => _onAsyncMethod(auth.signOut()),
+        onTap: () => _onAsyncMethod(_onSignOut()),
       ),
       if (AppConfig.of(context).buildFlavor == "Development")
         ListTile(
