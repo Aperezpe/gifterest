@@ -166,7 +166,7 @@ workflows:
 
           flutter build ipa \
           --flavor $CUR_ENVIRONMENT --release \
-          --build-name=1.0.4 --build-number=3 \
+          --build-name=1.0.4 --build-number=4 \
           --export-options-plist=/Users/builder/export_options.plist \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
