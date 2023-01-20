@@ -8,7 +8,6 @@ class Product {
   double price;
   List<dynamic> ageRange;
   String distributor;
-  String event;
   String imageUrl;
   List<dynamic> categories;
   String itemUrl;
@@ -20,7 +19,6 @@ class Product {
     @required this.id,
     @required this.name,
     @required this.price,
-    this.event,
     @required this.ageRange,
     @required this.distributor,
     @required this.imageUrl,
@@ -40,7 +38,6 @@ class Product {
     double price = data['price'] + .0;
     List<dynamic> ageRange = data['age_range'];
     String distributor = data['distributor'];
-    String event = data['event'];
     List<dynamic> categories = data['categories'];
     String imageUrl = data['image_url'];
     String itemUrl = data['item_url'];
@@ -52,7 +49,6 @@ class Product {
       id: documentId,
       name: name,
       price: price,
-      event: event,
       imageUrl: imageUrl,
       itemUrl: itemUrl,
       ageRange: ageRange,
@@ -68,7 +64,6 @@ class Product {
     return {
       "name": name,
       "price": price,
-      "event": event,
       "image_url": imageUrl,
       "item_url": itemUrl,
       "age_range": ageRange,
@@ -85,7 +80,6 @@ class Product {
         id,
         name,
         price,
-        event,
         imageUrl,
         itemUrl,
         ageRange.join(","),
@@ -105,7 +99,6 @@ class Product {
     return id == otherProduct.id &&
         name == otherProduct.name &&
         price == otherProduct.price &&
-        event == otherProduct.event &&
         imageUrl == otherProduct.imageUrl &&
         ageRange.join(",") == otherProduct.ageRange.join(",") &&
         distributor == otherProduct.distributor &&
@@ -116,7 +109,7 @@ class Product {
   }
 
   @override
-  String toString() => '''id: $id, name: $name, price: $price, event: $event, 
+  String toString() => '''id: $id, name: $name, price: $price,
       imageUrl: $imageUrl, ageRange: $ageRange, distributor: $distributor, 
       categories: $categories, gender: $gender, itemId: $itemId, rating: $rating''';
 }

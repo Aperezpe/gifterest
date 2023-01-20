@@ -60,6 +60,8 @@ class FirestoreService {
   }
 
   // Query product stream by event OR categories
+  // Events that need to be checked: Anniversary, Babyshower, Valentines
+  // Events are inside the product/categories array
   Stream<List<T>> queryProductsStream<T>({
     @required String path,
     @required T builder(Map<String, dynamic> data, String documentId),
@@ -76,22 +78,13 @@ class FirestoreService {
       /// Query by BabyShower or Anniversary. If not given, then just query
       /// by the friend's interests
       case EventType.babyShower:
-        query = ref.where('event', isEqualTo: "Babyshower");
+        query = ref.where('categories', arrayContains: "Babyshower");
         break;
       case EventType.anniversary:
-        query = gender == "Other"
-            ? ref.where('event', isEqualTo: "Anniversary")
-            : ref
-                .where('event', isEqualTo: "Anniversary")
-                .where('gender', whereIn: [gender, ""]);
+        query = ref.where('categories', arrayContains: "Anniversary");
         break;
-
       case EventType.valentines:
-        query = gender == "Other"
-            ? ref.where('event', isEqualTo: "Valentines")
-            : ref
-                .where('event', isEqualTo: "Valentines")
-                .where('gender', whereIn: [gender, ""]);
+        query = ref.where('categories', arrayContains: "Valentines");
         break;
       default:
         query = ref.where('categories', arrayContainsAny: interests);
@@ -110,6 +103,7 @@ class FirestoreService {
     }
 
     final snapshots = query.snapshots();
+
     return snapshots.map((snapshots) => snapshots.docs
         .map((snapshot) => builder(snapshot.data(), snapshot.id))
         .toList());
