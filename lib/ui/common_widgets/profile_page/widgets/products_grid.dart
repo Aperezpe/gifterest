@@ -48,20 +48,15 @@ class _ProductsGridViewState extends State<ProductsGridView>
 
   // Filters products depending on price and geneder
   List<Product> queryProducts(List<Product> products) {
-    if (widget.eventType != EventType.anniversary)
-      products = products
-          .where((product) {
-            if (endValue >= 100) return product.price >= startValue;
-            return product.price >= startValue && product.price <= endValue;
-          })
-          .where((product) =>
-              (product.gender == widget.gender) || (product.gender == ""))
-          .toList();
-    else
-      products = products.where((product) {
-        if (endValue >= 100) return product.price >= startValue;
-        return product.price >= startValue && product.price <= endValue;
-      }).toList();
+    // Exclude anniversary and valenties from querying gender since this is done in query Strem level
+    products = products
+        .where((product) {
+          if (endValue >= 100) return product.price >= startValue;
+          return product.price >= startValue && product.price <= endValue;
+        })
+        .where((product) =>
+            (product.gender == widget.gender) || (product.gender == ""))
+        .toList();
 
     return products;
   }
@@ -95,7 +90,7 @@ class _ProductsGridViewState extends State<ProductsGridView>
         if (snapshot.hasError)
           return Center(child: Text(snapshot.error.toString()));
         if (snapshot.hasData) {
-          List<Product> products;
+          List<Product> products = snapshot.data;
 
           if (shuffledProducts.isEmpty) {
             snapshot.data.shuffle();

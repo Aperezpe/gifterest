@@ -28,7 +28,6 @@ void main() {
           id: 'abc',
           name: 'Toy',
           price: 15.6,
-          event: 'Babyshower',
           ageRange: [0, 2],
           distributor: 'dist1',
           imageUrl: 'img.com',
