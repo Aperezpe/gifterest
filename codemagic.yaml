@@ -162,11 +162,11 @@ workflows:
         script: |
           # Get next artifact build number
           echo Build number to release: $(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1))
-          echo Build hardcoded number to release: 3
+          echo Build hardcoded number to release: 1
 
           flutter build ipa \
           --flavor $CUR_ENVIRONMENT --release \
-          --build-name=1.0.4 --build-number=4 \
+          --build-name=1.0.5 --build-number=1 \
           --export-options-plist=/Users/builder/export_options.plist \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
