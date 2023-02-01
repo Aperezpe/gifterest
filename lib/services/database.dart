@@ -45,6 +45,7 @@ abstract class Database {
 
   Stream<List<SpecialEvent>> specialEventsStream();
   Future<void> setSpecialEvent(SpecialEvent specialEvent, Person person);
+  /* Warning: DO NOT delete RootSpecialEvents since they are used when sending push notifications to users. */
   Future<void> setRootSpecialEvent(
     RootSpecialEvent rootSpecialEvent,
     SpecialEvent specialEvent,

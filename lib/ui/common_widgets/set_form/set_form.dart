@@ -1,4 +1,5 @@
 import 'package:gifterest/resize/size_config.dart';
+import 'package:gifterest/services/auth.dart';
 import 'package:gifterest/services/database.dart';
 import 'package:gifterest/services/locator.dart';
 import 'package:gifterest/ui/common_widgets/app_bar_button.dart';
@@ -16,6 +17,7 @@ import 'package:gifterest/ui/screens/my_profile/my_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gifterest/ui/screens/settings/delete_account.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:page_transition/page_transition.dart';
@@ -25,20 +27,24 @@ class SetPersonForm extends StatefulWidget {
     Key key,
     @required this.model,
     @required this.mainPage,
+    this.fromSettings: false,
   }) : super(key: key);
   final SetFormModel model;
   final Widget mainPage;
+  final bool fromSettings;
 
   static Future<void> create(
     BuildContext context, {
     dynamic person, // It could be Friend or AppUser
     @required Widget mainPage,
+    bool fullscreenDialog: true,
+    bool fromSettings: false,
   }) async {
     final FirestoreDatabase database =
         Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        fullscreenDialog: true,
+        fullscreenDialog: fullscreenDialog,
         builder: (context) {
           return ChangeNotifierProvider<SetFormModel>(
             create: (context) => SetFormModel(
@@ -52,6 +58,7 @@ class SetPersonForm extends StatefulWidget {
               builder: (context, model, __) => SetPersonForm(
                 model: model,
                 mainPage: mainPage,
+                fromSettings: fromSettings,
               ),
             ),
           );
@@ -188,12 +195,29 @@ class _SetPersonFormState extends State<SetPersonForm> {
         ),
         body: _buildContent(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: BottomButton(
-          onPressed: _onNextPage,
-          color: _isUser ? Colors.pink : Colors.blue,
-          text: floatingActionbuttonText,
-          textColor: Colors.white,
-        ),
+        floatingActionButton: widget.fromSettings
+            ? TextButton(
+                child: Text(
+                  "Delete Account",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: SizeConfig.subtitleSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DeleteAccount(),
+                    fullscreenDialog: true,
+                  ),
+                ),
+              )
+            : BottomButton(
+                onPressed: _onNextPage,
+                color: _isUser ? Colors.pink : Colors.blue,
+                text: floatingActionbuttonText,
+                textColor: Colors.white,
+              ),
       ),
     );
   }
