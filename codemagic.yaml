@@ -76,7 +76,7 @@ workflows:
           
           cd . && flutter build appbundle \
           --flavor $CUR_ENVIRONMENT \
-          --release --build-name=1.0.2 \
+          --release --build-name=1.0.3 \
           --build-number=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks "$GOOGLE_PLAY_TRACK") + 1)) \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
@@ -166,7 +166,7 @@ workflows:
 
           flutter build ipa \
           --flavor $CUR_ENVIRONMENT --release \
-          --build-name=1.0.4 --build-number=4 \
+          --build-name=1.0.4 --build-number=$(($(app-store-connect get-latest-app-store-build-number "$APPLE_ID") + 1)) \
           --export-options-plist=/Users/builder/export_options.plist \
           --target=$FCI_BUILD_DIR/lib/main_$CUR_ENVIRONMENT.dart
     artifacts:
