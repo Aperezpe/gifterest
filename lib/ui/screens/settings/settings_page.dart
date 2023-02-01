@@ -7,6 +7,8 @@ import 'package:gifterest/ui/common_widgets/custom_app_bar.dart';
 import 'package:gifterest/ui/common_widgets/drawer_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:gifterest/ui/common_widgets/loading_screen.dart';
+import 'package:gifterest/ui/common_widgets/set_form/set_form.dart';
+import 'package:gifterest/ui/models/app_user.dart';
 import 'package:gifterest/ui/screens/sign_in/terms_and_conditions.dart';
 import 'package:provider/provider.dart';
 
@@ -47,8 +49,30 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final db = Provider.of<Database>(context, listen: false);
 
     final menu = <Widget>[
+      StreamBuilder<AppUser>(
+          stream: db.userStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final user = snapshot.data;
+              return ListTile(
+                title: Text("Account"),
+                onTap: () => _onAsyncMethod(
+                  SetPersonForm.create(
+                    context,
+                    person: user,
+                    mainPage: widget,
+                    fullscreenDialog: false,
+                    fromSettings: true,
+                  ),
+                  load: false,
+                ),
+              );
+            }
+            return LoadingScreen();
+          }),
       ListTile(
         title: Text("Terms & Conditions"),
         onTap: () => _onAsyncMethod(

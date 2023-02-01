@@ -121,9 +121,3 @@ class LandingPage extends StatelessWidget {
     );
   }
 }
-
-class AppUserInfo {
-  String displayName;
-
-  String setName(String value) => displayName = value;
-}
